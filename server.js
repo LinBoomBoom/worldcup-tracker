@@ -1,34 +1,9 @@
 const express = require('express');
 const path = require('path');
 const { getAllMatches, getStandings, getGroupHistory, getInjuries } = require('./data/matches');
-const { predictMatch, predictDay, getAlgorithmInfo, compositePredict } = require('./algorithms/predictor');
+const { predictMatch, predictDay, getAlgorithmInfo } = require('./algorithms/predictor');
 const { divineMatch } = require('./algorithms/divination');
-
-// 预测历史缓存
-const predictionCache = {};
-const divinationCache = {};
-
-// 启动时后台预计算所有预测
-setTimeout(() => {
-  console.log('🔮 后台预计算所有预测...');
-  const { upcoming } = getAllMatches();
-  const dates = [...new Set(upcoming.map(m => m.date))].sort();
-  let count = 0;
-  dates.forEach(date => {
-    const dayMatches = upcoming.filter(m => m.date === date);
-    if (!predictionCache[date]) {
-      predictionCache[date] = dayMatches.map(m => ({
-        match: { home: m.home, away: m.away, time: m.time, group: m.group, round: m.round },
-        prediction: compositePredict(m.home, m.away)
-      }));
-    }
-    if (!divinationCache[date]) {
-      divinationCache[date] = dayMatches.map(m => divineMatch(m));
-    }
-    count += dayMatches.length;
-  });
-  console.log('✅ 预计算完成: ' + dates.length + '天 ' + count + '场比赛');
-}, 1000);
+const { getTodayPredictions } = require('./algorithms/store');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -90,17 +65,8 @@ app.get('/api/divination', (req, res) => {
 // API: 全部日期预测历史（统计+占卜）
 app.get('/api/predictions-history', (req, res) => {
   try {
-    const { upcoming } = getAllMatches();
-    const dates = [...new Set(upcoming.map(m => m.date))].sort();
-    const history = dates.map(date => ({
-      date,
-      matches: upcoming.filter(m => m.date === date).length,
-      statistical: predictionCache[date] || [],
-      divination: divinationCache[date] || [],
-      isToday: date === '2026-06-22',
-    }));
-    const ready = Object.keys(divinationCache).length;
-    res.json({ history, serverTime: new Date().toISOString(), cacheReady: ready >= dates.length });
+    const result = getTodayPredictions(new Date());
+    res.json({ ...result, serverTime: new Date().toISOString() });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }

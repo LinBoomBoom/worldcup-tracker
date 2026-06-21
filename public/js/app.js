@@ -205,41 +205,48 @@ async function renderPredictions(container) {
   try {
     const data = await fetch('/api/predictions-history').then(r => r.json());
     if (!data.history || data.history.length === 0) {
-      container.innerHTML = '<p style="color:var(--gray);text-align:center;padding:40px">暂无预测数据</p>';
+      container.innerHTML = '<p style="color:var(--gold);text-align:center;padding:40px">暂无预测数据，每天系统自动生成次日预测</p>';
       return;
     }
+
+    let html = ['<h2 class="section-title">🔮 每日预测记录（锁定 · 不重复生成）</h2>'];
+    html.push('<p style="color:var(--text-secondary);font-size:0.7rem;margin-bottom:12px">📌 每天仅预测下一日比赛，预测结果永久锁定不变</p>');
 
     const now = new Date();
     const bj = new Date(now.getTime() + 8*3600000);
     const today = bj.toISOString().slice(0,10);
     const hour = bj.getUTCHours();
-    let html = ['<h2 class="section-title">🔮 每日智能预测 · 奇门六壬占卜</h2>'];
 
     data.history.forEach(day => {
       const isToday = day.date === today;
       const isPast = day.date < today || (isToday && hour >= 18);
+      const label = isToday ? '📅 今天' : '📆';
       const cls = isPast ? ' collapsed' : '';
+
       html.push('<div class="day-section'+cls+'" data-date="'+day.date+'">');
       html.push('<div class="day-header'+(isToday?' today':'')+'" onclick="toggleDaySection(this)">');
-      html.push('<span>'+(isToday?'📅 今天':'📆 ')+day.date+' · '+day.matches+'场比赛</span>');
-      html.push('<span class="day-toggle">'+(isPast?'▶':'▼')+'</span></div>');
+      html.push('<span>'+label+day.date+' · '+day.matches+'场比赛 <span style="font-size:0.6rem;color:var(--gold-dark)">🔒</span></span>');
+      html.push('<span class="day-toggle">'+(isPast?'▶':'▼')+'</span>');
+      html.push('</div>');
       html.push('<div class="day-body" style="display:'+(isPast?'none':'block')+'">');
 
       if (day.statistical && day.statistical.length) {
-        html.push('<h4 class="sub-title">📊 统计模型预测</h4>');
+        html.push('<h4 class="sub-title">📊 统计模型</h4>');
         day.statistical.forEach(p => {
           html.push('<div class="card mini-pred-card"><span class="mini-teams">'+p.match.home+' vs '+p.match.away+'</span><span class="mini-score">'+p.prediction.predictedScore+'</span><span class="mini-meta">'+p.match.time+' '+p.match.group+'组</span></div>');
         });
       }
 
       if (day.divination && day.divination.length) {
-        html.push('<h4 class="sub-title2">🔮 奇门六壬占卜</h4>');
+        html.push('<h4 class="sub-title2">🔮 奇门六壬</h4>');
         day.divination.forEach(r => {
           html.push('<div class="card mini-div-card"><div class="mini-teams">'+r.match.home+' vs '+r.match.away+'</div><div class="mini-div-row"><span class="mini-div-item">🛡️ '+r.qimenPrediction.winner+' '+r.qimenPrediction.score+'</span><span class="mini-div-item">🐢 '+r.liurenPrediction.winner+' '+r.liurenPrediction.score+'</span><span class="mini-div-final">🏆 '+r.winner+' '+r.score+'</span></div><span class="mini-meta">'+r.match.time+' '+r.match.group+'组 '+(r.agree?'✅':'⚡')+'</span></div>');
         });
       }
+
       html.push('</div></div>');
     });
+
     container.innerHTML = html.join('');
   } catch(e) { container.innerHTML = '<p style="color:var(--red)">❌ 加载失败: '+e.message+'</p>'; }
 }
@@ -250,153 +257,5 @@ function toggleDaySection(h) {
   if (b.style.display === 'none') { b.style.display = 'block'; t.textContent = '▼'; h.parentElement.classList.remove('collapsed'); }
   else { b.style.display = 'none'; t.textContent = '▶'; h.parentElement.classList.add('collapsed'); }
 }
-function renderInjuries(container) {
-  const injuries = allData.injuries || [];
-  let html = ['<h2 class="section-title">🏥 球队伤停 · 阵容变动</h2>'];
 
-  // 按球队分组
-  const grouped = {};
-  injuries.forEach(ij => {
-    if (!grouped[ij.team]) grouped[ij.team] = [];
-    grouped[ij.team].push(ij);
-  });
 
-  for (const [team, players] of Object.entries(grouped)) {
-    html.push(`<div class="card"><h3 style="color:var(--gold);margin-bottom:10px">${team}</h3>`);
-    players.forEach(p => {
-      const statusClass = p.status.includes('缺阵') || p.status.includes('退役') ? 'status-out' :
-                          p.status.includes('成疑') || p.status.includes('存疑') ? 'status-doubt' :
-                          p.status.includes('风险') ? 'status-risk' : 'status-ok';
-      html.push(`
-        <div class="injury-card" style="border-bottom:1px solid var(--border);margin-bottom:8px;padding-bottom:8px">
-          <div class="injury-icon">${statusClass === 'status-out' ? '🔴' : statusClass === 'status-doubt' ? '🟡' : statusClass === 'status-risk' ? '🟠' : '🟢'}</div>
-          <div class="injury-info">
-            <div class="injury-player">${p.player}</div>
-            <span class="injury-status ${statusClass}">${p.status}</span>
-            <div class="injury-detail">${p.detail}</div>
-            <div class="injury-update">更新: ${p.update}</div>
-          </div>
-        </div>`);
-    });
-    html.push('</div>');
-  }
-
-  container.innerHTML = html.join('');
-}
-
-// ========== Divination Tab ==========
-async function renderDivination(container) {
-  container.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><p>奇门遁甲 + 大六壬 双盘推演中...</p></div>';
-
-  try {
-    const data = await fetch('/api/divination?date=2026-06-22').then(r => r.json());
-    let html = ['<h2 class="section-title">🔮 奇门遁甲 · 大六壬 占卜预测</h2>'];
-    html.push(`<p style="color:var(--text-secondary);font-size:0.78rem;margin-bottom:16px">📅 ${data.date} · 共${data.count}场 · 双术数体系交叉验证 · 仅供参考娱乐</p>`);
-
-    data.results.forEach(r => {
-      const q = r.qimen, l = r.liuren;
-      const qp = r.qimenPrediction, lp = r.liurenPrediction;
-      const vColor = r.verdict === 'home' ? 'var(--blue)' : r.verdict === 'away' ? 'var(--red)' : 'var(--text-secondary)';
-      const winnerText = r.verdict === 'draw' ? '🤝 平局' : `🏆 ${r.winner}胜`;
-      const verdictClass = r.verdict === 'home' ? 'home-conf' : r.verdict === 'away' ? 'away-conf' : 'draw-conf';
-      const agreeBadge = r.agree ? '<span class="qm-tag ji">✅ 一致</span>' : '<span class="qm-tag xiong">⚡ 分歧</span>';
-
-      html.push(`
-      <div class="card divination-card">
-        <!-- 比赛标题 -->
-        <div class="div-header">
-          <span class="div-teams">${r.match.home} vs ${r.match.away}</span>
-          <span style="font-size:0.7rem;color:var(--text-secondary)">${r.match.group}组 ${r.match.time}</span>
-        </div>
-
-        <!-- 三栏独立预测 -->
-        <div class="div-triple">
-          <div class="div-col-pred">
-            <div class="div-col-title">🛡️ 奇门遁甲</div>
-            <div class="pred-mini-score">${qp.score}</div>
-            <div class="pred-mini-winner">${qp.winner}${qp.verdict==='draw'?'':'胜'}</div>
-            <div class="pred-mini-reason">${q.shengKe}</div>
-          </div>
-          <div class="div-col-pred">
-            <div class="div-col-title">🐢 大六壬</div>
-            <div class="pred-mini-score">${lp.score}</div>
-            <div class="pred-mini-winner">${lp.winner}${lp.verdict==='draw'?'':'胜'}</div>
-            <div class="pred-mini-reason">${lp.verdict==='home'?'终局主优':lp.verdict==='away'?'终局客优':'终局均势'}</div>
-          </div>
-          <div class="div-col-pred combined">
-            <div class="div-col-title">🏆 综合判定</div>
-            <div class="pred-mini-score" style="color:var(--gold-light);font-size:1.4rem">${r.score}</div>
-            <div class="pred-mini-winner">${winnerText}</div>
-            <div style="margin-top:4px">${agreeBadge}</div>
-          </div>
-        </div>
-
-        <!-- 双栏详细盘面 -->
-        <details style="margin-top:14px">
-          <summary style="cursor:pointer;font-size:0.8rem;color:var(--text-secondary)">📜 查看详细排盘</summary>
-          <div class="div-dual" style="margin-top:10px">
-            <div class="div-column">
-              <div class="div-col-title">🛡️ 奇门遁甲</div>
-              <div class="div-detail"><span>局数</span><span>${q.ju} · ${q.jieQi}</span></div>
-              <div class="div-detail"><span>值符星</span><span>${q.zhiFuStar}</span></div>
-              <div class="div-detail"><span>日干宫</span><span>${q.riGanGong} (主队)</span></div>
-              <div class="div-detail"><span>时干宫</span><span>${q.shiGanGong} (客队)</span></div>
-              <div class="div-detail"><span>生克</span><span style="font-weight:700">${q.shengKe}</span></div>
-              <div class="div-detail"><span>八门</span><span>${q.doorName} <span class="qm-tag ${q.doorJiXiong==='吉'?'ji':q.doorJiXiong==='凶'?'xiong':'ping'}">${q.doorJiXiong}</span></span></div>
-              <div class="div-detail"><span>八神</span><span>${q.shenName}</span></div>
-              <div class="div-detail"><span>判断</span><span>${q.advantage}</span></div>
-            </div>
-            <div class="div-column">
-              <div class="div-col-title">🐢 大六壬</div>
-              <div class="div-detail"><span>初传 上半场</span><span>${l.sanChuan.chu}</span></div>
-              <div class="div-detail"><span>中传 中段</span><span>${l.sanChuan.zhong}</span></div>
-              <div class="div-detail"><span>末传 终局</span><span style="font-weight:700">${l.sanChuan.mo}</span></div>
-              ${(l.siKe||[]).filter(k => k && !k.includes('undefined')).map(k => `<div class="div-detail"><span>${k.split(':')[0]}</span><span>${k.split(':')[1]||''}</span></div>`).join('')}
-              <div class="div-detail" style="margin-top:6px;border-top:1px solid var(--border);padding-top:6px"><span>上半场</span><span>${l.firstHalf}</span></div>
-              ${l.trend ? `<div class="div-detail"><span>中段走势</span><span>${l.trend}</span></div>` : ''}
-              <div class="div-detail"><span>终局</span><span>${l.secondHalf}</span></div>
-            </div>
-          </div>
-          <pre style="white-space:pre-wrap;margin-top:8px;line-height:1.8;background:rgba(0,0,0,0.2);padding:10px;border-radius:8px;font-size:0.7rem">${r.summary}</pre>
-        </details>
-      </div>`);
-    });
-
-    // 方法说明
-    html.push(`
-    <div class="card" style="border-left:3px solid var(--gold);margin-top:16px">
-      <h4 style="color:var(--gold-light);margin-bottom:8px">📖 术数方法说明</h4>
-      <p style="font-size:0.78rem;color:var(--text-secondary);line-height:1.7">
-        <strong>奇门遁甲：</strong>以比赛时辰排盘（阳遁/阴遁+局数），日干落宫代表主队(左队)，时干落宫代表客队(右队)。通过五行生克（生/克/比和）+ 八门吉凶 + 八神组合，判断比赛胜负倾向。<br><br>
-        <strong>大六壬：</strong>以比赛时辰起课，天盘+四课+三传推演。初传应上半场，中传应中段走势，末传应终局结果。日干为占主（主队），辰为客（客队），观三传与日干生克关系定上下半场走势。<br><br>
-        ⚠️ 奇门遁甲与大六壬传统用于军事、国事、人事择吉，体育比分预测非其传统应用领域，<strong>以上结果仅供传统文化研究参考与娱乐</strong>。
-      </p>
-    </div>`);
-
-    container.innerHTML = html.join('');
-  } catch (e) {
-    container.innerHTML = '<p style="color:#e74c3c">❌ 占卜数据加载失败</p>';
-  }
-}
-
-// ========== Algorithms Tab ==========
-function renderAlgorithms(container) {
-  const algos = allData.algorithms || { algorithms: [], confidenceNote: '' };
-  let html = ['<h2 class="section-title">🧠 预测算法引擎</h2>'];
-  html.push(`<div class="card algo-card"><h3>📐 ${algos.name} v${algos.version}</h3></div>`);
-
-  (algos.algorithms || []).forEach(a => {
-    html.push(`
-    <div class="card algo-card">
-      <h3>${a.name} <span class="weight-tag">权重 ${a.weight}</span></h3>
-      <p class="desc">${a.description}</p>
-      <div class="factors">${(a.factors||[]).map(f => `<span class="factor-tag">${f}</span>`).join('')}</div>
-    </div>`);
-  });
-
-  if (algos.confidenceNote) {
-    html.push(`<div class="card algo-card" style="border-left:3px solid var(--gold)"><p class="desc">${algos.confidenceNote}</p></div>`);
-  }
-
-  container.innerHTML = html.join('');
-}
