@@ -59,6 +59,7 @@ async function renderTab(tab) {
     case 'predictions': await renderPredictions(main); break;
     case 'injuries': renderInjuries(main); break;
     case 'algorithms': renderAlgorithms(main); break;
+    case 'divination': await renderDivination(main); break;
   }
 }
 
@@ -310,8 +311,84 @@ function renderInjuries(container) {
   container.innerHTML = html.join('');
 }
 
-// ========== Algorithms Tab ==========
-function renderAlgorithms(container) {
+// ========== Divination Tab ==========
+async function renderDivination(container) {
+  container.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><p>奇门遁甲 + 大六壬 双盘推演中...</p></div>';
+
+  try {
+    const data = await fetch('/api/divination?date=2026-06-22').then(r => r.json());
+    let html = ['<h2 class="section-title">🔮 奇门遁甲 · 大六壬 占卜预测</h2>'];
+    html.push(`<p style="color:var(--text-secondary);font-size:0.78rem;margin-bottom:16px">📅 ${data.date} · 共${data.count}场 · 双术数体系交叉验证 · 仅供参考娱乐</p>`);
+
+    data.results.forEach(r => {
+      const q = r.qimen, l = r.liuren;
+      const vColor = r.verdict === 'home' ? 'var(--blue)' : r.verdict === 'away' ? 'var(--red)' : 'var(--text-secondary)';
+      const winnerText = r.verdict === 'draw' ? '🤝 平局' : `🏆 ${r.winner}胜`;
+      const verdictClass = r.verdict === 'home' ? 'home-conf' : r.verdict === 'away' ? 'away-conf' : 'draw-conf';
+
+      html.push(`
+      <div class="card divination-card">
+        <!-- 比赛信息 + 综合结果 -->
+        <div class="div-header">
+          <span class="div-teams">${r.match.home} <span style="color:var(--text-secondary);font-size:0.7rem">vs</span> ${r.match.away}</span>
+          <span style="font-size:0.7rem;color:var(--text-secondary)">${r.match.group}组 ${r.match.time}</span>
+        </div>
+
+        <div class="pred-verdict ${verdictClass}" style="font-size:1.05rem;margin:8px 0">
+          ${winnerText} <span style="color:var(--gold-light);font-weight:800;font-size:1.3rem">${r.score}</span>
+          <span style="font-size:0.75rem;color:var(--text-secondary)">进球数: ${r.goals}球</span>
+        </div>
+
+        <!-- 双栏: 奇门 + 六壬 -->
+        <div class="div-dual">
+          <div class="div-column">
+            <div class="div-col-title">🛡️ 奇门遁甲</div>
+            <div class="div-detail"><span>局数</span><span>阳遁${q.juNum}局 · ${q.jieQi}</span></div>
+            <div class="div-detail"><span>值符星</span><span>${q.zhiFuStar}</span></div>
+            <div class="div-detail"><span>日干宫</span><span>${q.riGanGong} (主队/左)</span></div>
+            <div class="div-detail"><span>时干宫</span><span>${q.shiGanGong} (客队/右)</span></div>
+            <div class="div-detail"><span>生克</span><span style="font-weight:700;color:${vColor}">${q.shengKe}</span></div>
+            <div class="div-detail"><span>八门</span><span>${q.doorName} <span class="qm-tag ${q.doorJiXiong==='吉'?'ji':q.doorJiXiong==='凶'?'xiong':'ping'}">${q.doorJiXiong}</span></span></div>
+            <div class="div-detail"><span>八神</span><span>${q.shenName}</span></div>
+            <div class="div-detail"><span>判断</span><span style="color:${vColor}">${q.advantage}</span></div>
+          </div>
+
+          <div class="div-column">
+            <div class="div-col-title">🐢 大六壬</div>
+            <div class="div-detail"><span>初传 上半场</span><span style="color:${vColor}">${l.sanChuan.chu}</span></div>
+            <div class="div-detail"><span>中传 中段</span><span>${l.sanChuan.zhong}</span></div>
+            <div class="div-detail"><span>末传 终局</span><span style="color:${vColor};font-weight:700">${l.sanChuan.mo}</span></div>
+            ${l.siKe.filter(k => !k.includes('undefined')).map(k => `<div class="div-detail"><span>${k.split(':')[0]}</span><span>${k.split(':')[1]||''}</span></div>`).join('')}
+            <div class="div-detail" style="margin-top:6px;border-top:1px solid var(--border);padding-top:6px"><span>上半场</span><span style="color:${vColor}">${l.firstHalf}</span></div>
+            ${l.trend ? `<div class="div-detail"><span>中段走势</span><span>${l.trend}</span></div>` : ''}
+            <div class="div-detail"><span>终局</span><span style="color:${vColor}">${l.secondHalf}</span></div>
+          </div>
+        </div>
+
+        <!-- 综合分析 -->
+        <details style="margin-top:10px;font-size:0.75rem;color:var(--text-secondary)">
+          <summary style="cursor:pointer;color:var(--gold-light)">📜 查看完整课辞</summary>
+          <pre style="white-space:pre-wrap;margin-top:8px;line-height:1.8;background:rgba(0,0,0,0.2);padding:10px;border-radius:8px">${r.summary}</pre>
+        </details>
+      </div>`);
+    });
+
+    // 方法说明
+    html.push(`
+    <div class="card" style="border-left:3px solid var(--gold);margin-top:16px">
+      <h4 style="color:var(--gold-light);margin-bottom:8px">📖 术数方法说明</h4>
+      <p style="font-size:0.78rem;color:var(--text-secondary);line-height:1.7">
+        <strong>奇门遁甲：</strong>以比赛时辰排盘（阳遁/阴遁+局数），日干落宫代表主队(左队)，时干落宫代表客队(右队)。通过五行生克（生/克/比和）+ 八门吉凶 + 八神组合，判断比赛胜负倾向。<br><br>
+        <strong>大六壬：</strong>以比赛时辰起课，天盘+四课+三传推演。初传应上半场，中传应中段走势，末传应终局结果。日干为占主（主队），辰为客（客队），观三传与日干生克关系定上下半场走势。<br><br>
+        ⚠️ 奇门遁甲与大六壬传统用于军事、国事、人事择吉，体育比分预测非其传统应用领域，<strong>以上结果仅供传统文化研究参考与娱乐</strong>。
+      </p>
+    </div>`);
+
+    container.innerHTML = html.join('');
+  } catch (e) {
+    container.innerHTML = '<p style="color:#e74c3c">❌ 占卜数据加载失败</p>';
+  }
+}
   const algos = allData.algorithms || { algorithms: [], confidenceNote: '' };
   let html = ['<h2 class="section-title">🧠 预测算法引擎</h2>'];
   html.push(`<div class="card algo-card"><h3>📐 ${algos.name} v${algos.version}</h3></div>`);

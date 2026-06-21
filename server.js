@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const { getAllMatches, getStandings, getGroupHistory, getInjuries } = require('./data/matches');
 const { predictMatch, predictDay, getAlgorithmInfo } = require('./algorithms/predictor');
+const { divineMatch } = require('./algorithms/divination');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -45,6 +46,15 @@ app.get('/api/predict-day', (req, res) => {
 // API: 算法说明
 app.get('/api/algorithms', (req, res) => {
   res.json(getAlgorithmInfo());
+});
+
+// API: 奇门+六壬占卜预测
+app.get('/api/divination', (req, res) => {
+  const date = req.query.date || '2026-06-22';
+  const { upcoming } = getAllMatches();
+  const dayMatches = upcoming.filter(m => m.date === date);
+  const results = dayMatches.map(m => divineMatch(m));
+  res.json({ date, count: results.length, results });
 });
 
 app.listen(PORT, () => {

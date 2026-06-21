@@ -379,7 +379,57 @@ body {
   color: var(--text-secondary);
 }
 
-/* ========== Footer ========== */
+/* ========== Divination Card ========== */
+.divination-card { padding: 20px; }
+.div-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.div-teams { font-size: 1.1rem; font-weight: 700; }
+.div-dual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+.div-column {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+}
+.div-col-title {
+  font-weight: 700;
+  color: var(--gold);
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-accent);
+}
+.div-detail {
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 0;
+  font-size: 0.73rem;
+}
+.div-detail span:first-child { color: var(--text-secondary); }
+.div-detail span:last-child { font-weight: 500; text-align: right; max-width: 60%; }
+.qm-tag {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 6px;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+.qm-tag.ji { background:#2ecc7122; color:#2ecc71; }
+.qm-tag.xiong { background:#e74c3c22; color:#e74c3c; }
+.qm-tag.ping { background:#95a5a622; color:#95a5a6; }
+
+@media (max-width: 640px) {
+  .div-dual { grid-template-columns: 1fr; }
+}
 .site-footer {
   text-align: center;
   padding: 20px;
