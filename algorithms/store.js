@@ -65,11 +65,11 @@ function getTodayPredictions(now) {
     }
   }
 
-  // 返回今天对应的预测日期（今天或下一个有预测的日期）
+  // 只返回已预测的日期（不超前展示未来未预测的）
   const history = [];
   for (const d of allDates) {
-    if (store.statistical[d] || store.divination[d]) {
-      history.push({
+    if (!store.statistical[d] && !store.divination[d]) break; // 遇到第一个未预测的即停止
+    history.push({
         date: d,
         matches: (store.statistical[d] || store.divination[d] || []).length,
         statistical: store.statistical[d] || [],

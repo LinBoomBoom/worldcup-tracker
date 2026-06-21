@@ -198,64 +198,71 @@ function renderStandings(container) {
   container.innerHTML = html.join('');
 }
 
-// ========== Predictions Tab ==========
+// ========== Predictions Tab (Statistical only) ==========
 async function renderPredictions(container) {
-  container.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><p>加载预测数据...</p></div>';
-
+  container.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><p>加载统计预测...</p></div>';
   try {
     const data = await fetch('/api/predictions-history').then(r => r.json());
     if (!data.history || data.history.length === 0) {
-      container.innerHTML = '<p style="color:var(--gold);text-align:center;padding:40px">暂无预测数据，每天系统自动生成次日预测</p>';
-      return;
+      container.innerHTML = '<p class="empty-msg">暂无统计预测，系统每日自动生成次日预测</p>'; return;
     }
-
-    let html = ['<h2 class="section-title">🔮 每日预测记录（锁定 · 不重复生成）</h2>'];
-    html.push('<p style="color:var(--text-secondary);font-size:0.7rem;margin-bottom:12px">📌 每天仅预测下一日比赛，预测结果永久锁定不变</p>');
-
-    const now = new Date();
-    const bj = new Date(now.getTime() + 8*3600000);
-    const today = bj.toISOString().slice(0,10);
-    const hour = bj.getUTCHours();
-
-    data.history.forEach(day => {
-      const isToday = day.date === today;
-      const isPast = day.date < today || (isToday && hour >= 18);
-      const label = isToday ? '📅 今天' : '📆';
-      const cls = isPast ? ' collapsed' : '';
-
-      html.push('<div class="day-section'+cls+'" data-date="'+day.date+'">');
-      html.push('<div class="day-header'+(isToday?' today':'')+'" onclick="toggleDaySection(this)">');
-      html.push('<span>'+label+day.date+' · '+day.matches+'场比赛 <span style="font-size:0.6rem;color:var(--gold-dark)">🔒</span></span>');
-      html.push('<span class="day-toggle">'+(isPast?'▶':'▼')+'</span>');
-      html.push('</div>');
-      html.push('<div class="day-body" style="display:'+(isPast?'none':'block')+'">');
-
-      if (day.statistical && day.statistical.length) {
-        html.push('<h4 class="sub-title">📊 统计模型</h4>');
-        day.statistical.forEach(p => {
-          html.push('<div class="card mini-pred-card"><span class="mini-teams">'+p.match.home+' vs '+p.match.away+'</span><span class="mini-score">'+p.prediction.predictedScore+'</span><span class="mini-meta">'+p.match.time+' '+p.match.group+'组</span></div>');
-        });
-      }
-
-      if (day.divination && day.divination.length) {
-        html.push('<h4 class="sub-title2">🔮 奇门六壬</h4>');
-        day.divination.forEach(r => {
-          html.push('<div class="card mini-div-card"><div class="mini-teams">'+r.match.home+' vs '+r.match.away+'</div><div class="mini-div-row"><span class="mini-div-item">🛡️ '+r.qimenPrediction.winner+' '+r.qimenPrediction.score+'</span><span class="mini-div-item">🐢 '+r.liurenPrediction.winner+' '+r.liurenPrediction.score+'</span><span class="mini-div-final">🏆 '+r.winner+' '+r.score+'</span></div><span class="mini-meta">'+r.match.time+' '+r.match.group+'组 '+(r.agree?'✅':'⚡')+'</span></div>');
-        });
-      }
-
-      html.push('</div></div>');
-    });
-
+    let html = [buildHistoryHTML(data, 'statistical', '📊 统计模型预测记录', 'ELO+泊松+形态复合模型')];
     container.innerHTML = html.join('');
-  } catch(e) { container.innerHTML = '<p style="color:var(--red)">❌ 加载失败: '+e.message+'</p>'; }
+  } catch(e) { container.innerHTML = '<p class="err-msg">❌ 加载失败: '+e.message+'</p>'; }
 }
 
-function toggleDaySection(h) {
-  var b = h.parentElement.querySelector('.day-body');
-  var t = h.querySelector('.day-toggle');
-  if (b.style.display === 'none') { b.style.display = 'block'; t.textContent = '▼'; h.parentElement.classList.remove('collapsed'); }
-  else { b.style.display = 'none'; t.textContent = '▶'; h.parentElement.classList.add('collapsed'); }
+// ========== Divination Tab (Qimen+Liuren) ==========
+async function renderDivination(container) {
+  container.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><p>加载占卜预测...</p></div>';
+  try {
+    const data = await fetch('/api/predictions-history').then(r => r.json());
+    if (!data.history || data.history.length === 0) {
+      container.innerHTML = '<p class="empty-msg">暂无占卜预测，系统每日自动生成次日预测</p>'; return;
+    }
+    let html = [buildHistoryHTML(data, 'divination', '🔮 奇门遁甲 · 大六壬 占卜记录', '双术数独立预测 · 交叉验证')];
+    container.innerHTML = html.join('');
+  } catch(e) { container.innerHTML = '<p class="err-msg">❌ 加载失败: '+e.message+'</p>'; }
 }
 
+function buildHistoryHTML(data, type, title, subtitle) {
+  const now = new Date();
+  const bj = new Date(now.getTime() + 8*3600000);
+  const today = bj.toISOString().slice(0,10);
+  const hour = bj.getUTCHours();
+  let h = ['<h2 class="section-title">'+title+'</h2>'];
+  h.push('<p class="sub-desc">📌 '+subtitle+' · 每日仅预测下一日 · 结果永久锁定不变</p>');
+
+  data.history.forEach(day => {
+    const isToday = day.date === today;
+    const isPast = day.date < today || (isToday && hour >= 18);
+    const label = isToday ? '📅 今天' : '📆';
+    const cls = isPast ? ' collapsed' : '';
+
+    h.push('<div class="day-section'+cls+'" data-date="'+day.date+'">');
+    h.push('<div class="day-header'+(isToday?' today':'')+'" onclick="toggleDaySection(this)">');
+    h.push('<span>'+label+day.date+' · '+day.matches+'场 <span class="lock-badge">🔒</span></span>');
+    h.push('<span class="day-toggle">'+(isPast?'▶':'▼')+'</span>');
+    h.push('</div>');
+    h.push('<div class="day-body" style="display:'+(isPast?'none':'block')+'">');
+
+    const items = type === 'statistical' ? day.statistical : day.divination;
+    if (!items || items.length === 0) {
+      h.push('<p class="empty-msg">计算中...</p>');
+    } else {
+      items.forEach(item => {
+        if (type === 'statistical') {
+          const p = item.prediction;
+          h.push('<div class="card mini-pred-card"><span class="mini-teams">'+item.match.home+' vs '+item.match.away+'</span><span class="mini-score">'+p.predictedScore+'</span><span class="mini-meta">'+item.match.time+' '+item.match.group+'组</span></div>');
+        } else {
+          const qp = item.qimenPrediction, lp = item.liurenPrediction;
+          h.push('<div class="card mini-div-card"><div class="mini-teams">'+item.match.home+' vs '+item.match.away+'</div><div class="mini-div-row"><span class="mini-div-item">🛡️ 奇门: '+qp.winner+' '+qp.score+'</span><span class="mini-div-item">🐢 六壬: '+lp.winner+' '+lp.score+'</span><span class="mini-div-final">🏆 综合: '+item.winner+' '+item.score+'</span></div><span class="mini-meta">'+item.match.time+' '+item.match.group+'组 '+(item.agree?'✅一致':'⚡分歧')+'</span></div>');
+        }
+      });
+    }
+    h.push('</div></div>');
+  });
+  return h.join('');
+}
+
+// ========== Injuries Tab ==========
 
