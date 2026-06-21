@@ -68,15 +68,14 @@ function getTodayPredictions(now) {
   // 只返回已预测的日期（不超前展示未来未预测的）
   const history = [];
   for (const d of allDates) {
-    if (!store.statistical[d] && !store.divination[d]) break; // 遇到第一个未预测的即停止
+    if (!store.statistical[d] && !store.divination[d]) break;
     history.push({
-        date: d,
-        matches: (store.statistical[d] || store.divination[d] || []).length,
-        statistical: store.statistical[d] || [],
-        divination: store.divination[d] || [],
-        frozen: true
-      });
-    }
+      date: d,
+      matches: (store.statistical[d] || store.divination[d] || []).length,
+      statistical: store.statistical[d] || [],
+      divination: store.divination[d] || [],
+      frozen: true
+    });
   }
 
   return { history, today };
