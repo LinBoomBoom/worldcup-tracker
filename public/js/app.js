@@ -322,53 +322,69 @@ async function renderDivination(container) {
 
     data.results.forEach(r => {
       const q = r.qimen, l = r.liuren;
+      const qp = r.qimenPrediction, lp = r.liurenPrediction;
       const vColor = r.verdict === 'home' ? 'var(--blue)' : r.verdict === 'away' ? 'var(--red)' : 'var(--text-secondary)';
       const winnerText = r.verdict === 'draw' ? '🤝 平局' : `🏆 ${r.winner}胜`;
       const verdictClass = r.verdict === 'home' ? 'home-conf' : r.verdict === 'away' ? 'away-conf' : 'draw-conf';
+      const agreeBadge = r.agree ? '<span class="qm-tag ji">✅ 一致</span>' : '<span class="qm-tag xiong">⚡ 分歧</span>';
 
       html.push(`
       <div class="card divination-card">
-        <!-- 比赛信息 + 综合结果 -->
+        <!-- 比赛标题 -->
         <div class="div-header">
-          <span class="div-teams">${r.match.home} <span style="color:var(--text-secondary);font-size:0.7rem">vs</span> ${r.match.away}</span>
+          <span class="div-teams">${r.match.home} vs ${r.match.away}</span>
           <span style="font-size:0.7rem;color:var(--text-secondary)">${r.match.group}组 ${r.match.time}</span>
         </div>
 
-        <div class="pred-verdict ${verdictClass}" style="font-size:1.05rem;margin:8px 0">
-          ${winnerText} <span style="color:var(--gold-light);font-weight:800;font-size:1.3rem">${r.score}</span>
-          <span style="font-size:0.75rem;color:var(--text-secondary)">进球数: ${r.goals}球</span>
-        </div>
-
-        <!-- 双栏: 奇门 + 六壬 -->
-        <div class="div-dual">
-          <div class="div-column">
+        <!-- 三栏独立预测 -->
+        <div class="div-triple">
+          <div class="div-col-pred">
             <div class="div-col-title">🛡️ 奇门遁甲</div>
-            <div class="div-detail"><span>局数</span><span>${q.ju} · ${q.jieQi}</span></div>
-            <div class="div-detail"><span>值符星</span><span>${q.zhiFuStar}</span></div>
-            <div class="div-detail"><span>日干宫</span><span>${q.riGanGong} (主队/左)</span></div>
-            <div class="div-detail"><span>时干宫</span><span>${q.shiGanGong} (客队/右)</span></div>
-            <div class="div-detail"><span>生克</span><span style="font-weight:700;color:${vColor}">${q.shengKe}</span></div>
-            <div class="div-detail"><span>八门</span><span>${q.doorName} <span class="qm-tag ${q.doorJiXiong==='吉'?'ji':q.doorJiXiong==='凶'?'xiong':'ping'}">${q.doorJiXiong}</span></span></div>
-            <div class="div-detail"><span>八神</span><span>${q.shenName}</span></div>
-            <div class="div-detail"><span>判断</span><span style="color:${vColor}">${q.advantage}</span></div>
+            <div class="pred-mini-score">${qp.score}</div>
+            <div class="pred-mini-winner">${qp.winner}${qp.verdict==='draw'?'':'胜'}</div>
+            <div class="pred-mini-reason">${q.shengKe}</div>
           </div>
-
-          <div class="div-column">
+          <div class="div-col-pred">
             <div class="div-col-title">🐢 大六壬</div>
-            <div class="div-detail"><span>初传 上半场</span><span style="color:${vColor}">${l.sanChuan.chu}</span></div>
-            <div class="div-detail"><span>中传 中段</span><span>${l.sanChuan.zhong}</span></div>
-            <div class="div-detail"><span>末传 终局</span><span style="color:${vColor};font-weight:700">${l.sanChuan.mo}</span></div>
-            ${l.siKe.filter(k => !k.includes('undefined')).map(k => `<div class="div-detail"><span>${k.split(':')[0]}</span><span>${k.split(':')[1]||''}</span></div>`).join('')}
-            <div class="div-detail" style="margin-top:6px;border-top:1px solid var(--border);padding-top:6px"><span>上半场</span><span style="color:${vColor}">${l.firstHalf}</span></div>
-            ${l.trend ? `<div class="div-detail"><span>中段走势</span><span>${l.trend}</span></div>` : ''}
-            <div class="div-detail"><span>终局</span><span style="color:${vColor}">${l.secondHalf}</span></div>
+            <div class="pred-mini-score">${lp.score}</div>
+            <div class="pred-mini-winner">${lp.winner}${lp.verdict==='draw'?'':'胜'}</div>
+            <div class="pred-mini-reason">${lp.verdict==='home'?'终局主优':lp.verdict==='away'?'终局客优':'终局均势'}</div>
+          </div>
+          <div class="div-col-pred combined">
+            <div class="div-col-title">🏆 综合判定</div>
+            <div class="pred-mini-score" style="color:var(--gold-light);font-size:1.4rem">${r.score}</div>
+            <div class="pred-mini-winner">${winnerText}</div>
+            <div style="margin-top:4px">${agreeBadge}</div>
           </div>
         </div>
 
-        <!-- 综合分析 -->
-        <details style="margin-top:10px;font-size:0.75rem;color:var(--text-secondary)">
-          <summary style="cursor:pointer;color:var(--gold-light)">📜 查看完整课辞</summary>
-          <pre style="white-space:pre-wrap;margin-top:8px;line-height:1.8;background:rgba(0,0,0,0.2);padding:10px;border-radius:8px">${r.summary}</pre>
+        <!-- 双栏详细盘面 -->
+        <details style="margin-top:14px">
+          <summary style="cursor:pointer;font-size:0.8rem;color:var(--text-secondary)">📜 查看详细排盘</summary>
+          <div class="div-dual" style="margin-top:10px">
+            <div class="div-column">
+              <div class="div-col-title">🛡️ 奇门遁甲</div>
+              <div class="div-detail"><span>局数</span><span>${q.ju} · ${q.jieQi}</span></div>
+              <div class="div-detail"><span>值符星</span><span>${q.zhiFuStar}</span></div>
+              <div class="div-detail"><span>日干宫</span><span>${q.riGanGong} (主队)</span></div>
+              <div class="div-detail"><span>时干宫</span><span>${q.shiGanGong} (客队)</span></div>
+              <div class="div-detail"><span>生克</span><span style="font-weight:700">${q.shengKe}</span></div>
+              <div class="div-detail"><span>八门</span><span>${q.doorName} <span class="qm-tag ${q.doorJiXiong==='吉'?'ji':q.doorJiXiong==='凶'?'xiong':'ping'}">${q.doorJiXiong}</span></span></div>
+              <div class="div-detail"><span>八神</span><span>${q.shenName}</span></div>
+              <div class="div-detail"><span>判断</span><span>${q.advantage}</span></div>
+            </div>
+            <div class="div-column">
+              <div class="div-col-title">🐢 大六壬</div>
+              <div class="div-detail"><span>初传 上半场</span><span>${l.sanChuan.chu}</span></div>
+              <div class="div-detail"><span>中传 中段</span><span>${l.sanChuan.zhong}</span></div>
+              <div class="div-detail"><span>末传 终局</span><span style="font-weight:700">${l.sanChuan.mo}</span></div>
+              ${(l.siKe||[]).filter(k => k && !k.includes('undefined')).map(k => `<div class="div-detail"><span>${k.split(':')[0]}</span><span>${k.split(':')[1]||''}</span></div>`).join('')}
+              <div class="div-detail" style="margin-top:6px;border-top:1px solid var(--border);padding-top:6px"><span>上半场</span><span>${l.firstHalf}</span></div>
+              ${l.trend ? `<div class="div-detail"><span>中段走势</span><span>${l.trend}</span></div>` : ''}
+              <div class="div-detail"><span>终局</span><span>${l.secondHalf}</span></div>
+            </div>
+          </div>
+          <pre style="white-space:pre-wrap;margin-top:8px;line-height:1.8;background:rgba(0,0,0,0.2);padding:10px;border-radius:8px;font-size:0.7rem">${r.summary}</pre>
         </details>
       </div>`);
     });

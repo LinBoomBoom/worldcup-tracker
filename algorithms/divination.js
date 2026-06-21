@@ -380,28 +380,40 @@ function divineMatch(match) {
   const qAdvantage = qimen.advantage;
   const qLabel = qAdvantage.includes('主队') || qAdvantage.includes('克制客') ? 'home' :
                   qAdvantage.includes('客队') || qAdvantage.includes('克制主') ? 'away' : 'draw';
+  const lFinal2 = liuren.secondHalf;
+  const lLabel = lFinal2.includes('主队') ? 'home' :
+                  lFinal2.includes('客队') ? 'away' : 'draw';
 
-  const lFirst = liuren.firstHalf;
-  const lFinal = liuren.secondHalf;
-  const lLabel = lFinal.includes('主队') ? 'home' :
-                  lFinal.includes('客队') ? 'away' : 'draw';
+  // === 各自独立预测 ===
+  // 奇门独立预测
+  let qScore, qWinner, qVerdict;
+  if (qLabel === 'home') { qVerdict = 'home'; qWinner = match.home; qScore = qimen.shengKe === '日克时' ? '2-1' : '2-0'; }
+  else if (qLabel === 'away') { qVerdict = 'away'; qWinner = match.away; qScore = qimen.shengKe === '时克日' ? '1-2' : '0-2'; }
+  else { qVerdict = 'draw'; qWinner = '平局'; qScore = '1-1'; }
 
-  // 综合判定
+  // 六壬独立预测
+  let lScore, lWinner, lVerdict;
+  if (lLabel === 'home') { lVerdict = 'home'; lWinner = match.home; lScore = '2-1'; }
+  else if (lLabel === 'away') { lVerdict = 'away'; lWinner = match.away; lScore = '1-2'; }
+  else { lVerdict = 'draw'; lWinner = '平局'; lScore = '1-1'; }
+
+  // === 综合判定 ===
   let verdict, winner, score;
   if (qLabel === lLabel && qLabel !== 'draw') {
-    verdict = qLabel;
-    winner = qLabel === 'home' ? match.home : match.away;
-    score = qLabel === 'home' ? `2-1` : `1-2`;
-  } else if (qLabel === 'home' && lLabel === 'home') {
-    verdict = 'home'; winner = match.home; score = '2-1';
-  } else if (qLabel === 'away' && lLabel === 'away') {
-    verdict = 'away'; winner = match.away; score = '1-2';
-  } else if (qLabel === 'home' || lLabel === 'home') {
-    verdict = 'home'; winner = match.home; score = '1-0';
-  } else if (qLabel === 'away' || lLabel === 'away') {
-    verdict = 'away'; winner = match.away; score = '0-1';
-  } else {
+    verdict = qLabel; winner = qLabel === 'home' ? match.home : match.away;
+    score = qLabel === 'home' ? '2-1' : '1-2';
+  } else if (qLabel === lLabel && qLabel === 'draw') {
     verdict = 'draw'; winner = '平局'; score = '1-1';
+  } else if (qLabel === 'draw') {
+    verdict = lLabel; winner = lLabel === 'home' ? match.home : match.away;
+    score = lLabel === 'home' ? '1-0' : lLabel === 'away' ? '0-1' : '1-1';
+  } else if (lLabel === 'draw') {
+    verdict = qLabel; winner = qLabel === 'home' ? match.home : match.away;
+    score = qLabel === 'home' ? '1-0' : qLabel === 'away' ? '0-1' : '1-1';
+  } else {
+    // 不一致时，用生克强的一边
+    verdict = qLabel; winner = qLabel === 'home' ? match.home : match.away;
+    score = qLabel === 'home' ? '1-0' : '0-1';
   }
 
   // 进球数预测
@@ -412,7 +424,12 @@ function divineMatch(match) {
 
   return {
     match: { home: match.home, away: match.away, date: match.date, time: match.time, group: match.group },
+    // 各自独立预测
+    qimenPrediction: { verdict: qVerdict, winner: qWinner, score: qScore },
+    liurenPrediction: { verdict: lVerdict, winner: lWinner, score: lScore },
+    // 综合判定
     verdict, winner, score, goals,
+    agree: qVerdict === lVerdict,
     qimen: {
       ju: `${qimen.isYangDun?'阳遁':'阴遁'}${qimen.juNum}局`,
       jieQi: qimen.jieQi,

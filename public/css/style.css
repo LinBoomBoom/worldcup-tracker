@@ -429,6 +429,45 @@ body {
 
 @media (max-width: 640px) {
   .div-dual { grid-template-columns: 1fr; }
+  .div-triple { grid-template-columns: 1fr 1fr 1fr; gap:4px; }
+  .div-col-pred { padding:8px 4px; }
+  .pred-mini-score { font-size:1rem !important; }
+}
+
+/* ========== Three-column Prediction ========== */
+.div-triple {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin: 12px 0;
+}
+.div-col-pred {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.div-col-pred.combined {
+  border-color: var(--gold-dark);
+  background: rgba(200,169,110,0.06);
+}
+.pred-mini-score {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--gold-light);
+}
+.pred-mini-winner {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.pred-mini-reason {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
 }
 .site-footer {
   text-align: center;
