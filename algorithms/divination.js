@@ -19,6 +19,8 @@ const STAR = ['','天蓬','天芮','天冲','天辅','天禽','天心','天柱',
 const DOOR = ['','休门','死门','伤门','杜门','','开门','惊门','生门','景门']; // 中5无门
 const GOD = ['','值符','螣蛇','太阴','六合','白虎','玄武','九地','九天'];
 
+// 十干寄宫
+const GAN_JI_GONG = { '甲':'寅','乙':'辰','丙':'巳','丁':'未','戊':'巳','己':'未','庚':'申','辛':'戌','壬':'亥','癸':'丑' };
 // 天干→地盘仪奇编号 (六仪三奇: 戊己庚辛壬癸丁丙乙)
 const GAN_TO_DIPAN = { '戊':1,'己':2,'庚':3,'辛':4,'壬':5,'癸':6,'丁':7,'丙':8,'乙':9 };
 // 六甲旬首→隐于干
@@ -262,9 +264,18 @@ function liurenPan(year, month, day, hour, minute) {
   const shiGanZhi = lunar.getTimeInGanZhi();
   const zhanZhi = shiGanZhi[1];
 
-  // 月将
-  const ganJiGong = { '甲':'寅','乙':'辰','丙':'巳','丁':'未','戊':'巳','己':'未','庚':'申','辛':'戌','壬':'亥','癸':'丑' };
-  const yueJiangZhi = ganJiGong[riGan] || '子';
+  // 月将 ← 按节气中气确定（非十干寄宫）
+  // 十二中气 → 月将: 雨水→亥 春分→戌 谷雨→酉 小满→申 夏至→未 大暑→午
+  //                     处暑→巳 秋分→辰 霜降→卯 小雪→寅 冬至→丑 大寒→子
+  const YUEJIANG_MAP = {
+    '大寒':'子','冬至':'丑','小雪':'寅','霜降':'卯',
+    '秋分':'辰','处暑':'巳','大暑':'午','夏至':'未',
+    '小满':'申','谷雨':'酉','春分':'戌','雨水':'亥'
+  };
+  // 取上一个中气（prevJie）作为月将依据
+  const prevJie = lunar.getPrevJieQi();
+  const prevJieName = prevJie ? prevJie.getName() : '夏至';
+  const yueJiangZhi = YUEJIANG_MAP[prevJieName] || '未';
 
   // 天盘
   const tianPan = {};
@@ -277,7 +288,7 @@ function liurenPan(year, month, day, hour, minute) {
   }
 
   // 四课
-  const riGanGong = ganJiGong[riGan] || '子';
+  const riGanGong = GAN_JI_GONG[riGan] || '子';
   const ke1_s = tianPan[riGanGong]; // 干阳
   const ke2_s = tianPan[ke1_s]; // 干阴
   const ke3_s = tianPan[riZhi]; // 支阳
@@ -461,6 +472,7 @@ function divineMatch(match) {
       analysis: qimen.analysis,
     },
     liuren: {
+      yueJiang: liuren.yueJiang,
       sanChuan: liuren.sanChuan,
       firstHalf: liuren.firstHalf,
       secondHalf: liuren.secondHalf,
