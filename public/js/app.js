@@ -343,7 +343,7 @@ async function renderDivination(container) {
         <div class="div-dual">
           <div class="div-column">
             <div class="div-col-title">🛡️ 奇门遁甲</div>
-            <div class="div-detail"><span>局数</span><span>阳遁${q.juNum}局 · ${q.jieQi}</span></div>
+            <div class="div-detail"><span>局数</span><span>${q.ju} · ${q.jieQi}</span></div>
             <div class="div-detail"><span>值符星</span><span>${q.zhiFuStar}</span></div>
             <div class="div-detail"><span>日干宫</span><span>${q.riGanGong} (主队/左)</span></div>
             <div class="div-detail"><span>时干宫</span><span>${q.shiGanGong} (客队/右)</span></div>

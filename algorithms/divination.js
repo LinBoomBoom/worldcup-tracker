@@ -414,7 +414,7 @@ function divineMatch(match) {
     match: { home: match.home, away: match.away, date: match.date, time: match.time, group: match.group },
     verdict, winner, score, goals,
     qimen: {
-      ju: `${isYangDun?'阳遁':'阴遁'}${juNum}局`,
+      ju: `${qimen.isYangDun?'阳遁':'阴遁'}${qimen.juNum}局`,
       jieQi: qimen.jieQi,
       riGanGong: qimen.riGanGong,
       shiGanGong: qimen.shiGanGong,
@@ -424,6 +424,7 @@ function divineMatch(match) {
       doorJiXiong: qimen.doorJiXiong,
       shenName: qimen.shenName,
       zhiFuStar: qimen.zhiFuStar,
+      juNum: qimen.juNum,
       analysis: qimen.analysis,
     },
     liuren: {
