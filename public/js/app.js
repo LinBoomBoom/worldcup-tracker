@@ -389,6 +389,9 @@ async function renderDivination(container) {
     container.innerHTML = '<p style="color:#e74c3c">❌ 占卜数据加载失败</p>';
   }
 }
+
+// ========== Algorithms Tab ==========
+function renderAlgorithms(container) {
   const algos = allData.algorithms || { algorithms: [], confidenceNote: '' };
   let html = ['<h2 class="section-title">🧠 预测算法引擎</h2>'];
   html.push(`<div class="card algo-card"><h3>📐 ${algos.name} v${algos.version}</h3></div>`);
