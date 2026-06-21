@@ -50,11 +50,15 @@ app.get('/api/algorithms', (req, res) => {
 
 // API: 奇门+六壬占卜预测
 app.get('/api/divination', (req, res) => {
-  const date = req.query.date || '2026-06-22';
-  const { upcoming } = getAllMatches();
-  const dayMatches = upcoming.filter(m => m.date === date);
-  const results = dayMatches.map(m => divineMatch(m));
-  res.json({ date, count: results.length, results });
+  try {
+    const date = req.query.date || '2026-06-22';
+    const { upcoming } = getAllMatches();
+    const dayMatches = upcoming.filter(m => m.date === date);
+    const results = dayMatches.map(m => divineMatch(m));
+    res.json({ date, count: results.length, results });
+  } catch (e) {
+    res.status(500).json({ error: e.message, stack: e.stack?.split('\n').slice(0,3) });
+  }
 });
 
 app.listen(PORT, () => {
