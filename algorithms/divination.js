@@ -414,7 +414,7 @@ function divineMatch(match) {
     match: { home: match.home, away: match.away, date: match.date, time: match.time, group: match.group },
     verdict, winner, score, goals,
     qimen: {
-      ju: `阳遁${qimen.juNum}局`,
+      ju: `${isYangDun?'阳遁':'阴遁'}${juNum}局`,
       jieQi: qimen.jieQi,
       riGanGong: qimen.riGanGong,
       shiGanGong: qimen.shiGanGong,
