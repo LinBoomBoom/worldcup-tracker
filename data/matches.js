@@ -167,6 +167,55 @@ const june22Matches = [
     home:"新西兰", away:"埃及", status:"upcoming" },
 ];
 
+// 后续赛程（第二轮剩余 + 第三轮）
+const futureMatches = [
+  // === 6/23 第二轮收尾 ===
+  { id:"M41", date:"2026-06-23", time:"00:00", group:"I", round:2,
+    home:"挪威", away:"塞内加尔", status:"upcoming" },
+  { id:"M42", date:"2026-06-23", time:"03:00", group:"J", round:2,
+    home:"阿根廷", away:"奥地利", status:"upcoming" },
+  { id:"M43", date:"2026-06-23", time:"06:00", group:"I", round:2,
+    home:"法国", away:"伊拉克", status:"upcoming" },
+  { id:"M44", date:"2026-06-23", time:"09:00", group:"J", round:2,
+    home:"约旦", away:"阿尔及利亚", status:"upcoming" },
+  // === 6/24 第二轮收尾 ===
+  { id:"M45", date:"2026-06-24", time:"00:00", group:"K", round:2,
+    home:"葡萄牙", away:"乌兹别克斯坦", status:"upcoming" },
+  { id:"M46", date:"2026-06-24", time:"03:00", group:"L", round:2,
+    home:"克罗地亚", away:"巴拿马", status:"upcoming" },
+  { id:"M47", date:"2026-06-24", time:"06:00", group:"K", round:2,
+    home:"哥伦比亚", away:"民主刚果", status:"upcoming" },
+  { id:"M48", date:"2026-06-24", time:"09:00", group:"L", round:2,
+    home:"英格兰", away:"加纳", status:"upcoming" },
+  // === 6/25 第三轮开始 ===
+  { id:"M49", date:"2026-06-25", time:"00:00", group:"A", round:3,
+    home:"韩国", away:"南非", status:"upcoming" },
+  { id:"M50", date:"2026-06-25", time:"00:00", group:"A", round:3,
+    home:"墨西哥", away:"捷克", status:"upcoming" },
+  { id:"M51", date:"2026-06-25", time:"04:00", group:"B", round:3,
+    home:"加拿大", away:"瑞士", status:"upcoming" },
+  { id:"M52", date:"2026-06-25", time:"04:00", group:"B", round:3,
+    home:"波黑", away:"卡塔尔", status:"upcoming" },
+  // === 6/26 ===
+  { id:"M53", date:"2026-06-26", time:"00:00", group:"C", round:3,
+    home:"巴西", away:"苏格兰", status:"upcoming" },
+  { id:"M54", date:"2026-06-26", time:"00:00", group:"C", round:3,
+    home:"摩洛哥", away:"海地", status:"upcoming" },
+  { id:"M55", date:"2026-06-26", time:"04:00", group:"D", round:3,
+    home:"美国", away:"土耳其", status:"upcoming" },
+  { id:"M56", date:"2026-06-26", time:"04:00", group:"D", round:3,
+    home:"澳大利亚", away:"巴拉圭", status:"upcoming" },
+  // === 6/27 ===
+  { id:"M57", date:"2026-06-27", time:"00:00", group:"E", round:3,
+    home:"德国", away:"厄瓜多尔", status:"upcoming" },
+  { id:"M58", date:"2026-06-27", time:"00:00", group:"E", round:3,
+    home:"科特迪瓦", away:"库拉索", status:"upcoming" },
+  { id:"M59", date:"2026-06-27", time:"04:00", group:"F", round:3,
+    home:"荷兰", away:"突尼斯", status:"upcoming" },
+  { id:"M60", date:"2026-06-27", time:"04:00", group:"F", round:3,
+    home:"日本", away:"瑞典", status:"upcoming" },
+];
+
 // ======================== 积分榜 ========================
 function buildStandings() {
   const groups = {};
@@ -229,7 +278,7 @@ const injuries = [
 
 // ======================== 导出 ========================
 function getAllMatches() {
-  return { completed: completedMatches, upcoming: june22Matches };
+  return { completed: completedMatches, upcoming: [...june22Matches, ...futureMatches] };
 }
 
 function getStandings() {

@@ -1,8 +1,12 @@
 const express = require('express');
 const path = require('path');
 const { getAllMatches, getStandings, getGroupHistory, getInjuries } = require('./data/matches');
-const { predictMatch, predictDay, getAlgorithmInfo } = require('./algorithms/predictor');
+const { predictMatch, predictDay, getAlgorithmInfo, compositePredict } = require('./algorithms/predictor');
 const { divineMatch } = require('./algorithms/divination');
+
+// 预测历史缓存
+const predictionCache = {};
+const divinationCache = {};
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -58,6 +62,37 @@ app.get('/api/divination', (req, res) => {
     res.json({ date, count: results.length, results });
   } catch (e) {
     res.status(500).json({ error: e.message, stack: e.stack?.split('\n').slice(0,3) });
+  }
+});
+
+// API: 全部日期预测历史（统计+占卜）
+app.get('/api/predictions-history', (req, res) => {
+  try {
+    const { upcoming } = getAllMatches();
+    // 按日期分组
+    const dates = [...new Set(upcoming.map(m => m.date))].sort();
+    const history = dates.map(date => {
+      const dayMatches = upcoming.filter(m => m.date === date);
+      if (!predictionCache[date]) {
+        predictionCache[date] = dayMatches.map(m => ({
+          match: { home: m.home, away: m.away, time: m.time, group: m.group, round: m.round },
+          prediction: compositePredict(m.home, m.away)
+        }));
+      }
+      if (!divinationCache[date]) {
+        divinationCache[date] = dayMatches.map(m => divineMatch(m));
+      }
+      return {
+        date,
+        matches: dayMatches.length,
+        statistical: predictionCache[date],
+        divination: divinationCache[date],
+        isToday: date === '2026-06-22',
+      };
+    });
+    res.json({ history, serverTime: new Date().toISOString() });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
   }
 });
 
