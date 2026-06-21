@@ -33,7 +33,8 @@ function getTodayPredictions(now) {
   const today = bj.toISOString().slice(0, 10);
 
   // 从数据模块获取所有待赛
-  const { upcoming } = require('../data/matches');
+  const { getAllMatches } = require('../data/matches');
+  const { upcoming } = getAllMatches();
   const allDates = [...new Set(upcoming.map(m => m.date))].sort();
 
   // 找第一个未预测的日期（只预测今天及未来，不补历史）
