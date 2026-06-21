@@ -13,6 +13,7 @@ const API = {
 
 let allData = {};
 let currentTab = 'scores';
+let scoreSortOrder = 'desc'; // desc=最新在前, asc=最早在前
 
 // ========== Init ==========
 document.addEventListener('DOMContentLoaded', async () => {
@@ -65,7 +66,17 @@ async function renderTab(tab) {
 function renderScores(container) {
   const { completed, upcoming } = allData.matches || { completed:[], upcoming:[] };
 
-  const html = ['<h2 class="section-title">📅 6月22日赛程预告</h2>'];
+  const html = [];
+
+  // 排序按钮 + 标题
+  const sortIcon = scoreSortOrder === 'desc' ? '↓ 最新在前' : '↑ 最早在前';
+  html.push(`
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <h2 class="section-title" style="margin-bottom:0;border-bottom:none;padding-bottom:0">📅 6月22日赛程预告</h2>
+      <button class="sort-toggle-btn" onclick="toggleScoreSort()" title="切换排序">${sortIcon}</button>
+    </div>`);
+
+  // 预告（始终在顶部）
   upcoming.forEach(m => {
     html.push(`
       <div class="card match-card upcoming-match">
@@ -92,9 +103,22 @@ function renderScores(container) {
     rounds[key].push(m);
   });
 
-  for (const [round, matches] of Object.entries(rounds).reverse()) {
+  // 轮次排序：按轮号
+  const sortedRounds = Object.entries(rounds)
+    .sort((a,b) => parseInt(b[0].replace(/\D/g,'')) - parseInt(a[0].replace(/\D/g,'')));
+
+  // 根据排序模式决定遍历方向
+  const roundList = scoreSortOrder === 'desc' ? sortedRounds : [...sortedRounds].reverse();
+
+  for (const [round, matches] of roundList) {
     html.push(`<div class="round-title">✅ ${round}（已完成）</div>`);
-    matches.forEach(m => {
+    // 每轮内部按日期时间排序
+    const sortedMatches = [...matches].sort((a,b) => {
+      const da = a.date + a.time;
+      const db = b.date + b.time;
+      return scoreSortOrder === 'desc' ? db.localeCompare(da) : da.localeCompare(db);
+    });
+    sortedMatches.forEach(m => {
       html.push(`
         <div class="card match-card">
           <div class="match-date">${m.date.slice(5)}<br><span class="time">${m.time}</span></div>
@@ -114,6 +138,12 @@ function renderScores(container) {
   }
 
   container.innerHTML = html.join('');
+}
+
+// 切换排序
+function toggleScoreSort() {
+  scoreSortOrder = scoreSortOrder === 'desc' ? 'asc' : 'desc';
+  renderScores(document.getElementById('main-content'));
 }
 
 // ========== Standings Tab ==========
