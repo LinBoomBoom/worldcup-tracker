@@ -8,6 +8,28 @@ const { divineMatch } = require('./algorithms/divination');
 const predictionCache = {};
 const divinationCache = {};
 
+// 启动时后台预计算所有预测
+setTimeout(() => {
+  console.log('🔮 后台预计算所有预测...');
+  const { upcoming } = getAllMatches();
+  const dates = [...new Set(upcoming.map(m => m.date))].sort();
+  let count = 0;
+  dates.forEach(date => {
+    const dayMatches = upcoming.filter(m => m.date === date);
+    if (!predictionCache[date]) {
+      predictionCache[date] = dayMatches.map(m => ({
+        match: { home: m.home, away: m.away, time: m.time, group: m.group, round: m.round },
+        prediction: compositePredict(m.home, m.away)
+      }));
+    }
+    if (!divinationCache[date]) {
+      divinationCache[date] = dayMatches.map(m => divineMatch(m));
+    }
+    count += dayMatches.length;
+  });
+  console.log('✅ 预计算完成: ' + dates.length + '天 ' + count + '场比赛');
+}, 1000);
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -69,28 +91,16 @@ app.get('/api/divination', (req, res) => {
 app.get('/api/predictions-history', (req, res) => {
   try {
     const { upcoming } = getAllMatches();
-    // 按日期分组
     const dates = [...new Set(upcoming.map(m => m.date))].sort();
-    const history = dates.map(date => {
-      const dayMatches = upcoming.filter(m => m.date === date);
-      if (!predictionCache[date]) {
-        predictionCache[date] = dayMatches.map(m => ({
-          match: { home: m.home, away: m.away, time: m.time, group: m.group, round: m.round },
-          prediction: compositePredict(m.home, m.away)
-        }));
-      }
-      if (!divinationCache[date]) {
-        divinationCache[date] = dayMatches.map(m => divineMatch(m));
-      }
-      return {
-        date,
-        matches: dayMatches.length,
-        statistical: predictionCache[date],
-        divination: divinationCache[date],
-        isToday: date === '2026-06-22',
-      };
-    });
-    res.json({ history, serverTime: new Date().toISOString() });
+    const history = dates.map(date => ({
+      date,
+      matches: upcoming.filter(m => m.date === date).length,
+      statistical: predictionCache[date] || [],
+      divination: divinationCache[date] || [],
+      isToday: date === '2026-06-22',
+    }));
+    const ready = Object.keys(divinationCache).length;
+    res.json({ history, serverTime: new Date().toISOString(), cacheReady: ready >= dates.length });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
