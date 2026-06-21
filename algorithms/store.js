@@ -36,9 +36,10 @@ function getTodayPredictions(now) {
   const { upcoming } = require('../data/matches');
   const allDates = [...new Set(upcoming.map(m => m.date))].sort();
 
-  // 找第一个尚未预测的日期
+  // 找第一个未预测的日期（只预测今天及未来，不补历史）
   let nextDate = null;
   for (const d of allDates) {
+    if (d < today) continue; // 过去的日期不补预测
     if (!store.statistical[d] || !store.divination[d]) {
       nextDate = d;
       break;
