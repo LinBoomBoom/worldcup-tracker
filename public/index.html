@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏆 2026世界杯追踪 · World Cup Tracker</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-icon">🏆</span>
+      <span class="logo-text">2026世界杯追踪</span>
+    </div>
+    <div class="header-subtitle">美加墨 · FIFA World Cup</div>
+  </div>
+</header>
+
+<nav class="tab-nav">
+  <button class="tab-btn active" data-tab="scores">⚽ 实时赛果</button>
+  <button class="tab-btn" data-tab="standings">📊 积分排名</button>
+  <button class="tab-btn" data-tab="predictions">🔮 智能预测</button>
+  <button class="tab-btn" data-tab="injuries">🏥 伤停信息</button>
+  <button class="tab-btn" data-tab="algorithms">🧠 算法说明</button>
+</nav>
+
+<main id="main-content">
+  <!-- 加载中 -->
+  <div class="loading-spinner" id="loading">
+    <div class="spinner"></div>
+    <p>加载数据中...</p>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p>数据来源：小红书世界杯官方频道 | 预测模型：ELO+泊松+形态复合 | 晴子 🌸</p>
+</footer>
+
+<script src="/js/app.js"></script>
+</body>
+</html>

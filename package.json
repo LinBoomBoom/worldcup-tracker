@@ -1,0 +1,16 @@
+{
+  "name": "worldcup-tracker",
+  "version": "1.0.0",
+  "description": "2026美加墨世界杯比分记录 · 积分排名 · 多维预测",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}
