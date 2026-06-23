@@ -244,7 +244,7 @@ async function renderPredictions(container) {
     }
 
     let html = ['<h2 class="section-title">📊 统计模型 + 术数预测</h2>'];
-    html.push('<p class="sub-desc">📌 ELO+泊松+形态复合 · 奇门遁甲+大六壬双术数 · 每日仅预测下一日 · 结果永久锁定</p>');
+    html.push('<p class="sub-desc">📌 ELO+泊松+形态复合 · 六爻占卜术数 · 每日仅预测下一日 · 结果永久锁定</p>');
 
     const now = new Date();
     const bj = new Date(now.getTime() + 8*3600000);
