@@ -18,9 +18,22 @@ let scoreSortOrder = 'desc'; // desc=最新在前, asc=最早在前
 // ========== Init ==========
 document.addEventListener('DOMContentLoaded', async () => {
   setupTabs();
+  setupBackToTop();
   await loadAllData();
   renderTab('scores');
 });
+
+// ========== 回到顶部 ==========
+function setupBackToTop() {
+  const btn = document.getElementById('backToTop');
+  if (!btn) return;
+  window.addEventListener('scroll', () => {
+    btn.classList.toggle('show', window.scrollY > 300);
+  });
+  btn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
 
 async function loadAllData() {
   try {

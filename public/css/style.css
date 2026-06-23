@@ -738,6 +738,36 @@ body {
 }
 
 .empty-msg { color: var(--text-secondary); text-align: center; padding: 40px; font-size: 0.85rem; }
+
+/* ========== 回到顶部 ========== */
+#backToTop {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border-accent);
+  background: rgba(20,24,36,0.9);
+  color: var(--gold-light);
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 200;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#backToTop.show {
+  opacity: 1;
+  visibility: visible;
+}
+#backToTop:hover {
+  background: var(--gold-light);
+  color: #0b0e12;
+}
 .err-msg { color: var(--red); text-align: center; padding: 40px; }
 .sub-desc { color: var(--text-secondary); font-size: 0.7rem; margin-bottom: 12px; }
 .lock-badge { font-size: 0.6rem; color: var(--gold-dark); }
