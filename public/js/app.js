@@ -92,14 +92,14 @@ function renderScores(container) {
     return notes;
   }
 
-  // 将notes渲染为HTML
-  function notesHTML(notes, isExpanded) {
+  // 将notes渲染为独立一行HTML
+  function notesHTML(notes) {
     if (!notes.length) return '';
     const colors = { out:'#e74c3c', doubt:'#f39c12', risk:'#f1c40f', info:'#7f8c8d' };
     const labels = notes.map(n =>
       `<span class="injury-note" style="border-left:2px solid ${colors[n.type]};color:${colors[n.type]}">${n.icon} ${n.text}</span>`
     ).join('');
-    return `<div class="match-injuries-panel" style="display:${isExpanded?'block':'none'}">${labels}</div>`;
+    return `<div class="match-injuries-panel">${labels}</div>`;
   }
 
   if (upDates.length > 0) {
@@ -111,7 +111,6 @@ function renderScores(container) {
       const hNotes = teamNotes(m.home);
       const aNotes = teamNotes(m.away);
       const allNotes = [...hNotes, ...aNotes];
-      const noteToggle = allNotes.length ? `<button class="injury-toggle-btn" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none';this.textContent=this.textContent.startsWith('📋')?'✕ 收起':'📋 ${allNotes.length}条提示'">📋 ${allNotes.length}条提示</button>` : '';
       html.push(`
         <div class="card match-card upcoming-match">
           <div class="match-date"><strong>${m.date.slice(5)}</strong><br><span class="time">${m.time}</span></div>
@@ -125,9 +124,8 @@ function renderScores(container) {
           <div class="match-info">
             <span class="group-tag ${m.group}">${m.group}组</span>
             <span>第${m.round}轮</span>
-            ${noteToggle}
-            ${notesHTML(allNotes, false)}
           </div>
+          ${notesHTML(allNotes, true)}
         </div>`);
     });
 

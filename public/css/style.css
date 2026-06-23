@@ -162,36 +162,23 @@ body {
   color: var(--text-secondary);
   text-align: center;
 }
-.injury-toggle-btn {
-  display: inline-block;
-  margin-top: 3px;
-  padding: 2px 8px;
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.1);
-  background: rgba(255,255,255,0.03);
-  color: var(--text-secondary);
-  font-size: 0.65rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.injury-toggle-btn:hover {
-  background: rgba(255,255,255,0.08);
-  border-color: var(--border-accent);
-}
 .match-injuries-panel {
-  margin-top: 6px;
+  grid-column: 1 / -1;
+  width: 100%;
+  margin-top: 0;
+  padding: 8px 14px;
+  background: rgba(0,0,0,0.2);
+  border-top: 1px solid rgba(255,255,255,0.06);
   display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding: 6px 8px;
-  background: rgba(0,0,0,0.15);
-  border-radius: 6px;
-  border-left: 2px solid rgba(255,255,255,0.08);
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
 }
 .injury-note {
-  font-size: 0.68rem;
-  padding: 2px 6px;
+  font-size: 0.7rem;
+  padding: 3px 8px;
   line-height: 1.5;
+  white-space: nowrap;
 }
 .match-info .group-tag {
   display: inline-block;
