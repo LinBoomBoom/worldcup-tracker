@@ -43,9 +43,12 @@ body {
   border-bottom: 2px solid var(--border-accent);
   padding: 20px 0;
   text-align: center;
+}
+.sticky-wrap {
   position: sticky;
   top: 0;
   z-index: 100;
+  background: var(--bg-primary);
 }
 .header-inner { max-width: 960px; margin: 0 auto; padding: 0 20px; }
 .logo { display:flex; align-items:center; justify-content:center; gap:12px; }
@@ -68,10 +71,6 @@ body {
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
-  position: sticky;
-  top: 85px;
-  z-index: 99;
-  background: var(--bg-primary);
   border-bottom: 1px solid var(--border);
 }
 .tab-btn {
