@@ -65,40 +65,76 @@ async function renderTab(tab) {
 // ========== Scores Tab ==========
 function renderScores(container) {
   const { completed, upcoming } = allData.matches || { completed:[], upcoming:[] };
-
   const html = [];
 
-  // 排序按钮 + 标题
+  // ===== 预告区：按日期分组，仅最近日期展开 =====
+  const upByDate = {};
+  upcoming.forEach(m => {
+    if (!upByDate[m.date]) upByDate[m.date] = [];
+    upByDate[m.date].push(m);
+  });
+  const upDates = Object.keys(upByDate).sort();
+
+  if (upDates.length > 0) {
+    // 最近日期 - 全展开
+    const nextDate = upDates[0];
+    const nextMatches = upByDate[nextDate].sort((a,b) => a.time.localeCompare(b.time));
+    html.push(`<h2 class="section-title">📅 ${nextDate} 赛程预告</h2>`);
+    nextMatches.forEach(m => {
+      html.push(`
+        <div class="card match-card upcoming-match">
+          <div class="match-date"><strong>${m.date.slice(5)}</strong><br><span class="time">${m.time}</span></div>
+          <div class="match-teams">
+            <div class="vs-row">
+              <span class="team-name home">${m.home}</span>
+              <span class="score upcoming">VS</span>
+              <span class="team-name away">${m.away}</span>
+            </div>
+          </div>
+          <div class="match-info">
+            <span class="group-tag ${m.group}">${m.group}组</span>
+            <span>第${m.round}轮</span>
+          </div>
+        </div>`);
+    });
+
+    // 其余日期 - 折叠收纳
+    for (let i = 1; i < upDates.length; i++) {
+      const d = upDates[i];
+      const dMatches = upByDate[d].sort((a,b) => a.time.localeCompare(b.time));
+      html.push(`<div class="day-section collapsed" data-date="${d}">`);
+      html.push(`<div class="day-header" onclick="toggleDaySection(this)"><span>📆 ${d} · ${dMatches.length}场</span><span class="day-toggle">▶</span></div>`);
+      html.push(`<div class="day-body" style="display:none">`);
+      dMatches.forEach(m => {
+        html.push(`
+          <div class="card match-card upcoming-match">
+            <div class="match-date"><strong>${m.date.slice(5)}</strong><br><span class="time">${m.time}</span></div>
+            <div class="match-teams">
+              <div class="vs-row">
+                <span class="team-name home">${m.home}</span>
+                <span class="score upcoming">VS</span>
+                <span class="team-name away">${m.away}</span>
+              </div>
+            </div>
+            <div class="match-info">
+              <span class="group-tag ${m.group}">${m.group}组</span>
+              <span>第${m.round}轮</span>
+            </div>
+          </div>`);
+      });
+      html.push('</div></div>');
+    }
+  }
+
+  // ===== 已完赛区 =====
   const sortIcon = scoreSortOrder === 'desc' ? '↓ 最新在前' : '↑ 最早在前';
-  // 取下一个比赛日
-  const nextDates = [...new Set(upcoming.map(m => m.date))].sort();
-  const nextDay = nextDates[0] || '待定';
   html.push(`
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-      <h2 class="section-title" style="margin-bottom:0;border-bottom:none;padding-bottom:0">📅 ${nextDay} 赛程预告</h2>
-      <button class="sort-toggle-btn" onclick="toggleScoreSort()" title="切换排序">${sortIcon}</button>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin:20px 0 8px">
+      <h2 class="section-title" style="margin-bottom:0;border-bottom:none;padding-bottom:0">✅ 已完赛</h2>
+      <button class="sort-toggle-btn" id="sortToggleBtn">${sortIcon}</button>
     </div>`);
 
-  // 预告（始终在顶部）
-  upcoming.forEach(m => {
-    html.push(`
-      <div class="card match-card upcoming-match">
-        <div class="match-date"><strong>${m.date.slice(5)}</strong><br><span class="time">${m.time}</span></div>
-        <div class="match-teams">
-          <div class="vs-row">
-            <span class="team-name home">${m.home}</span>
-            <span class="score upcoming">VS</span>
-            <span class="team-name away">${m.away}</span>
-          </div>
-        </div>
-        <div class="match-info">
-          <span class="group-tag ${m.group}">${m.group}组</span>
-          <span>第${m.round}轮</span>
-        </div>
-      </div>`);
-  });
-
-  // 按轮次分组已完赛比赛
+  // 按轮次分组
   const rounds = {};
   completed.forEach(m => {
     const key = `第${m.round}轮`;
@@ -106,16 +142,12 @@ function renderScores(container) {
     rounds[key].push(m);
   });
 
-  // 轮次排序：按轮号
   const sortedRounds = Object.entries(rounds)
     .sort((a,b) => parseInt(b[0].replace(/\D/g,'')) - parseInt(a[0].replace(/\D/g,'')));
-
-  // 根据排序模式决定遍历方向
   const roundList = scoreSortOrder === 'desc' ? sortedRounds : [...sortedRounds].reverse();
 
   for (const [round, matches] of roundList) {
-    html.push(`<div class="round-title">✅ ${round}（已完成）</div>`);
-    // 每轮内部按日期时间排序
+    html.push(`<div class="round-title">📌 ${round}</div>`);
     const sortedMatches = [...matches].sort((a,b) => {
       const da = a.date + a.time;
       const db = b.date + b.time;
@@ -141,12 +173,15 @@ function renderScores(container) {
   }
 
   container.innerHTML = html.join('');
-}
 
-// 切换排序
-function toggleScoreSort() {
-  scoreSortOrder = scoreSortOrder === 'desc' ? 'asc' : 'desc';
-  renderScores(document.getElementById('main-content'));
+  // 绑定排序按钮（用 addEventListener 避免 inline onclick 问题）
+  const sortBtn = document.getElementById('sortToggleBtn');
+  if (sortBtn) {
+    sortBtn.addEventListener('click', () => {
+      scoreSortOrder = scoreSortOrder === 'desc' ? 'asc' : 'desc';
+      renderScores(document.getElementById('main-content'));
+    });
+  }
 }
 
 // ========== Standings Tab ==========
