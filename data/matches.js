@@ -1,12 +1,14 @@
 /**
  * 2026世界杯完整比赛数据
- * 来源：小红书世界杯官方频道
- * 更新至：2026-06-21 21:45 CST
+ * 数据来源：小红书世界杯官方频道 / Baidu Baike / FIFA官方赛程
+ * 时间：北京时间（GMT+8）
+ * 最后更新：2026-06-23 19:45 CST
  */
 
 // ======================== 已完赛数据 ========================
 const completedMatches = [
   // === 第一轮 ===
+  // 6月12日
   { id:"M01", date:"2026-06-12", time:"03:00", group:"A", round:1,
     home:"墨西哥", away:"南非", score:"2-0", hg:2, ag:0,
     events:"墨西哥控场碾压，南非无还手之力",
@@ -15,6 +17,7 @@ const completedMatches = [
     home:"韩国", away:"捷克", score:"2-1", hg:2, ag:1,
     events:"太极虎让一追二，亚洲首胜！捷克先破门后被逆转",
     motm:"孙兴慜", venue:"洛杉矶·SoFi" },
+  // 6月13日
   { id:"M03", date:"2026-06-13", time:"03:00", group:"B", round:1,
     home:"加拿大", away:"波黑", score:"1-1", hg:1, ag:1,
     events:"拉林救主，加拿大拒绝开门黑",
@@ -23,6 +26,7 @@ const completedMatches = [
     home:"美国", away:"巴拉圭", score:"4-1", hg:4, ag:1,
     events:"巴洛贡梅开二度，美国轻取首胜",
     motm:"巴洛贡", venue:"纽约/新泽西·大都会人寿" },
+  // 6月14日
   { id:"M05", date:"2026-06-14", time:"03:00", group:"B", round:1,
     home:"卡塔尔", away:"瑞士", score:"1-1", hg:1, ag:1,
     events:"补时绝平！亚洲冠军获历史首分",
@@ -39,6 +43,7 @@ const completedMatches = [
     home:"澳大利亚", away:"土耳其", score:"2-0", hg:2, ag:0,
     events:"袋鼠军团赢首胜，土耳其全场0射正",
     motm:"古德温", venue:"圣克拉拉·李维斯" },
+  // 6月15日
   { id:"M09", date:"2026-06-15", time:"01:00", group:"E", round:1,
     home:"德国", away:"库拉索", score:"7-1", hg:7, ag:1,
     events:"火力全开！德国轻取库拉索，穆西亚拉2球1助",
@@ -55,6 +60,7 @@ const completedMatches = [
     home:"瑞典", away:"突尼斯", score:"5-1", hg:5, ag:1,
     events:"阿亚里梅开二度，伊萨克两传一射",
     motm:"伊萨克", venue:"西雅图·流明" },
+  // 6月16日
   { id:"M13", date:"2026-06-16", time:"00:00", group:"H", round:1,
     home:"西班牙", away:"佛得角", score:"0-0", hg:0, ag:0,
     events:"四旬老汉连献神扑，双方互交白卷！佛得角门将沃齐尼亚9次扑救封神",
@@ -71,6 +77,7 @@ const completedMatches = [
     home:"伊朗", away:"新西兰", score:"2-2", hg:2, ag:2,
     events:"伊朗两度落后两度追平！塔雷米1球1助",
     motm:"塔雷米", venue:"洛杉矶·SoFi" },
+  // 6月17日
   { id:"M17", date:"2026-06-17", time:"03:00", group:"I", round:1,
     home:"法国", away:"塞内加尔", score:"3-1", hg:3, ag:1,
     events:"姆巴佩梅开二度，法国强势开局",
@@ -87,6 +94,7 @@ const completedMatches = [
     home:"奥地利", away:"约旦", score:"3-1", hg:3, ag:1,
     events:"奥地利稳扎稳打",
     motm:"萨比策", venue:"旧金山·大通中心" },
+  // 6月18日
   { id:"M21", date:"2026-06-18", time:"01:00", group:"K", round:1,
     home:"葡萄牙", away:"民主刚果", score:"1-1", hg:1, ag:1,
     events:"C罗点射被扑，B费远射扳平",
@@ -105,6 +113,7 @@ const completedMatches = [
     motm:"路易斯·迪亚斯", venue:"温哥华·BC Place" },
 
   // === 第二轮 ===
+  // 6月19日
   { id:"M25", date:"2026-06-19", time:"00:00", group:"A", round:2,
     home:"捷克", away:"南非", score:"1-1", hg:1, ag:1,
     events:"捷克南非握手言和，双方出线形势均不乐观",
@@ -121,6 +130,7 @@ const completedMatches = [
     home:"墨西哥", away:"韩国", score:"1-0", hg:1, ag:0,
     events:"墨西哥1-0小胜韩国，两连胜提前出线",
     motm:"奥乔亚", venue:"墨西哥城·阿兹特克" },
+  // 6月20日
   { id:"M29", date:"2026-06-20", time:"03:00", group:"D", round:2,
     home:"美国", away:"澳大利亚", score:"2-0", hg:2, ag:0,
     events:"普利西奇1球1助，美国两连胜提前出线",
@@ -137,6 +147,7 @@ const completedMatches = [
     home:"土耳其", away:"巴拉圭", score:"0-1", hg:0, ag:1,
     events:"巴拉圭小胜土耳其，保留出线希望",
     motm:"阿尔米隆", venue:"圣克拉拉·李维斯" },
+  // 6月21日
   { id:"M33", date:"2026-06-21", time:"01:00", group:"F", round:2,
     home:"荷兰", away:"瑞典", score:"5-1", hg:5, ag:1,
     events:"加克波帽子戏法！荷兰5-1大胜瑞典",
@@ -162,7 +173,7 @@ const completedMatches = [
   { id:"M38", date:"2026-06-22", time:"03:00", group:"G", round:2,
     home:"比利时", away:"伊朗", score:"0-0", hg:0, ag:0,
     events:"伊朗任意球VAR判无效，比利时恩戈伊染红，十人苦守平局",
-    motm:"库尔图瓦(缺阵)", venue:"洛杉矶·SoFi" },
+    motm:"贝兰万德(伊朗)", venue:"洛杉矶·SoFi" },
   { id:"M39", date:"2026-06-22", time:"06:00", group:"H", round:2,
     home:"乌拉圭", away:"佛得角", score:"2-2", hg:2, ag:2,
     events:"佛得角两度落后两度追平！凯文·皮纳队史首球，瓦雷拉抢断破门",
@@ -171,59 +182,82 @@ const completedMatches = [
     home:"新西兰", away:"埃及", score:"1-3", hg:1, ag:3,
     events:"埃及92年世界杯首胜！萨拉赫传射，济科+特雷泽盖头球逆转",
     motm:"萨拉赫", venue:"蒙特雷·BBVA" },
+
+  // === 6月23日 ===
+  { id:"M41", date:"2026-06-23", time:"01:00", group:"J", round:2,
+    home:"阿根廷", away:"奥地利", score:"2-0", hg:2, ag:0,
+    events:"梅西传射，阿根廷两连胜锁定小组第一！6分提前出线",
+    motm:"梅西", venue:"波士顿·吉列" },
+  { id:"M42", date:"2026-06-23", time:"05:00", group:"I", round:2,
+    home:"法国", away:"伊拉克", score:"3-0", hg:3, ag:0,
+    events:"姆巴佩2球，法国轻取伊拉克两连胜出线",
+    motm:"姆巴佩", venue:"达拉斯·AT&T" },
+  { id:"M43", date:"2026-06-23", time:"08:00", group:"I", round:2,
+    home:"挪威", away:"塞内加尔", score:"3-2", hg:3, ag:2,
+    events:"哈兰德双响绝杀！挪威3-2逆转塞内加尔，6分出线",
+    motm:"哈兰德", venue:"旧金山·大通中心" },
+  { id:"M44", date:"2026-06-23", time:"11:00", group:"J", round:2,
+    home:"约旦", away:"阿尔及利亚", score:"1-2", hg:1, ag:2,
+    events:"阿尔及利亚2-1逆转约旦取首胜，约旦提前出局",
+    motm:"马赫雷斯", venue:"洛杉矶·SoFi" },
 ];
 
-// ======================== 6月22日 ========================
-// (moved to completed)
-const june22Matches = [];
+// ======================== 6月24日 ========================
+// 第二轮收尾：K组、L组
+const june22Matches = []; // 已全部移至 completed
 
-// 后续赛程（第二轮剩余 + 第三轮）
+// ======================== 后续赛程 ========================
 const futureMatches = [
-  // === 6/23 第二轮收尾 ===
-  { id:"M41", date:"2026-06-23", time:"00:00", group:"I", round:2,
-    home:"挪威", away:"塞内加尔", status:"upcoming" },
-  { id:"M42", date:"2026-06-23", time:"03:00", group:"J", round:2,
-    home:"阿根廷", away:"奥地利", status:"upcoming" },
-  { id:"M43", date:"2026-06-23", time:"06:00", group:"I", round:2,
-    home:"法国", away:"伊拉克", status:"upcoming" },
-  { id:"M44", date:"2026-06-23", time:"09:00", group:"J", round:2,
-    home:"约旦", away:"阿尔及利亚", status:"upcoming" },
-  // === 6/24 第二轮收尾 ===
-  { id:"M45", date:"2026-06-24", time:"00:00", group:"K", round:2,
+  // === 6月24日 第二轮收尾 ===
+  { id:"M45", date:"2026-06-24", time:"01:00", group:"K", round:2,
     home:"葡萄牙", away:"乌兹别克斯坦", status:"upcoming" },
-  { id:"M46", date:"2026-06-24", time:"03:00", group:"L", round:2,
-    home:"克罗地亚", away:"巴拿马", status:"upcoming" },
-  { id:"M47", date:"2026-06-24", time:"06:00", group:"K", round:2,
-    home:"哥伦比亚", away:"民主刚果", status:"upcoming" },
-  { id:"M48", date:"2026-06-24", time:"09:00", group:"L", round:2,
+  { id:"M46", date:"2026-06-24", time:"04:00", group:"L", round:2,
     home:"英格兰", away:"加纳", status:"upcoming" },
-  // === 6/25 第三轮开始 ===
-  { id:"M49", date:"2026-06-25", time:"00:00", group:"A", round:3,
-    home:"韩国", away:"南非", status:"upcoming" },
-  { id:"M50", date:"2026-06-25", time:"00:00", group:"A", round:3,
+  { id:"M47", date:"2026-06-24", time:"07:00", group:"L", round:2,
+    home:"巴拿马", away:"克罗地亚", status:"upcoming" },
+  { id:"M48", date:"2026-06-24", time:"10:00", group:"K", round:2,
+    home:"哥伦比亚", away:"民主刚果", status:"upcoming" },
+
+  // === 6月25日 第三轮开始（同组同时开赛）===
+  // A组
+  { id:"M49", date:"2026-06-25", time:"03:00", group:"A", round:3,
     home:"墨西哥", away:"捷克", status:"upcoming" },
-  { id:"M51", date:"2026-06-25", time:"04:00", group:"B", round:3,
-    home:"加拿大", away:"瑞士", status:"upcoming" },
-  { id:"M52", date:"2026-06-25", time:"04:00", group:"B", round:3,
+  { id:"M50", date:"2026-06-25", time:"03:00", group:"A", round:3,
+    home:"韩国", away:"南非", status:"upcoming" },
+  // B组
+  { id:"M51", date:"2026-06-25", time:"06:00", group:"B", round:3,
+    home:"瑞士", away:"加拿大", status:"upcoming" },
+  { id:"M52", date:"2026-06-25", time:"06:00", group:"B", round:3,
     home:"波黑", away:"卡塔尔", status:"upcoming" },
-  // === 6/26 ===
-  { id:"M53", date:"2026-06-26", time:"00:00", group:"C", round:3,
+  // C组
+  { id:"M53", date:"2026-06-25", time:"09:00", group:"C", round:3,
     home:"巴西", away:"苏格兰", status:"upcoming" },
-  { id:"M54", date:"2026-06-26", time:"00:00", group:"C", round:3,
+  { id:"M54", date:"2026-06-25", time:"09:00", group:"C", round:3,
     home:"摩洛哥", away:"海地", status:"upcoming" },
-  { id:"M55", date:"2026-06-26", time:"04:00", group:"D", round:3,
+
+  // === 6月26日 ===
+  // D组
+  { id:"M55", date:"2026-06-26", time:"03:00", group:"D", round:3,
     home:"美国", away:"土耳其", status:"upcoming" },
-  { id:"M56", date:"2026-06-26", time:"04:00", group:"D", round:3,
+  { id:"M56", date:"2026-06-26", time:"03:00", group:"D", round:3,
     home:"澳大利亚", away:"巴拉圭", status:"upcoming" },
-  // === 6/27 ===
-  { id:"M57", date:"2026-06-27", time:"00:00", group:"E", round:3,
+  // E组
+  { id:"M57", date:"2026-06-26", time:"06:00", group:"E", round:3,
     home:"德国", away:"厄瓜多尔", status:"upcoming" },
-  { id:"M58", date:"2026-06-27", time:"00:00", group:"E", round:3,
+  { id:"M58", date:"2026-06-26", time:"06:00", group:"E", round:3,
     home:"科特迪瓦", away:"库拉索", status:"upcoming" },
-  { id:"M59", date:"2026-06-27", time:"04:00", group:"F", round:3,
+
+  // === 6月27日 ===
+  // F组
+  { id:"M59", date:"2026-06-27", time:"03:00", group:"F", round:3,
     home:"荷兰", away:"突尼斯", status:"upcoming" },
-  { id:"M60", date:"2026-06-27", time:"04:00", group:"F", round:3,
+  { id:"M60", date:"2026-06-27", time:"03:00", group:"F", round:3,
     home:"日本", away:"瑞典", status:"upcoming" },
+  // G组（时间待官方确认，暂按03:00/06:00布局）
+  { id:"M61", date:"2026-06-27", time:"06:00", group:"G", round:3,
+    home:"比利时", away:"新西兰", status:"upcoming" },
+  { id:"M62", date:"2026-06-27", time:"06:00", group:"G", round:3,
+    home:"伊朗", away:"埃及", status:"upcoming" },
 ];
 
 // ======================== 积分榜 ========================
@@ -271,7 +305,7 @@ function buildGroupHistory() {
   return groups;
 }
 
-// ======================== 伤病与替补 ========================
+// ======================== 伤病与停赛 ========================
 const injuries = [
   { team:"西班牙", player:"佩德里", status:"赛前轻伤·出战成疑", detail:"肌肉疲劳，首轮打满90分钟", update:"2026-06-20" },
   { team:"比利时", player:"库尔图瓦", status:"因伤缺阵", detail:"膝盖伤势未愈，已离开训练营", update:"2026-06-18" },
@@ -284,6 +318,10 @@ const injuries = [
   { team:"阿根廷", player:"迪马利亚", status:"最后一届世界杯", detail:"确认世界杯后退出国家队", update:"2026-06-11" },
   { team:"巴西", player:"内马尔", status:"伤缺", detail:"十字韧带重伤，无缘本届世界杯", update:"2026-05-01" },
   { team:"葡萄牙", player:"C罗", status:"最后一届世界杯", detail:"41岁老将，确认世界杯后退役", update:"2026-06-10" },
+  { team:"阿根廷", player:"梅西", status:"6分提前出线待轮换", detail:"小组赛两连胜锁定第一，第三轮可能轮休", update:"2026-06-23" },
+  { team:"挪威", player:"哈兰德", status:"连续两场双响", detail:"2场5球位居射手榜首位", update:"2026-06-23" },
+  { team:"约旦", player:"约旦全队", status:"提前出局", detail:"两战全败，小组垫底", update:"2026-06-23" },
+  { team:"伊拉克", player:"伊拉克全队", status:"提前出局", detail:"两战全败，I组垫底", update:"2026-06-23" },
 ];
 
 // ======================== 导出 ========================

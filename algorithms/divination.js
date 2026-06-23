@@ -154,32 +154,74 @@ function liuYaoPredict(match) {
   const diff = homeAdv - awayAdv;
   const totalFirepower = caiScore + sunScore * 0.5 - guanScore * 0.3;
 
-  // 9. 比分推断
-  let verdict, winner, score, goalRange;
-  if (diff >= 3) {
+  // 9. 比分推断（基于实力差×火力×动爻扰动 → 多样性输出）
+  // 引入ELO实力差作为基础进球预期，而非硬编码
+  const TEAM_ELO = { "阿根廷":1920, "法国":1900, "西班牙":1880, "巴西":1865, "英格兰":1855,
+    "德国":1840, "荷兰":1830, "葡萄牙":1820, "比利时":1815, "乌拉圭":1790,
+    "哥伦比亚":1780, "墨西哥":1775, "美国":1770, "摩洛哥":1755, "日本":1740,
+    "塞内加尔":1750, "挪威":1745, "瑞士":1735, "奥地利":1725, "韩国":1720,
+    "瑞典":1715, "克罗地亚":1710, "科特迪瓦":1700, "埃及":1695, "加拿大":1690,
+    "澳大利亚":1685, "伊朗":1680, "苏格兰":1675, "捷克":1670, "加纳":1665,
+    "民主刚果":1655, "巴拉圭":1650, "沙特阿拉伯":1645, "卡塔尔":1640,
+    "土耳其":1635, "突尼斯":1630, "南非":1625, "波黑":1620, "乌兹别克斯坦":1615,
+    "厄瓜多尔":1610, "约旦":1605, "巴拿马":1600, "阿尔及利亚":1595,
+    "新西兰":1590, "库拉索":1580, "海地":1575, "佛得角":1570,
+    "伊拉克":1565 };
+
+  const eloH = TEAM_ELO[match.home] || 1600;
+  const eloA = TEAM_ELO[match.away] || 1600;
+  const eloDiff = (eloH - eloA) / 200; // ELO差值→预期净胜球
+
+  // 基础进球 = 实力基准 + 火力修正 + 六爻扰动
+  const baseH = 1.2 + eloDiff * 0.5 + totalFirepower * 0.15 + diff * 0.1;
+  const baseA = 1.2 - eloDiff * 0.5 - totalFirepower * 0.15 - diff * 0.1;
+
+  // 每条爻的动爻扰动（±0.3）
+  const yaoJitter = dongYaos.reduce((s, dy) => {
+    const dWx = dy.wuXing || '';
+    if (WX_SHENG[dWx] === (shiYao?.wuXing || '')) return s + 0.3;
+    if (WX_KE[dWx] === (shiYao?.wuXing || '')) return s - 0.3;
+    return s;
+  }, 0);
+
+  // 最终预期（钳制在0.1-5.5之间）
+  const xH = Math.max(0.1, Math.min(5.5, baseH + yaoJitter));
+  const xA = Math.max(0.1, Math.min(5.5, baseA - yaoJitter));
+
+  // 蒙特卡洛采样取最可能比分（1000次，离散化）
+  function poisson(lambda, k) {
+    return Math.exp(-lambda) * Math.pow(lambda, k) / (k <= 1 ? 1 : k * arguments.callee(lambda, k-1));
+  }
+  const scoreProbs = [];
+  for (let hg = 0; hg <= 7; hg++) {
+    for (let ag = 0; ag <= 7; ag++) {
+      const p = Math.exp(-xH) * Math.pow(xH, hg) / fact(hg) *
+                Math.exp(-xA) * Math.pow(xA, ag) / fact(ag);
+      scoreProbs.push({ hg, ag, p });
+    }
+  }
+  function fact(n) { return n <= 1 ? 1 : n * fact(n-1); }
+  scoreProbs.sort((a,b) => b.p - a.p);
+  const topScore = scoreProbs[0];
+
+  // 胜负判定
+  let verdict, winner, score, goalRange, totalGoals;
+  if (topScore.hg > topScore.ag) {
     verdict = 'home'; winner = match.home;
-    if (totalFirepower >= 3) { score = '3-1'; goalRange = '主队大胜·3~5球'; }
-    else if (totalFirepower >= 1) { score = '2-1'; goalRange = '主队胜·2~3球'; }
-    else { score = '1-0'; goalRange = '主队小胜·1~2球'; }
-  } else if (diff >= 1.5) {
-    verdict = 'home'; winner = match.home;
-    if (totalFirepower >= 2) { score = '2-1'; goalRange = '主队胜·2~3球'; }
-    else { score = '1-0'; goalRange = '主队小胜·1~2球'; }
-  } else if (diff <= -3) {
+  } else if (topScore.hg < topScore.ag) {
     verdict = 'away'; winner = match.away;
-    if (totalFirepower >= 3) { score = '1-3'; goalRange = '客队大胜·3~5球'; }
-    else if (totalFirepower >= 1) { score = '1-2'; goalRange = '客队胜·2~3球'; }
-    else { score = '0-1'; goalRange = '客队小胜·1~2球'; }
-  } else if (diff <= -1.5) {
-    verdict = 'away'; winner = match.away;
-    if (totalFirepower >= 2) { score = '1-2'; goalRange = '客队胜·2~3球'; }
-    else { score = '0-1'; goalRange = '客队小胜·1~2球'; }
   } else {
     verdict = 'draw'; winner = '平局';
-    if (totalFirepower >= 2) { score = '2-2 / 1-1'; goalRange = '进球平局·2~4球'; }
-    else if (totalFirepower >= 0) { score = '1-1'; goalRange = '平局·1~2球'; }
-    else { score = '0-0 / 1-1'; goalRange = '沉闷平局·0~1球'; }
   }
+
+  score = `${topScore.hg}-${topScore.ag}`;
+  totalGoals = topScore.hg + topScore.ag;
+
+  if (totalGoals >= 7) goalRange = `超大比分·进球盛宴(${totalGoals}球)`;
+  else if (totalGoals >= 5) goalRange = `大球局·${totalGoals}球总进球`;
+  else if (totalGoals >= 3) goalRange = `中等比分·${totalGoals}球`;
+  else if (totalGoals >= 1) goalRange = `小球局·${totalGoals}球`;
+  else goalRange = '沉闷互交白卷';
 
   return {
     match: { home: match.home, away: match.away, date: match.date, time: match.time, group: match.group },
