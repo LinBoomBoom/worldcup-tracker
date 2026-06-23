@@ -1,0 +1,1833 @@
+{
+  "statistical": {
+    "2026-06-22": [
+      {
+        "match": {
+          "home": "西班牙",
+          "away": "沙特阿拉伯",
+          "time": "00:00",
+          "group": "H",
+          "round": 2
+        },
+        "prediction": {
+          "homeWinProb": 62.2,
+          "drawProb": 15.3,
+          "awayWinProb": 22.5,
+          "predictedScore": "3-0",
+          "winner": "home",
+          "confidence": 62.2,
+          "totalGoals": 3,
+          "algorithms": {
+            "elo": {
+              "homeWinProb": 68.9,
+              "drawProb": 17.8,
+              "awayWinProb": 13.4,
+              "expGoalDiff": 1.43,
+              "eloHome": 1880,
+              "eloAway": 1645
+            },
+            "poisson": {
+              "xG_home": 2.74,
+              "xG_away": 0.46,
+              "homeWinProb": 84.2,
+              "drawProb": 11.1,
+              "awayWinProb": 4.1,
+              "mostLikelyScore": "2-0",
+              "topScores": [
+                {
+                  "score": "2-0",
+                  "prob": 15.3
+                },
+                {
+                  "score": "3-0",
+                  "prob": 14
+                },
+                {
+                  "score": "1-0",
+                  "prob": 11.2
+                },
+                {
+                  "score": "4-0",
+                  "prob": 9.6
+                },
+                {
+                  "score": "2-1",
+                  "prob": 7
+                }
+              ]
+            },
+            "form": {
+              "homeFormScore": 16.7,
+              "awayFormScore": 26.7,
+              "homeWinProb": 38.5,
+              "awayWinProb": 61.5,
+              "drawProb": 20,
+              "homeForm": {
+                "played": 1,
+                "gf": 0,
+                "ga": 0,
+                "gd": 0,
+                "pts": 1,
+                "formScore": 0.16666666666666666,
+                "avgGoals": 0,
+                "avgConceded": 0,
+                "results": [
+                  "D 0-0 vs 佛得角"
+                ]
+              },
+              "awayForm": {
+                "played": 1,
+                "gf": 1,
+                "ga": 1,
+                "gd": 0,
+                "pts": 1,
+                "formScore": 0.26666666666666666,
+                "avgGoals": 1,
+                "avgConceded": 1,
+                "results": [
+                  "D 1-1 vs 乌拉圭"
+                ]
+              }
+            }
+          }
+        },
+        "generatedAt": "2026-06-22T15:57:41.840Z"
+      },
+      {
+        "match": {
+          "home": "比利时",
+          "away": "伊朗",
+          "time": "03:00",
+          "group": "G",
+          "round": 2
+        },
+        "prediction": {
+          "homeWinProb": 48.5,
+          "drawProb": 21.1,
+          "awayWinProb": 30.4,
+          "predictedScore": "2-1",
+          "winner": "home",
+          "confidence": 48.5,
+          "totalGoals": 3,
+          "algorithms": {
+            "elo": {
+              "homeWinProb": 57.4,
+              "drawProb": 22.7,
+              "awayWinProb": 19.8,
+              "expGoalDiff": 0.93,
+              "eloHome": 1815,
+              "eloAway": 1680
+            },
+            "poisson": {
+              "xG_home": 1.72,
+              "xG_away": 1.13,
+              "homeWinProb": 51.4,
+              "drawProb": 23.8,
+              "awayWinProb": 24.8,
+              "mostLikelyScore": "1-1",
+              "topScores": [
+                {
+                  "score": "1-1",
+                  "prob": 11.2
+                },
+                {
+                  "score": "1-0",
+                  "prob": 10
+                },
+                {
+                  "score": "2-1",
+                  "prob": 9.7
+                },
+                {
+                  "score": "2-0",
+                  "prob": 8.6
+                },
+                {
+                  "score": "0-1",
+                  "prob": 6.5
+                }
+              ]
+            },
+            "form": {
+              "homeFormScore": 26.7,
+              "awayFormScore": 36.7,
+              "homeWinProb": 42.1,
+              "awayWinProb": 57.9,
+              "drawProb": 20,
+              "homeForm": {
+                "played": 1,
+                "gf": 1,
+                "ga": 1,
+                "gd": 0,
+                "pts": 1,
+                "formScore": 0.26666666666666666,
+                "avgGoals": 1,
+                "avgConceded": 1,
+                "results": [
+                  "D 1-1 vs 埃及"
+                ]
+              },
+              "awayForm": {
+                "played": 1,
+                "gf": 2,
+                "ga": 2,
+                "gd": 0,
+                "pts": 1,
+                "formScore": 0.36666666666666664,
+                "avgGoals": 2,
+                "avgConceded": 2,
+                "results": [
+                  "D 2-2 vs 新西兰"
+                ]
+              }
+            }
+          }
+        },
+        "generatedAt": "2026-06-22T15:57:41.840Z"
+      },
+      {
+        "match": {
+          "home": "乌拉圭",
+          "away": "佛得角",
+          "time": "06:00",
+          "group": "H",
+          "round": 2
+        },
+        "prediction": {
+          "homeWinProb": 61.9,
+          "drawProb": 19.8,
+          "awayWinProb": 18.3,
+          "predictedScore": "2-0",
+          "winner": "home",
+          "confidence": 61.9,
+          "totalGoals": 2,
+          "algorithms": {
+            "elo": {
+              "homeWinProb": 67.3,
+              "drawProb": 18.5,
+              "awayWinProb": 14.2,
+              "expGoalDiff": 1.35,
+              "eloHome": 1790,
+              "eloAway": 1570
+            },
+            "poisson": {
+              "xG_home": 1.55,
+              "xG_away": 0.4,
+              "homeWinProb": 66.3,
+              "drawProb": 24.5,
+              "awayWinProb": 9.2,
+              "mostLikelyScore": "1-0",
+              "topScores": [
+                {
+                  "score": "1-0",
+                  "prob": 22
+                },
+                {
+                  "score": "2-0",
+                  "prob": 17.1
+                },
+                {
+                  "score": "0-0",
+                  "prob": 14.2
+                },
+                {
+                  "score": "3-0",
+                  "prob": 8.8
+                },
+                {
+                  "score": "1-1",
+                  "prob": 8.8
+                }
+              ]
+            },
+            "form": {
+              "homeFormScore": 26.7,
+              "awayFormScore": 16.7,
+              "homeWinProb": 61.5,
+              "awayWinProb": 38.5,
+              "drawProb": 20,
+              "homeForm": {
+                "played": 1,
+                "gf": 1,
+                "ga": 1,
+                "gd": 0,
+                "pts": 1,
+                "formScore": 0.26666666666666666,
+                "avgGoals": 1,
+                "avgConceded": 1,
+                "results": [
+                  "D 1-1 vs 沙特阿拉伯"
+                ]
+              },
+              "awayForm": {
+                "played": 1,
+                "gf": 0,
+                "ga": 0,
+                "gd": 0,
+                "pts": 1,
+                "formScore": 0.16666666666666666,
+                "avgGoals": 0,
+                "avgConceded": 0,
+                "results": [
+                  "D 0-0 vs 西班牙"
+                ]
+              }
+            }
+          }
+        },
+        "generatedAt": "2026-06-22T15:57:41.840Z"
+      },
+      {
+        "match": {
+          "home": "新西兰",
+          "away": "埃及",
+          "time": "09:00",
+          "group": "G",
+          "round": 2
+        },
+        "prediction": {
+          "homeWinProb": 34.4,
+          "drawProb": 24.2,
+          "awayWinProb": 41.4,
+          "predictedScore": "1-2",
+          "winner": "away",
+          "confidence": 41.4,
+          "totalGoals": 3,
+          "algorithms": {
+            "elo": {
+              "homeWinProb": 29.8,
+              "drawProb": 29.3,
+              "awayWinProb": 40.9,
+              "expGoalDiff": -0.28,
+              "eloHome": 1590,
+              "eloAway": 1695
+            },
+            "poisson": {
+              "xG_home": 1.03,
+              "xG_away": 1.52,
+              "homeWinProb": 25.9,
+              "drawProb": 25.8,
+              "awayWinProb": 48.4,
+              "mostLikelyScore": "1-1",
+              "topScores": [
+                {
+                  "score": "1-1",
+                  "prob": 12.2
+                },
+                {
+                  "score": "0-1",
+                  "prob": 11.8
+                },
+                {
+                  "score": "1-2",
+                  "prob": 9.3
+                },
+                {
+                  "score": "0-2",
+                  "prob": 9
+                },
+                {
+                  "score": "1-0",
+                  "prob": 8.1
+                }
+              ]
+            },
+            "form": {
+              "homeFormScore": 36.7,
+              "awayFormScore": 26.7,
+              "homeWinProb": 57.9,
+              "awayWinProb": 42.1,
+              "drawProb": 20,
+              "homeForm": {
+                "played": 1,
+                "gf": 2,
+                "ga": 2,
+                "gd": 0,
+                "pts": 1,
+                "formScore": 0.36666666666666664,
+                "avgGoals": 2,
+                "avgConceded": 2,
+                "results": [
+                  "D 2-2 vs 伊朗"
+                ]
+              },
+              "awayForm": {
+                "played": 1,
+                "gf": 1,
+                "ga": 1,
+                "gd": 0,
+                "pts": 1,
+                "formScore": 0.26666666666666666,
+                "avgGoals": 1,
+                "avgConceded": 1,
+                "results": [
+                  "D 1-1 vs 比利时"
+                ]
+              }
+            }
+          }
+        },
+        "generatedAt": "2026-06-22T15:57:41.840Z"
+      }
+    ],
+    "2026-06-23": [
+      {
+        "match": {
+          "home": "挪威",
+          "away": "塞内加尔",
+          "time": "00:00",
+          "group": "I",
+          "round": 2
+        },
+        "prediction": {
+          "homeWinProb": 60,
+          "drawProb": 23.1,
+          "awayWinProb": 16.9,
+          "predictedScore": "2-1",
+          "winner": "home",
+          "confidence": 60,
+          "totalGoals": 3,
+          "algorithms": {
+            "elo": {
+              "homeWinProb": 39.6,
+              "drawProb": 29.8,
+              "awayWinProb": 30.6,
+              "expGoalDiff": 0.23,
+              "eloHome": 1745,
+              "eloAway": 1750
+            },
+            "poisson": {
+              "xG_home": 1.92,
+              "xG_away": 0.93,
+              "homeWinProb": 60.3,
+              "drawProb": 21.8,
+              "awayWinProb": 17.8,
+              "mostLikelyScore": "1-0",
+              "topScores": [
+                {
+                  "score": "1-0",
+                  "prob": 11.1
+                },
+                {
+                  "score": "2-0",
+                  "prob": 10.6
+                },
+                {
+                  "score": "1-1",
+                  "prob": 10.3
+                },
+                {
+                  "score": "2-1",
+                  "prob": 9.9
+                },
+                {
+                  "score": "3-0",
+                  "prob": 6.8
+                }
+              ]
+            },
+            "form": {
+              "homeFormScore": 100,
+              "awayFormScore": 0,
+              "homeWinProb": 100,
+              "awayWinProb": 0,
+              "drawProb": 20,
+              "homeForm": {
+                "played": 1,
+                "gf": 4,
+                "ga": 1,
+                "gd": 3,
+                "pts": 3,
+                "formScore": 1,
+                "avgGoals": 4,
+                "avgConceded": 1,
+                "results": [
+                  "W 4-1 vs 伊拉克"
+                ]
+              },
+              "awayForm": {
+                "played": 1,
+                "gf": 1,
+                "ga": 3,
+                "gd": -2,
+                "pts": 0,
+                "formScore": 0,
+                "avgGoals": 1,
+                "avgConceded": 3,
+                "results": [
+                  "L 1-3 vs 法国"
+                ]
+              }
+            }
+          }
+        },
+        "generatedAt": "2026-06-22T16:00:09.494Z"
+      },
+      {
+        "match": {
+          "home": "阿根廷",
+          "away": "奥地利",
+          "time": "03:00",
+          "group": "J",
+          "round": 2
+        },
+        "prediction": {
+          "homeWinProb": 58.1,
+          "drawProb": 18.9,
+          "awayWinProb": 23,
+          "predictedScore": "2-1",
+          "winner": "home",
+          "confidence": 58.1,
+          "totalGoals": 3,
+          "algorithms": {
+            "elo": {
+              "homeWinProb": 64.5,
+              "drawProb": 19.8,
+              "awayWinProb": 15.7,
+              "expGoalDiff": 1.23,
+              "eloHome": 1920,
+              "eloAway": 1725
+            },
+            "poisson": {
+              "xG_home": 2.07,
+              "xG_away": 0.85,
+              "homeWinProb": 65.5,
+              "drawProb": 20,
+              "awayWinProb": 14.4,
+              "mostLikelyScore": "2-0",
+              "topScores": [
+                {
+                  "score": "2-0",
+                  "prob": 11.6
+                },
+                {
+                  "score": "1-0",
+                  "prob": 11.2
+                },
+                {
+                  "score": "2-1",
+                  "prob": 9.8
+                },
+                {
+                  "score": "1-1",
+                  "prob": 9.5
+                },
+                {
+                  "score": "3-0",
+                  "prob": 8
+                }
+              ]
+            },
+            "form": {
+              "homeFormScore": 100,
+              "awayFormScore": 93.3,
+              "homeWinProb": 51.7,
+              "awayWinProb": 48.3,
+              "drawProb": 20,
+              "homeForm": {
+                "played": 1,
+                "gf": 3,
+                "ga": 0,
+                "gd": 3,
+                "pts": 3,
+                "formScore": 1,
+                "avgGoals": 3,
+                "avgConceded": 0,
+                "results": [
+                  "W 3-0 vs 阿尔及利亚"
+                ]
+              },
+              "awayForm": {
+                "played": 1,
+                "gf": 3,
+                "ga": 1,
+                "gd": 2,
+                "pts": 3,
+                "formScore": 0.9333333333333333,
+                "avgGoals": 3,
+                "avgConceded": 1,
+                "results": [
+                  "W 3-1 vs 约旦"
+                ]
+              }
+            }
+          }
+        },
+        "generatedAt": "2026-06-22T16:00:09.494Z"
+      },
+      {
+        "match": {
+          "home": "法国",
+          "away": "伊拉克",
+          "time": "06:00",
+          "group": "I",
+          "round": 2
+        },
+        "prediction": {
+          "homeWinProb": 84,
+          "drawProb": 12.1,
+          "awayWinProb": 3.9,
+          "predictedScore": "4-0",
+          "winner": "home",
+          "confidence": 84,
+          "totalGoals": 4,
+          "algorithms": {
+            "elo": {
+              "homeWinProb": 78.7,
+              "drawProb": 12.8,
+              "awayWinProb": 8.6,
+              "expGoalDiff": 1.93,
+              "eloHome": 1900,
+              "eloAway": 1565
+            },
+            "poisson": {
+              "xG_home": 3.53,
+              "xG_away": 0.47,
+              "homeWinProb": 88.7,
+              "drawProb": 6.4,
+              "awayWinProb": 2.2,
+              "mostLikelyScore": "3-0",
+              "topScores": [
+                {
+                  "score": "3-0",
+                  "prob": 13.5
+                },
+                {
+                  "score": "4-0",
+                  "prob": 11.9
+                },
+                {
+                  "score": "2-0",
+                  "prob": 11.5
+                },
+                {
+                  "score": "5-0",
+                  "prob": 8.4
+                },
+                {
+                  "score": "1-0",
+                  "prob": 6.5
+                }
+              ]
+            },
+            "form": {
+              "homeFormScore": 93.3,
+              "awayFormScore": 0,
+              "homeWinProb": 100,
+              "awayWinProb": 0,
+              "drawProb": 20,
+              "homeForm": {
+                "played": 1,
+                "gf": 3,
+                "ga": 1,
+                "gd": 2,
+                "pts": 3,
+                "formScore": 0.9333333333333333,
+                "avgGoals": 3,
+                "avgConceded": 1,
+                "results": [
+                  "W 3-1 vs 塞内加尔"
+                ]
+              },
+              "awayForm": {
+                "played": 1,
+                "gf": 1,
+                "ga": 4,
+                "gd": -3,
+                "pts": 0,
+                "formScore": 0,
+                "avgGoals": 1,
+                "avgConceded": 4,
+                "results": [
+                  "L 1-4 vs 挪威"
+                ]
+              }
+            }
+          }
+        },
+        "generatedAt": "2026-06-22T16:00:09.494Z"
+      },
+      {
+        "match": {
+          "home": "约旦",
+          "away": "阿尔及利亚",
+          "time": "09:00",
+          "group": "J",
+          "round": 2
+        },
+        "prediction": {
+          "homeWinProb": null,
+          "drawProb": null,
+          "awayWinProb": null,
+          "predictedScore": "1-1",
+          "winner": "draw",
+          "confidence": null,
+          "totalGoals": 2,
+          "algorithms": {
+            "elo": {
+              "homeWinProb": 41.6,
+              "drawProb": 29,
+              "awayWinProb": 29.4,
+              "expGoalDiff": 0.3,
+              "eloHome": 1605,
+              "eloAway": 1595
+            },
+            "poisson": {
+              "xG_home": 1.15,
+              "xG_away": 0.93,
+              "homeWinProb": 40.6,
+              "drawProb": 29.9,
+              "awayWinProb": 29.5,
+              "mostLikelyScore": "1-0",
+              "topScores": [
+                {
+                  "score": "1-0",
+                  "prob": 14.3
+                },
+                {
+                  "score": "1-1",
+                  "prob": 13.4
+                },
+                {
+                  "score": "0-0",
+                  "prob": 12.4
+                },
+                {
+                  "score": "0-1",
+                  "prob": 11.6
+                },
+                {
+                  "score": "2-0",
+                  "prob": 8.2
+                }
+              ]
+            },
+            "form": {
+              "homeFormScore": 0,
+              "awayFormScore": 0,
+              "homeWinProb": null,
+              "awayWinProb": null,
+              "drawProb": 20,
+              "homeForm": {
+                "played": 1,
+                "gf": 1,
+                "ga": 3,
+                "gd": -2,
+                "pts": 0,
+                "formScore": 0,
+                "avgGoals": 1,
+                "avgConceded": 3,
+                "results": [
+                  "L 1-3 vs 奥地利"
+                ]
+              },
+              "awayForm": {
+                "played": 1,
+                "gf": 0,
+                "ga": 3,
+                "gd": -3,
+                "pts": 0,
+                "formScore": 0,
+                "avgGoals": 0,
+                "avgConceded": 3,
+                "results": [
+                  "L 0-3 vs 阿根廷"
+                ]
+              }
+            }
+          }
+        },
+        "generatedAt": "2026-06-22T16:00:09.494Z"
+      }
+    ]
+  },
+  "divination": {
+    "2026-06-22": [
+      {
+        "match": {
+          "home": "西班牙",
+          "away": "沙特阿拉伯",
+          "date": "2026-06-22",
+          "time": "00:00",
+          "group": "H"
+        },
+        "liuYaoPrediction": {
+          "verdict": "away",
+          "winner": "沙特阿拉伯",
+          "score": "0-1",
+          "goalRange": "客队小胜·1~2球"
+        },
+        "verdict": "away",
+        "winner": "沙特阿拉伯",
+        "score": "0-1",
+        "goalRange": "客队小胜·1~2球",
+        "gua": {
+          "name": "渐",
+          "shangGua": "巽",
+          "xiaGua": "艮",
+          "shangSymbol": "☴",
+          "xiaSymbol": "☶",
+          "dongYao": 2,
+          "gong": "艮",
+          "gongWx": "土",
+          "guaCi": "女归吉，利贞。"
+        },
+        "pan": {
+          "yao": [
+            {
+              "pos": 1,
+              "zhi": "丙辰",
+              "wx": "土",
+              "liuQin": "兄弟",
+              "liuQinCls": "xiong",
+              "liuShou": "青龙",
+              "isDong": false,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": 0,
+              "xingXiu": "翼火蛇",
+              "naYin": "沙中土"
+            },
+            {
+              "pos": 2,
+              "zhi": "丙午",
+              "wx": "火",
+              "liuQin": "父母",
+              "liuQinCls": "fu",
+              "liuShou": "朱雀",
+              "isDong": true,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": 2,
+              "xingXiu": "角木蛟",
+              "naYin": "天河水"
+            },
+            {
+              "pos": 3,
+              "zhi": "丙申",
+              "wx": "金",
+              "liuQin": "子孙",
+              "liuQinCls": "sun",
+              "liuShou": "勾陈",
+              "isDong": false,
+              "isShi": true,
+              "isYing": false,
+              "wangScore": -1.5,
+              "xingXiu": "柳土獐",
+              "naYin": "山下火"
+            },
+            {
+              "pos": 4,
+              "zhi": "辛未",
+              "wx": "土",
+              "liuQin": "兄弟",
+              "liuQinCls": "xiong",
+              "liuShou": "腾蛇",
+              "isDong": false,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": 0,
+              "xingXiu": "轸水蚓",
+              "naYin": "路旁土"
+            },
+            {
+              "pos": 5,
+              "zhi": "辛巳",
+              "wx": "火",
+              "liuQin": "父母",
+              "liuQinCls": "fu",
+              "liuShou": "白虎",
+              "isDong": false,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": 2,
+              "xingXiu": "张月鹿",
+              "naYin": "白蜡金"
+            },
+            {
+              "pos": 6,
+              "zhi": "辛卯",
+              "wx": "木",
+              "liuQin": "官鬼",
+              "liuQinCls": "guan",
+              "liuShou": "玄武",
+              "isDong": false,
+              "isShi": false,
+              "isYing": true,
+              "wangScore": 0.5,
+              "xingXiu": "星日马",
+              "naYin": "松柏木"
+            }
+          ],
+          "yueZhi": "午",
+          "riZhi": "卯"
+        },
+        "analysis": {
+          "shiYao": "子孙丙申(金)",
+          "yingYao": "官鬼辛卯(木)",
+          "shiWang": -1.5,
+          "yingWang": 0.5,
+          "homeAdv": -4,
+          "totalFirepower": -0.9,
+          "reasons": [
+            "应爻旺于世爻→客队占优",
+            "动爻父母(丙午)克世→⚠️主队受压"
+          ],
+          "dangerSignals": []
+        },
+        "generatedAt": "2026-06-22T15:57:41.840Z"
+      },
+      {
+        "match": {
+          "home": "比利时",
+          "away": "伊朗",
+          "date": "2026-06-22",
+          "time": "03:00",
+          "group": "G"
+        },
+        "liuYaoPrediction": {
+          "verdict": "home",
+          "winner": "比利时",
+          "score": "1-0",
+          "goalRange": "主队小胜·1~2球"
+        },
+        "verdict": "home",
+        "winner": "比利时",
+        "score": "1-0",
+        "goalRange": "主队小胜·1~2球",
+        "gua": {
+          "name": "革",
+          "shangGua": "兑",
+          "xiaGua": "离",
+          "shangSymbol": "☱",
+          "xiaSymbol": "☲",
+          "dongYao": 5,
+          "gong": "坎",
+          "gongWx": "水",
+          "guaCi": "巳日乃孚，元亨利贞，悔亡。"
+        },
+        "pan": {
+          "yao": [
+            {
+              "pos": 1,
+              "zhi": "己卯",
+              "wx": "木",
+              "liuQin": "子孙",
+              "liuQinCls": "sun",
+              "liuShou": "青龙",
+              "isDong": false,
+              "isShi": false,
+              "isYing": true,
+              "wangScore": 0.5,
+              "xingXiu": "壁水貐",
+              "naYin": "城头土"
+            },
+            {
+              "pos": 2,
+              "zhi": "己丑",
+              "wx": "土",
+              "liuQin": "官鬼",
+              "liuQinCls": "guan",
+              "liuShou": "朱雀",
+              "isDong": false,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": 0,
+              "xingXiu": "娄金狗",
+              "naYin": "霹雳火"
+            },
+            {
+              "pos": 3,
+              "zhi": "己亥",
+              "wx": "水",
+              "liuQin": "兄弟",
+              "liuQinCls": "xiong",
+              "liuShou": "勾陈",
+              "isDong": false,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": -0.3,
+              "xingXiu": "昴日鸡",
+              "naYin": "平地木"
+            },
+            {
+              "pos": 4,
+              "zhi": "丁亥",
+              "wx": "水",
+              "liuQin": "兄弟",
+              "liuQinCls": "xiong",
+              "liuShou": "腾蛇",
+              "isDong": false,
+              "isShi": true,
+              "isYing": false,
+              "wangScore": -0.3,
+              "xingXiu": "室火猪",
+              "naYin": "屋上土"
+            },
+            {
+              "pos": 5,
+              "zhi": "丁酉",
+              "wx": "金",
+              "liuQin": "父母",
+              "liuQinCls": "fu",
+              "liuShou": "白虎",
+              "isDong": true,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": -1.5,
+              "xingXiu": "胃土雉",
+              "naYin": "山下火"
+            },
+            {
+              "pos": 6,
+              "zhi": "丁未",
+              "wx": "土",
+              "liuQin": "官鬼",
+              "liuQinCls": "guan",
+              "liuShou": "玄武",
+              "isDong": false,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": 0,
+              "xingXiu": "奎木狼",
+              "naYin": "天河水"
+            }
+          ],
+          "yueZhi": "午",
+          "riZhi": "卯"
+        },
+        "analysis": {
+          "shiYao": "兄弟丁亥(水)",
+          "yingYao": "子孙己卯(木)",
+          "shiWang": -0.3,
+          "yingWang": 0.5,
+          "homeAdv": 2.5,
+          "totalFirepower": 0.3,
+          "reasons": [
+            "应爻略旺→客队小优",
+            "动爻父母(丁酉)生世→主队有利",
+            "动爻父母(丁酉)克应→⚠️客队受压"
+          ],
+          "dangerSignals": [
+            "父母丁酉日破→当日无力"
+          ]
+        },
+        "generatedAt": "2026-06-22T15:57:41.840Z"
+      },
+      {
+        "match": {
+          "home": "乌拉圭",
+          "away": "佛得角",
+          "date": "2026-06-22",
+          "time": "06:00",
+          "group": "H"
+        },
+        "liuYaoPrediction": {
+          "verdict": "away",
+          "winner": "佛得角",
+          "score": "0-1",
+          "goalRange": "客队小胜·1~2球"
+        },
+        "verdict": "away",
+        "winner": "佛得角",
+        "score": "0-1",
+        "goalRange": "客队小胜·1~2球",
+        "gua": {
+          "name": "咸",
+          "shangGua": "兑",
+          "xiaGua": "艮",
+          "shangSymbol": "☱",
+          "xiaSymbol": "☶",
+          "dongYao": 5,
+          "gong": "兑",
+          "gongWx": "金",
+          "guaCi": "亨，利贞，取女吉。"
+        },
+        "pan": {
+          "yao": [
+            {
+              "pos": 1,
+              "zhi": "丙辰",
+              "wx": "土",
+              "liuQin": "父母",
+              "liuQinCls": "fu",
+              "liuShou": "青龙",
+              "isDong": false,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": 0,
+              "xingXiu": "翼火蛇",
+              "naYin": "沙中土"
+            },
+            {
+              "pos": 2,
+              "zhi": "丙午",
+              "wx": "火",
+              "liuQin": "官鬼",
+              "liuQinCls": "guan",
+              "liuShou": "朱雀",
+              "isDong": false,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": 2,
+              "xingXiu": "角木蛟",
+              "naYin": "天河水"
+            },
+            {
+              "pos": 3,
+              "zhi": "丙申",
+              "wx": "金",
+              "liuQin": "兄弟",
+              "liuQinCls": "xiong",
+              "liuShou": "勾陈",
+              "isDong": false,
+              "isShi": true,
+              "isYing": false,
+              "wangScore": -1.5,
+              "xingXiu": "柳土獐",
+              "naYin": "山下火"
+            },
+            {
+              "pos": 4,
+              "zhi": "丁亥",
+              "wx": "水",
+              "liuQin": "子孙",
+              "liuQinCls": "sun",
+              "liuShou": "腾蛇",
+              "isDong": false,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": -0.3,
+              "xingXiu": "轸水蚓",
+              "naYin": "屋上土"
+            },
+            {
+              "pos": 5,
+              "zhi": "丁酉",
+              "wx": "金",
+              "liuQin": "兄弟",
+              "liuQinCls": "xiong",
+              "liuShou": "白虎",
+              "isDong": true,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": -1.5,
+              "xingXiu": "张月鹿",
+              "naYin": "山下火"
+            },
+            {
+              "pos": 6,
+              "zhi": "丁未",
+              "wx": "土",
+              "liuQin": "父母",
+              "liuQinCls": "fu",
+              "liuShou": "玄武",
+              "isDong": false,
+              "isShi": false,
+              "isYing": true,
+              "wangScore": 0,
+              "xingXiu": "星日马",
+              "naYin": "天河水"
+            }
+          ],
+          "yueZhi": "午",
+          "riZhi": "卯"
+        },
+        "analysis": {
+          "shiYao": "兄弟丙申(金)",
+          "yingYao": "父母丁未(土)",
+          "shiWang": -1.5,
+          "yingWang": 0,
+          "homeAdv": -2,
+          "totalFirepower": -0.8,
+          "reasons": [
+            "应爻旺于世爻→客队占优"
+          ],
+          "dangerSignals": [
+            "兄弟丁酉日破→当日无力"
+          ]
+        },
+        "generatedAt": "2026-06-22T15:57:41.840Z"
+      },
+      {
+        "match": {
+          "home": "新西兰",
+          "away": "埃及",
+          "date": "2026-06-22",
+          "time": "09:00",
+          "group": "G"
+        },
+        "liuYaoPrediction": {
+          "verdict": "draw",
+          "winner": "平局",
+          "score": "2-2 / 1-1",
+          "goalRange": "进球平局·2~4球"
+        },
+        "verdict": "draw",
+        "winner": "平局",
+        "score": "2-2 / 1-1",
+        "goalRange": "进球平局·2~4球",
+        "gua": {
+          "name": "节",
+          "shangGua": "坎",
+          "xiaGua": "兑",
+          "shangSymbol": "☵",
+          "xiaSymbol": "☱",
+          "dongYao": 6,
+          "gong": "坎",
+          "gongWx": "水",
+          "guaCi": "亨。 苦节不可贞。"
+        },
+        "pan": {
+          "yao": [
+            {
+              "pos": 1,
+              "zhi": "丁巳",
+              "wx": "火",
+              "liuQin": "妻财",
+              "liuQinCls": "cai",
+              "liuShou": "青龙",
+              "isDong": false,
+              "isShi": true,
+              "isYing": false,
+              "wangScore": 2,
+              "xingXiu": "女土蝠",
+              "naYin": "沙中土"
+            },
+            {
+              "pos": 2,
+              "zhi": "丁卯",
+              "wx": "木",
+              "liuQin": "子孙",
+              "liuQinCls": "sun",
+              "liuShou": "朱雀",
+              "isDong": false,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": 0.5,
+              "xingXiu": "室火猪",
+              "naYin": "炉中火"
+            },
+            {
+              "pos": 3,
+              "zhi": "丁丑",
+              "wx": "土",
+              "liuQin": "官鬼",
+              "liuQinCls": "guan",
+              "liuShou": "勾陈",
+              "isDong": false,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": 0,
+              "xingXiu": "奎木狼",
+              "naYin": "涧下水"
+            },
+            {
+              "pos": 4,
+              "zhi": "戊申",
+              "wx": "金",
+              "liuQin": "父母",
+              "liuQinCls": "fu",
+              "liuShou": "腾蛇",
+              "isDong": false,
+              "isShi": false,
+              "isYing": true,
+              "wangScore": -1.5,
+              "xingXiu": "虚日鼠",
+              "naYin": "大驿土"
+            },
+            {
+              "pos": 5,
+              "zhi": "戊戌",
+              "wx": "土",
+              "liuQin": "官鬼",
+              "liuQinCls": "guan",
+              "liuShou": "白虎",
+              "isDong": false,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": 0,
+              "xingXiu": "壁水貐",
+              "naYin": "平地木"
+            },
+            {
+              "pos": 6,
+              "zhi": "戊子",
+              "wx": "水",
+              "liuQin": "兄弟",
+              "liuQinCls": "xiong",
+              "liuShou": "玄武",
+              "isDong": true,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": -0.3,
+              "xingXiu": "危月燕",
+              "naYin": "霹雳火"
+            }
+          ],
+          "yueZhi": "午",
+          "riZhi": "卯"
+        },
+        "analysis": {
+          "shiYao": "妻财丁巳(火)",
+          "yingYao": "父母戊申(金)",
+          "shiWang": 2,
+          "yingWang": -1.5,
+          "homeAdv": 0,
+          "totalFirepower": 2.3,
+          "reasons": [
+            "世爻旺于应爻→主队占优",
+            "动爻兄弟(戊子)克世→⚠️主队受压"
+          ],
+          "dangerSignals": [
+            "兄弟戊子月破→力量减半"
+          ]
+        },
+        "generatedAt": "2026-06-22T15:57:41.840Z"
+      }
+    ],
+    "2026-06-23": [
+      {
+        "match": {
+          "home": "挪威",
+          "away": "塞内加尔",
+          "date": "2026-06-23",
+          "time": "00:00",
+          "group": "I"
+        },
+        "liuYaoPrediction": {
+          "verdict": "draw",
+          "winner": "平局",
+          "score": "0-0 / 1-1",
+          "goalRange": "沉闷平局·0~1球"
+        },
+        "verdict": "draw",
+        "winner": "平局",
+        "score": "0-0 / 1-1",
+        "goalRange": "沉闷平局·0~1球",
+        "gua": {
+          "name": "姤",
+          "shangGua": "乾",
+          "xiaGua": "巽",
+          "shangSymbol": "☰",
+          "xiaSymbol": "☴",
+          "dongYao": 5,
+          "gong": "乾",
+          "gongWx": "金",
+          "guaCi": "女壮，勿用取女。"
+        },
+        "pan": {
+          "yao": [
+            {
+              "pos": 1,
+              "zhi": "辛丑",
+              "wx": "土",
+              "liuQin": "父母",
+              "liuQinCls": "fu",
+              "liuShou": "青龙",
+              "isDong": false,
+              "isShi": true,
+              "isYing": false,
+              "wangScore": 2,
+              "xingXiu": "井木犴",
+              "naYin": "壁上土"
+            },
+            {
+              "pos": 2,
+              "zhi": "辛亥",
+              "wx": "水",
+              "liuQin": "子孙",
+              "liuQinCls": "sun",
+              "liuShou": "朱雀",
+              "isDong": false,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": -1,
+              "xingXiu": "星日马",
+              "naYin": "钗钏金"
+            },
+            {
+              "pos": 3,
+              "zhi": "辛酉",
+              "wx": "金",
+              "liuQin": "兄弟",
+              "liuQinCls": "xiong",
+              "liuShou": "勾陈",
+              "isDong": false,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": -1,
+              "xingXiu": "翼火蛇",
+              "naYin": "石榴木"
+            },
+            {
+              "pos": 4,
+              "zhi": "壬午",
+              "wx": "火",
+              "liuQin": "官鬼",
+              "liuQinCls": "guan",
+              "liuShou": "腾蛇",
+              "isDong": false,
+              "isShi": false,
+              "isYing": true,
+              "wangScore": 1.2,
+              "xingXiu": "鬼金羊",
+              "naYin": "杨柳木"
+            },
+            {
+              "pos": 5,
+              "zhi": "壬申",
+              "wx": "金",
+              "liuQin": "兄弟",
+              "liuQinCls": "xiong",
+              "liuShou": "白虎",
+              "isDong": true,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": -1,
+              "xingXiu": "张月鹿",
+              "naYin": "剑锋金"
+            },
+            {
+              "pos": 6,
+              "zhi": "壬戌",
+              "wx": "土",
+              "liuQin": "父母",
+              "liuQinCls": "fu",
+              "liuShou": "玄武",
+              "isDong": false,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": 2,
+              "xingXiu": "柳土獐",
+              "naYin": "大海水"
+            }
+          ],
+          "yueZhi": "午",
+          "riZhi": "辰"
+        },
+        "analysis": {
+          "shiYao": "父母辛丑(土)",
+          "yingYao": "官鬼壬午(火)",
+          "shiWang": 2,
+          "yingWang": 1.2,
+          "homeAdv": 1,
+          "totalFirepower": -0.9,
+          "reasons": [
+            "世爻略旺→主队小优"
+          ],
+          "dangerSignals": [
+            "父母壬戌日破→当日无力"
+          ]
+        },
+        "generatedAt": "2026-06-22T16:00:09.494Z"
+      },
+      {
+        "match": {
+          "home": "阿根廷",
+          "away": "奥地利",
+          "date": "2026-06-23",
+          "time": "03:00",
+          "group": "J"
+        },
+        "liuYaoPrediction": {
+          "verdict": "away",
+          "winner": "奥地利",
+          "score": "0-1",
+          "goalRange": "客队小胜·1~2球"
+        },
+        "verdict": "away",
+        "winner": "奥地利",
+        "score": "0-1",
+        "goalRange": "客队小胜·1~2球",
+        "gua": {
+          "name": "蹇",
+          "shangGua": "坎",
+          "xiaGua": "艮",
+          "shangSymbol": "☵",
+          "xiaSymbol": "☶",
+          "dongYao": 4,
+          "gong": "兑",
+          "gongWx": "金",
+          "guaCi": "利西南，不利东北；利见大人，贞吉。"
+        },
+        "pan": {
+          "yao": [
+            {
+              "pos": 1,
+              "zhi": "丙辰",
+              "wx": "土",
+              "liuQin": "父母",
+              "liuQinCls": "fu",
+              "liuShou": "青龙",
+              "isDong": false,
+              "isShi": false,
+              "isYing": true,
+              "wangScore": 2,
+              "xingXiu": "张月鹿",
+              "naYin": "沙中土"
+            },
+            {
+              "pos": 2,
+              "zhi": "丙午",
+              "wx": "火",
+              "liuQin": "官鬼",
+              "liuQinCls": "guan",
+              "liuShou": "朱雀",
+              "isDong": false,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": 1.2,
+              "xingXiu": "轸水蚓",
+              "naYin": "天河水"
+            },
+            {
+              "pos": 3,
+              "zhi": "丙申",
+              "wx": "金",
+              "liuQin": "兄弟",
+              "liuQinCls": "xiong",
+              "liuShou": "勾陈",
+              "isDong": false,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": -1,
+              "xingXiu": "亢金龙",
+              "naYin": "山下火"
+            },
+            {
+              "pos": 4,
+              "zhi": "戊申",
+              "wx": "金",
+              "liuQin": "兄弟",
+              "liuQinCls": "xiong",
+              "liuShou": "腾蛇",
+              "isDong": true,
+              "isShi": true,
+              "isYing": false,
+              "wangScore": -1,
+              "xingXiu": "星日马",
+              "naYin": "大驿土"
+            },
+            {
+              "pos": 5,
+              "zhi": "戊戌",
+              "wx": "土",
+              "liuQin": "父母",
+              "liuQinCls": "fu",
+              "liuShou": "白虎",
+              "isDong": false,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": 2,
+              "xingXiu": "角木蛟",
+              "naYin": "平地木"
+            },
+            {
+              "pos": 6,
+              "zhi": "戊子",
+              "wx": "水",
+              "liuQin": "子孙",
+              "liuQinCls": "sun",
+              "liuShou": "玄武",
+              "isDong": false,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": -1,
+              "xingXiu": "翼火蛇",
+              "naYin": "霹雳火"
+            }
+          ],
+          "yueZhi": "午",
+          "riZhi": "辰"
+        },
+        "analysis": {
+          "shiYao": "兄弟戊申(金)·发动",
+          "yingYao": "父母丙辰(土)",
+          "shiWang": -1,
+          "yingWang": 2,
+          "homeAdv": -2,
+          "totalFirepower": -0.9,
+          "reasons": [
+            "应爻旺于世爻→客队占优"
+          ],
+          "dangerSignals": [
+            "父母戊戌日破→当日无力"
+          ]
+        },
+        "generatedAt": "2026-06-22T16:00:09.494Z"
+      },
+      {
+        "match": {
+          "home": "法国",
+          "away": "伊拉克",
+          "date": "2026-06-23",
+          "time": "06:00",
+          "group": "I"
+        },
+        "liuYaoPrediction": {
+          "verdict": "away",
+          "winner": "伊拉克",
+          "score": "0-1",
+          "goalRange": "客队小胜·1~2球"
+        },
+        "verdict": "away",
+        "winner": "伊拉克",
+        "score": "0-1",
+        "goalRange": "客队小胜·1~2球",
+        "gua": {
+          "name": "小过",
+          "shangGua": "震",
+          "xiaGua": "艮",
+          "shangSymbol": "☳",
+          "xiaSymbol": "☶",
+          "dongYao": 2,
+          "gong": "兑",
+          "gongWx": "金",
+          "guaCi": "亨，利贞，可小事，不可大事。飞鸟遗之音，不宜上宜下，大吉。"
+        },
+        "pan": {
+          "yao": [
+            {
+              "pos": 1,
+              "zhi": "丙辰",
+              "wx": "土",
+              "liuQin": "父母",
+              "liuQinCls": "fu",
+              "liuShou": "青龙",
+              "isDong": false,
+              "isShi": false,
+              "isYing": true,
+              "wangScore": 2,
+              "xingXiu": "轸水蚓",
+              "naYin": "沙中土"
+            },
+            {
+              "pos": 2,
+              "zhi": "丙午",
+              "wx": "火",
+              "liuQin": "官鬼",
+              "liuQinCls": "guan",
+              "liuShou": "朱雀",
+              "isDong": true,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": 1.2,
+              "xingXiu": "亢金龙",
+              "naYin": "天河水"
+            },
+            {
+              "pos": 3,
+              "zhi": "丙申",
+              "wx": "金",
+              "liuQin": "兄弟",
+              "liuQinCls": "xiong",
+              "liuShou": "勾陈",
+              "isDong": false,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": -1,
+              "xingXiu": "房日兔",
+              "naYin": "山下火"
+            },
+            {
+              "pos": 4,
+              "zhi": "庚午",
+              "wx": "火",
+              "liuQin": "官鬼",
+              "liuQinCls": "guan",
+              "liuShou": "腾蛇",
+              "isDong": false,
+              "isShi": true,
+              "isYing": false,
+              "wangScore": 1.2,
+              "xingXiu": "翼火蛇",
+              "naYin": "路旁土"
+            },
+            {
+              "pos": 5,
+              "zhi": "庚申",
+              "wx": "金",
+              "liuQin": "兄弟",
+              "liuQinCls": "xiong",
+              "liuShou": "白虎",
+              "isDong": false,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": -1,
+              "xingXiu": "氐土貉",
+              "naYin": "石榴木"
+            },
+            {
+              "pos": 6,
+              "zhi": "庚戌",
+              "wx": "土",
+              "liuQin": "父母",
+              "liuQinCls": "fu",
+              "liuShou": "玄武",
+              "isDong": false,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": 2,
+              "xingXiu": "角木蛟",
+              "naYin": "钗钏金"
+            }
+          ],
+          "yueZhi": "午",
+          "riZhi": "辰"
+        },
+        "analysis": {
+          "shiYao": "官鬼庚午(火)",
+          "yingYao": "父母丙辰(土)",
+          "shiWang": 1.2,
+          "yingWang": 2,
+          "homeAdv": -2.5,
+          "totalFirepower": -0.7,
+          "reasons": [
+            "应爻略旺→客队小优",
+            "动爻官鬼(丙午)生应→客队有利",
+            "官鬼发动→⚠️防守压力/裁判因素"
+          ],
+          "dangerSignals": [
+            "父母庚戌日破→当日无力"
+          ]
+        },
+        "generatedAt": "2026-06-22T16:00:09.494Z"
+      },
+      {
+        "match": {
+          "home": "约旦",
+          "away": "阿尔及利亚",
+          "date": "2026-06-23",
+          "time": "09:00",
+          "group": "J"
+        },
+        "liuYaoPrediction": {
+          "verdict": "draw",
+          "winner": "平局",
+          "score": "0-0 / 1-1",
+          "goalRange": "沉闷平局·0~1球"
+        },
+        "verdict": "draw",
+        "winner": "平局",
+        "score": "0-0 / 1-1",
+        "goalRange": "沉闷平局·0~1球",
+        "gua": {
+          "name": "渐",
+          "shangGua": "巽",
+          "xiaGua": "艮",
+          "shangSymbol": "☴",
+          "xiaSymbol": "☶",
+          "dongYao": 1,
+          "gong": "艮",
+          "gongWx": "土",
+          "guaCi": "女归吉，利贞。"
+        },
+        "pan": {
+          "yao": [
+            {
+              "pos": 1,
+              "zhi": "丙辰",
+              "wx": "土",
+              "liuQin": "兄弟",
+              "liuQinCls": "xiong",
+              "liuShou": "青龙",
+              "isDong": true,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": 2,
+              "xingXiu": "翼火蛇",
+              "naYin": "沙中土"
+            },
+            {
+              "pos": 2,
+              "zhi": "丙午",
+              "wx": "火",
+              "liuQin": "父母",
+              "liuQinCls": "fu",
+              "liuShou": "朱雀",
+              "isDong": false,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": 1.2,
+              "xingXiu": "角木蛟",
+              "naYin": "天河水"
+            },
+            {
+              "pos": 3,
+              "zhi": "丙申",
+              "wx": "金",
+              "liuQin": "子孙",
+              "liuQinCls": "sun",
+              "liuShou": "勾陈",
+              "isDong": false,
+              "isShi": true,
+              "isYing": false,
+              "wangScore": -1,
+              "xingXiu": "柳土獐",
+              "naYin": "山下火"
+            },
+            {
+              "pos": 4,
+              "zhi": "辛未",
+              "wx": "土",
+              "liuQin": "兄弟",
+              "liuQinCls": "xiong",
+              "liuShou": "腾蛇",
+              "isDong": false,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": 2,
+              "xingXiu": "轸水蚓",
+              "naYin": "路旁土"
+            },
+            {
+              "pos": 5,
+              "zhi": "辛巳",
+              "wx": "火",
+              "liuQin": "父母",
+              "liuQinCls": "fu",
+              "liuShou": "白虎",
+              "isDong": false,
+              "isShi": false,
+              "isYing": false,
+              "wangScore": 1.2,
+              "xingXiu": "张月鹿",
+              "naYin": "白蜡金"
+            },
+            {
+              "pos": 6,
+              "zhi": "辛卯",
+              "wx": "木",
+              "liuQin": "官鬼",
+              "liuQinCls": "guan",
+              "liuShou": "玄武",
+              "isDong": false,
+              "isShi": false,
+              "isYing": true,
+              "wangScore": -0.5,
+              "xingXiu": "星日马",
+              "naYin": "松柏木"
+            }
+          ],
+          "yueZhi": "午",
+          "riZhi": "辰"
+        },
+        "analysis": {
+          "shiYao": "子孙丙申(金)",
+          "yingYao": "官鬼辛卯(木)",
+          "shiWang": -1,
+          "yingWang": -0.5,
+          "homeAdv": 0.5,
+          "totalFirepower": -0.3,
+          "reasons": [
+            "应爻略旺→客队小优",
+            "动爻兄弟(丙辰)生世→主队有利"
+          ],
+          "dangerSignals": []
+        },
+        "generatedAt": "2026-06-22T16:00:09.494Z"
+      }
+    ]
+  }
+}

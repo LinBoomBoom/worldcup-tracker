@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "express": "^4.21.0",
+    "iching-shifa": "^1.7.1",
     "lunar-typescript": "^1.6.0"
   }
 }

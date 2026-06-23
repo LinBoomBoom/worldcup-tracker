@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const { getAllMatches, getStandings, getGroupHistory, getInjuries } = require('./data/matches');
 const { predictMatch, predictDay, getAlgorithmInfo } = require('./algorithms/predictor');
-const { divineMatch } = require('./algorithms/divination');
+const { liuYaoPredict } = require('./algorithms/divination');
 const { getTodayPredictions } = require('./algorithms/store');
 
 const app = express();
@@ -49,13 +49,13 @@ app.get('/api/algorithms', (req, res) => {
   res.json(getAlgorithmInfo());
 });
 
-// API: 奇门+六壬占卜预测
+// API: 六爻占卜预测
 app.get('/api/divination', (req, res) => {
   try {
     const date = req.query.date || '2026-06-22';
     const { upcoming } = getAllMatches();
     const dayMatches = upcoming.filter(m => m.date === date);
-    const results = dayMatches.map(m => divineMatch(m));
+    const results = dayMatches.map(m => liuYaoPredict(m));
     res.json({ date, count: results.length, results });
   } catch (e) {
     res.status(500).json({ error: e.message, stack: e.stack?.split('\n').slice(0,3) });

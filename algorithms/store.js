@@ -5,7 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 const { compositePredict } = require('./predictor');
-const { divineMatch } = require('./divination');
+const { liuYaoPredict } = require('./divination');
 
 const STORE_PATH = path.join(__dirname, '..', 'data', 'predictions-store.json');
 
@@ -57,7 +57,7 @@ function getTodayPredictions(now) {
         generatedAt: now.toISOString()
       }));
       store.divination[nextDate] = dayMatches.map(m => ({
-        ...divineMatch(m),
+        ...liuYaoPredict(m),
         generatedAt: now.toISOString()
       }));
       saveStore(store);

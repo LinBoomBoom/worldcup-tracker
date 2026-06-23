@@ -525,6 +525,173 @@ body {
   .mini-div-row { flex-direction: column; align-items: flex-start; gap: 2px; }
 }
 
+/* ========== Full Prediction Card (Stat + Divination) ========== */
+.prediction-full-card { padding: 0; overflow: hidden; margin-bottom: 14px; }
+
+.stat-head {
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.stat-teams { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); }
+.stat-vs { color: var(--text-secondary); font-weight: 400; font-size: 0.8rem; margin: 0 6px; }
+.stat-meta { font-size: 0.68rem; color: var(--text-secondary); margin-top: 4px; }
+
+.stat-main {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 16px;
+  padding: 14px 16px;
+  align-items: center;
+}
+.stat-score-col { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.stat-pred-score {
+  font-size: 2rem; font-weight: 800; color: var(--gold-light);
+  background: rgba(200,169,110,0.12); padding: 6px 18px;
+  border-radius: var(--radius-sm); border: 1px solid rgba(200,169,110,0.25);
+}
+.stat-verdict {
+  font-size: 0.82rem; font-weight: 600; padding: 2px 10px; border-radius: 10px;
+}
+.stat-verdict.home-conf { background:#3498db15; color:#3498db; }
+.stat-verdict.away-conf { background:#e74c3c15; color:#e74c3c; }
+.stat-verdict.draw-conf { background:#95a5a615; color:#95a5a6; }
+.stat-confidence {
+  font-size: 0.7rem; padding: 2px 8px; border-radius: 8px;
+  font-weight: 600;
+}
+.conf-high { background:#2ecc7122; color:#2ecc71; }
+.conf-med { background:#f39c1222; color:#f39c12; }
+.conf-low { background:#e74c3c22; color:#e74c3c; }
+
+.stat-prob-col { min-width: 0; }
+.prob-max { color: var(--gold-light) !important; font-weight: 800; }
+
+.stat-details {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  padding: 8px 16px; background: rgba(255,255,255,0.01);
+  border-top: 1px solid var(--border);
+}
+.stat-detail-tag {
+  font-size: 0.66rem; color: var(--text-secondary);
+  padding: 2px 8px; background: rgba(255,255,255,0.03);
+  border-radius: 6px;
+}
+
+/* ========== 六爻排盘面板 ========== */
+.liuyao-section {
+  border-top: 2px solid var(--border-accent);
+  padding: 0;
+}
+
+.liuyao-header {
+  display: flex; align-items: center; justify-content: center;
+  gap: 16px; padding: 14px 16px;
+  background: rgba(200,169,110,0.05);
+}
+.liuyao-gua-symbol { font-size: 2rem; }
+.liuyao-gua-info { text-align: center; }
+.liuyao-gua-name { font-size: 1.1rem; font-weight: 700; color: var(--gold-light); display: block; }
+.liuyao-gua-meta { font-size: 0.68rem; color: var(--text-secondary); }
+
+.liuyao-table {
+  width: 100%; border-collapse: collapse; font-size: 0.75rem;
+}
+.liuyao-table td {
+  padding: 6px 8px; text-align: center; border-bottom: 1px solid var(--border);
+}
+.liuyao-table .ly-pos { color: var(--text-secondary); font-size: 0.65rem; width: 40px; }
+.liuyao-table .ly-zhi { font-weight: 700; font-size: 0.85rem; width: 36px; }
+.liuyao-table .ly-wx { font-weight: 600; width: 30px; font-size: 0.7rem; }
+.liuyao-table .ly-qin { width: 56px; }
+.liuyao-table .ly-shou { font-size: 0.65rem; color: var(--text-secondary); width: 44px; }
+.liuyao-table .ly-markers { width: 48px; }
+.liuyao-table .ly-ws { font-weight: 700; font-size: 0.7rem; width: 36px; }
+
+.ly-dong-row td { background: rgba(200,169,110,0.06); }
+.ly-dong-row .ly-zhi { color: var(--gold-light); }
+
+.ly-tag {
+  display: inline-block; padding: 1px 7px; border-radius: 5px;
+  font-size: 0.65rem; font-weight: 700;
+}
+.ly-tag-cai { background: #f39c1222; color: #f39c12; }  /* 妻财-黄金 */
+.ly-tag-guan { background: #e74c3c22; color: #e74c3c; } /* 官鬼-红 */
+.ly-tag-sun { background: #2ecc7122; color: #2ecc71; }  /* 子孙-绿 */
+.ly-tag-xiong { background: #9b59b622; color: #9b59b6; } /* 兄弟-紫 */
+.ly-tag-fu { background: #3498db22; color: #3498db; }    /* 父母-蓝 */
+
+.ly-marker {
+  display: inline-block; padding: 1px 5px; border-radius: 4px;
+  font-size: 0.6rem; font-weight: 700; margin: 0 1px;
+}
+.ly-marker.shi { background: #3498db22; color: #3498db; }
+.ly-marker.ying { background: #e74c3c22; color: #e74c3c; }
+.ly-marker.dong { background: rgba(200,169,110,0.2); color: var(--gold-light); }
+
+.liuyao-analysis {
+  padding: 10px 16px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4px;
+  background: rgba(255,255,255,0.01);
+}
+.liuyao-analysis .ly-row {
+  display: flex; justify-content: space-between;
+  font-size: 0.7rem; padding: 3px 8px;
+}
+.liuyao-analysis .ly-row span:first-child { color: var(--text-secondary); }
+
+.liuyao-reasons {
+  padding: 8px 16px; border-top: 1px solid var(--border);
+}
+.ly-reason {
+  font-size: 0.68rem; color: var(--text-secondary);
+  padding: 3px 0; line-height: 1.5;
+}
+.ly-reason::before { content: '▸ '; color: var(--gold-dark); }
+
+.liuyao-dangers {
+  padding: 6px 16px;
+}
+.ly-danger {
+  font-size: 0.66rem; padding: 3px 8px; border-radius: 4px;
+  background: #e74c3c0a; border-left: 2px solid #e74c3c44;
+  margin: 3px 0; color: var(--text-secondary);
+}
+
+.pred-range {
+  font-size: 0.65rem; color: var(--text-secondary);
+  margin-left: 8px;
+}
+
+@media (max-width: 640px) {
+  .liuyao-table { font-size: 0.68rem; }
+  .liuyao-analysis { grid-template-columns: 1fr; }
+  .liuyao-header { gap: 8px; }
+  .liuyao-gua-symbol { font-size: 1.5rem; }
+}
+
+/* 预测结果条 + 比分标签（共用） */
+.div-pred-result {
+  text-align: center; padding: 10px 16px; border-radius: var(--radius-sm);
+  font-size: 0.85rem; margin: 8px 0;
+}
+.div-pred-result.pred-home { background:#3498db12; color:#3498db; border:1px solid #3498db22; }
+.div-pred-result.pred-away { background:#e74c3c12; color:#e74c3c; border:1px solid #e74c3c22; }
+.div-pred-result.pred-draw { background:#95a5a612; color:#95a5a6; border:1px solid #95a5a622; }
+.div-pred-result strong { font-size: 0.95rem; }
+.pred-score-tag {
+  display: inline-block; padding: 1px 8px; border-radius: 5px;
+  background: rgba(200,169,110,0.15); color: var(--gold-light);
+  font-weight: 700; margin-left: 6px; font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .prediction-full-card .stat-main {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .stat-score-col { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+}
+
 .empty-msg { color: var(--text-secondary); text-align: center; padding: 40px; font-size: 0.85rem; }
 .err-msg { color: var(--red); text-align: center; padding: 40px; }
 .sub-desc { color: var(--text-secondary); font-size: 0.7rem; margin-bottom: 12px; }

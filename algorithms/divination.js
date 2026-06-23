@@ -1,487 +1,226 @@
 /**
- * 奇门遁甲 + 大六壬 · 世界杯比分占卜预测
+ * 六爻预测 · 世界杯比分占卜 v2.0
+ * 基于 iching-shifa 专业排盘库
  * 
- * 双术数体系，基于真实专业排盘：
- *   - 奇门遁甲：时日生克 + 八门吉凶 + 星神组合
- *   - 大六壬：四课三传 + 十二天将 + 课体解读
+ * 优势：
+ *   1. 每场独立起卦 — threeNumberQiGua 编码队伍+时间
+ *   2. 专业纳甲排盘 — 六亲/六兽/世应/星宿/纳音全自动
+ *   3. 六亲足球映射 — 世=主队 应=客队 财=进球 官=防守
+ *   4. 旺衰评分 — 月建+日辰双重加权
  */
 
-const { Solar, Lunar } = require('lunar-typescript');
+const { threeNumberQiGua, decodeGua, solarToLunar, BAGUA_XIANG } = require('iching-shifa');
 
-// ======================= 基础工具 =======================
-const ZHI = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-const GAN = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
-const GAN_WX = { '甲':'木','乙':'木','丙':'火','丁':'火','戊':'土','己':'土','庚':'金','辛':'金','壬':'水','癸':'水' };
-const ZHI_WX = { '子':'水','丑':'土','寅':'木','卯':'木','辰':'土','巳':'火','午':'火','未':'土','申':'金','酉':'金','戌':'土','亥':'水' };
-const GONG_WX = { '坎':'水','坤':'土','震':'木','巽':'木','乾':'金','兑':'金','艮':'土','离':'火' };
-const GONG_NAMES = ['','坎1','坤2','震3','巽4','中5','乾6','兑7','艮8','离9'];
-const STAR = ['','天蓬','天芮','天冲','天辅','天禽','天心','天柱','天任','天英'];
-const DOOR = ['','休门','死门','伤门','杜门','','开门','惊门','生门','景门']; // 中5无门
-const GOD = ['','值符','螣蛇','太阴','六合','白虎','玄武','九地','九天'];
+// ======================= 五行生克 =======================
+const WX_SHENG = {'金':'水','水':'木','木':'火','火':'土','土':'金'};
+const WX_KE    = {'金':'木','木':'土','土':'水','水':'火','火':'金'};
+const ZHI_WX   = {'子':'水','丑':'土','寅':'木','卯':'木','辰':'土','巳':'火','午':'火','未':'土','申':'金','酉':'金','戌':'土','亥':'水'};
+const GAN_WX   = {'甲':'木','乙':'木','丙':'火','丁':'火','戊':'土','己':'土','庚':'金','辛':'金','壬':'水','癸':'水'};
 
-// 十干寄宫
-const GAN_JI_GONG = { '甲':'寅','乙':'辰','丙':'巳','丁':'未','戊':'巳','己':'未','庚':'申','辛':'戌','壬':'亥','癸':'丑' };
-// 天干→地盘仪奇编号 (六仪三奇: 戊己庚辛壬癸丁丙乙)
-const GAN_TO_DIPAN = { '戊':1,'己':2,'庚':3,'辛':4,'壬':5,'癸':6,'丁':7,'丙':8,'乙':9 };
-// 六甲旬首→隐于干
-const XUN_TO_GAN = { '甲子':'戊','甲戌':'己','甲申':'庚','甲午':'辛','甲辰':'壬','甲寅':'癸' };
-const YUE_JIANG = ['','登明','河魁','从魁','传送','小吉','胜光','太乙','天罡','太冲','功曹','大吉','神后'];
-const TIAN_JIANG = ['贵人','螣蛇','朱雀','六合','勾陈','青龙','天空','白虎','太常','玄武','太阴','天后'];
+// 八卦符号映射
+const GUA_SYMBOLS = {
+  '乾':'☰','兑':'☱','离':'☲','震':'☳','巽':'☴','坎':'☵','艮':'☶','坤':'☷'
+};
 
-const WU_XING = { '水':1,'火':2,'木':3,'金':4,'土':5 };
-const KE = { '水':'火','火':'金','金':'木','木':'土','土':'水' };
-const SHENG = { '水':'木','木':'火','火':'土','土':'金','金':'水' };
-
-// ======================= 奇门遁甲 =======================
-function qimenPan(year, month, day, hour, minute) {
-  const solar = Solar.fromYmdHms(year, month, day, hour, minute, 0);
-  const lunar = Lunar.fromSolar(solar);
-
-  // 节气判定 + 局数
-  const jieQi = lunar.getPrevJieQi();
-  const nextJieQi = lunar.getNextJieQi();
-  const jieQiName = jieQi ? jieQi.getName() : '未知';
-
-  // 阴遁/阳遁判定 (冬至后阳遁, 夏至后阴遁)
-  const yangDunJieQi = ['冬至','小寒','大寒','立春','雨水','惊蛰','春分','清明','谷雨','立夏','小满','芒种'];
-  const isYangDun = jieQiName ? yangDunJieQi.includes(jieQiName) : true;
-
-  // 日干支
-  const riGanZhi = lunar.getDayInGanZhi();
-  const riGan = riGanZhi[0];
-  const riZhi = riGanZhi[1];
-
-  // 时干支
-  const shiGanZhi = lunar.getTimeInGanZhi();
-  const shiGan = shiGanZhi[0];
-  const shiZhi = shiGanZhi[1];
-
-  // 上中下元 → 局数
-  // 日干支序号 mod 3: 甲子戊辰...=上元, 己卯...=中元, 甲午...=下元
-  // 简化：用日干支的地支序号定元
-  const ganzhi60 = [
-    '甲子','乙丑','丙寅','丁卯','戊辰','己巳','庚午','辛未','壬申','癸酉',
-    '甲戌','乙亥','丙子','丁丑','戊寅','己卯','庚辰','辛巳','壬午','癸未',
-    '甲申','乙酉','丙戌','丁亥','戊子','己丑','庚寅','辛卯','壬辰','癸巳',
-    '甲午','乙未','丙申','丁酉','戊戌','己亥','庚子','辛丑','壬寅','癸卯',
-    '甲辰','乙巳','丙午','丁未','戊申','己酉','庚戌','辛亥','壬子','癸丑',
-    '甲寅','乙卯','丙辰','丁巳','戊午','己未','庚申','辛酉','壬戌','癸亥',
-  ];
-  const riIdx = ganzhi60.indexOf(riGanZhi);
-  const yuanIdx = Math.floor(riIdx / 10); // 0=甲子旬, 1=甲戌旬, ..., 5=甲寅旬
-  const yuanOrder = yuanIdx % 3; // 0=上元, 1=中元, 2=下元
-
-  // 芒种阳遁: 上元6,中元3,下元9
-  // 冬至阳遁: 上元1,中元7,下元4
-  // 其他节气类推...简化：芒种=阳遁6/3/9
-  const juTable = {
-    '芒种': isYangDun ? [6,3,9] : [6,3,9],
-    '夏至': [9,3,6],
-    '小暑': [8,2,5],
-    '大暑': [7,1,4],
-    '立秋': [2,5,8],
-    '处暑': [1,4,7],
-    '白露': [9,3,6],
-    '秋分': [7,1,4],
-    '寒露': [6,9,3],
-    '霜降': [5,8,2],
-    '立冬': [6,9,3],
-    '小雪': [5,8,2],
-    '大雪': [4,7,1],
-    '冬至': [1,7,4],
-    '小寒': [2,5,8],
-    '大寒': [3,6,9],
-    '立春': [8,5,2],
-    '雨水': [9,6,3],
-    '惊蛰': [1,7,4],
-    '春分': [3,9,6],
-    '清明': [4,1,7],
-    '谷雨': [5,2,8],
-    '立夏': [4,1,7],
-    '小满': [5,2,8],
+// 八卦从yaoString推 (6/8=阴, 7/9=阳)
+function yaoStrToGua(yaoStr) {
+  const nums = yaoStr.split('').map(Number);
+  const toYinYang = n => (n === 6 || n === 8) ? 0 : 1;
+  // 下卦: 位置0-2 (初爻到三爻), 上卦: 位置3-5 (四爻到上爻)
+  const lower = [toYinYang(nums[0]), toYinYang(nums[1]), toYinYang(nums[2])];
+  const upper = [toYinYang(nums[3]), toYinYang(nums[4]), toYinYang(nums[5])];
+  const trigramMap = {
+    '111':'乾','110':'兑','101':'离','100':'震',
+    '011':'巽','010':'坎','001':'艮','000':'坤'
   };
-
-  const juNum = (juTable[jieQiName] || (isYangDun ? [1,7,4] : [9,3,6]))[yuanOrder];
-
-  // 地盘排布
-  const dipan = {};
-  for (let i = 0; i < 9; i++) {
-    const gong = isYangDun
-      ? ((juNum - 1 + i) % 9) + 1
-      : ((juNum - 1 - i + 9) % 9) + 1;
-    dipan[gong] = i + 1; // 1=戊 2=己 ... 9=壬 10=癸 (甲隐)
-  }
-
-  // 旬首
-  const xunIdx = Math.floor(riIdx / 10) * 10;
-  const xunShou = ganzhi60[xunIdx];
-  const xunShouGan = XUN_TO_GAN[xunShou]; // 甲子→戊, 甲戌→己, 甲申→庚...
-  const xunShouGanNum = GAN_TO_DIPAN[xunShouGan]; // 地盘编号
-
-  // 值符星: 旬首地盘宫对应的星
-  const starBaseGong = [1,2,3,4,2,6,7,8,9]; // 天蓬=坎1...天英=离9, 天禽寄坤2
-  // 简化：旬首干在地盘哪个宫，该宫原星就是值符
-  let zhiFuGong = 0;
-  for (let g = 1; g <= 9; g++) {
-    if (dipan[g] === xunShouGanNum) { zhiFuGong = g; break; }
-  }
-  if (zhiFuGong === 5) zhiFuGong = 2; // 中5寄坤2
-  const zhiFuStarIdx = starBaseGong[zhiFuGong - 1];
-
-  // 值使门: 值符星本宫对应的门
-  const zhiShiDoorIdx = zhiFuStarIdx; // 星->门对应
-
-  // 时干落宫 = 值符星落宫
-  const shiGanNum = GAN_TO_DIPAN[shiGan] || GAN.indexOf(shiGan) + 1;
-  let shiGanGong = 0;
-  for (let g = 1; g <= 9; g++) {
-    if (dipan[g] === shiGanNum) { shiGanGong = g; break; }
-  }
-  // 若时干是甲(隐)或不在六仪三奇中，默认落离9
-  if (shiGanGong === 0) shiGanGong = 9;
-
-  // 天盘: 值符落时干宫, 其他星顺/逆排
-  const tianpan = {};
-  for (let i = 0; i < 9; i++) {
-    const starIdx = i + 1;
-    const offset = starIdx - zhiFuStarIdx;
-    let gong;
-    if (isYangDun) {
-      gong = shiGanGong + offset;
-      while (gong > 9) gong -= 9;
-      while (gong < 1) gong += 9;
-    } else {
-      gong = shiGanGong - offset;
-      while (gong < 1) gong += 9;
-      while (gong > 9) gong -= 9;
-    }
-    if (gong === 5 && starIdx !== 5) continue;
-    tianpan[gong] = starIdx;
-  }
-
-  // 八门: 值使门随时支
-  const shiZhiNum = ZHI.indexOf(shiZhi) + 1;
-  let doorGong = zhiFuGong;
-  for (let i = 1; i < shiZhiNum; i++) {
-    if (isYangDun) {
-      doorGong++;
-      if (doorGong === 5) doorGong++;
-      if (doorGong > 9) doorGong = 1;
-    } else {
-      doorGong--;
-      if (doorGong === 5) doorGong--;
-      if (doorGong < 1) doorGong = 9;
-    }
-  }
-
-  const bamen = {};
-  // 八门环: 休(1)→死(2)→伤(3)→杜(4)→开(6)→惊(7)→生(8)→景(9)
-  const doorCycle = [1,2,3,4,6,7,8,9];
-  // 从值使门(i=zhiShiDoorIdx)开始排列，找到值使在doorCycle中的位置
-  let doorStartIdx = doorCycle.indexOf(zhiShiDoorIdx);
-  if (doorStartIdx < 0) doorStartIdx = 0;
-
-  for (let i = 0; i < 9; i++) {
-    const gong = isYangDun
-      ? ((doorGong - 1 + i) % 9) + 1
-      : ((doorGong - 1 - i + 9) % 9) + 1;
-    if (gong === 5) continue; // 中5无门
-    const di = isYangDun ? (doorStartIdx + i) % 8 : (doorStartIdx - i + 8) % 8;
-    const dIdx = doorCycle[di];
-    if (dIdx) bamen[gong] = dIdx;
-  }
-
-  // 八神: 值符带头, 阳顺阴逆
-  const bashen = {};
-  for (let i = 0; i < 8; i++) {
-    const gong = isYangDun
-      ? ((shiGanGong - 1 + i) % 9) + 1
-      : ((shiGanGong - 1 - i + 9) % 9) + 1;
-    if (gong === 5) continue;
-    bashen[gong] = i + 1;
-  }
-
-  // 日干宫(主/左队) vs 时干宫(客/右队)
-  const riGanNum = GAN_TO_DIPAN[riGan] || (GAN.indexOf(riGan) + 1);
-  let riGanGong = 0;
-  for (let g = 1; g <= 9; g++) {
-    if (dipan[g] === riGanNum) { riGanGong = g; break; }
-  }
-  if (riGanGong === 5) riGanGong = 2;
-  if (shiGanGong === 5) shiGanGong = 2; // 中5寄坤2
-
-  // 结果: 分析日干宫 vs 时干宫
-  const riWx = GONG_WX[GONG_NAMES[riGanGong].slice(0,1)];
-  const shiWx = GONG_WX[GONG_NAMES[shiGanGong].slice(0,1)];
-
-  let result = '', advantage = '', scoreHint = '';
-  if (SHENG[riWx] === shiWx) { result = '日生时'; advantage = '客队(右队)有利'; scoreHint = '客队占优,净胜1-2球'; }
-  else if (SHENG[shiWx] === riWx) { result = '时生日'; advantage = '主队(左队)有利'; scoreHint = '主队占优,净胜1-2球'; }
-  else if (KE[riWx] === shiWx) { result = '日克时'; advantage = '主队克制客队'; scoreHint = '主队胜,1球小胜'; }
-  else if (KE[shiWx] === riWx) { result = '时克日'; advantage = '客队克制主队'; scoreHint = '客队胜,1球小胜'; }
-  else { result = '比和'; advantage = '势均力敌'; scoreHint = '平局或1球胜负'; }
-
-  // 时干宫门判断
-  const doorIdx = bamen[shiGanGong] || 0;
-  const doorName = DOOR[doorIdx];
-  const jimen = ['休门','开门','生门'];
-  const xiongmen = ['死门','惊门','伤门'];
-  const doorJiXiong = jimen.includes(doorName) ? '吉' : xiongmen.includes(doorName) ? '凶' : '平';
-
-  // 时干宫神判断
-  const shenIdx = bashen[shiGanGong] || 0;
-  const shenName = GOD[shenIdx];
-
   return {
-    method: '奇门遁甲',
-    isYangDun, juNum,
-    jieQi: jieQiName,
-    riGanZhi, shiGanZhi,
-    riGanGong: GONG_NAMES[riGanGong],
-    shiGanGong: GONG_NAMES[shiGanGong],
-    zhiFuStar: STAR[zhiFuStarIdx],
-    zhiShiDoor: DOOR[zhiShiDoorIdx],
-    riWx, shiWx,
-    shengKe: result,
-    advantage,
-    scoreHint,
-    doorName, doorJiXiong,
-    shenName,
-    dipan: Object.entries(dipan).slice(0, 9).map(([g,n]) => `${GONG_NAMES[+g]}:${GAN[n]}`),
-    analysis: `${GONG_NAMES[riGanGong]}宫(${riWx})${result}${GONG_NAMES[shiGanGong]}宫(${shiWx}), ${advantage}。时干宫${doorName}(${doorJiXiong}), 神${shenName}。${scoreHint}。`
+    xiaGua: trigramMap[lower.join('')] || '?',
+    xiaSymbol: GUA_SYMBOLS[trigramMap[lower.join('')]] || '?',
+    shangGua: trigramMap[upper.join('')] || '?',
+    shangSymbol: GUA_SYMBOLS[trigramMap[upper.join('')]] || '?',
   };
 }
 
-// ======================= 大六壬 =======================
-function liurenPan(year, month, day, hour, minute) {
-  const solar = Solar.fromYmdHms(year, month, day, hour, minute, 0);
-  const lunar = Lunar.fromSolar(solar);
+// ======================= 旺衰评分 =======================
+function yaoWangShuai(yaoWx, yueZhi, riZhi) {
+  const yueWx = ZHI_WX[yueZhi] || '';
+  const riWx = ZHI_WX[riZhi] || '';
+  let score = 0;
 
-  const riGanZhi = lunar.getDayInGanZhi();
-  const riGan = riGanZhi[0];
-  const riZhi = riGanZhi[1];
+  // 月建
+  if (yaoWx === yueWx) score += 1.5;
+  else if (WX_SHENG[yueWx] === yaoWx) score += 1;   // 月生
+  else if (WX_KE[yueWx] === yaoWx) score -= 1.5;     // 月克
+  else if (WX_SHENG[yaoWx] === yueWx) score -= 0.5;  // 泄
 
-  const shiGanZhi = lunar.getTimeInGanZhi();
-  const zhanZhi = shiGanZhi[1];
+  // 日辰
+  if (yaoWx === riWx) score += 1;
+  else if (WX_SHENG[riWx] === yaoWx) score += 0.5;
+  else if (WX_KE[riWx] === yaoWx) score -= 1;
+  else if (WX_SHENG[yaoWx] === riWx) score -= 0.3;
 
-  // 月将 ← 按节气中气确定（非十干寄宫）
-  // 十二中气 → 月将: 雨水→亥 春分→戌 谷雨→酉 小满→申 夏至→未 大暑→午
-  //                     处暑→巳 秋分→辰 霜降→卯 小雪→寅 冬至→丑 大寒→子
-  const YUEJIANG_MAP = {
-    '大寒':'子','冬至':'丑','小雪':'寅','霜降':'卯',
-    '秋分':'辰','处暑':'巳','大暑':'午','夏至':'未',
-    '小满':'申','谷雨':'酉','春分':'戌','雨水':'亥'
-  };
-  // 取上一个中气（prevJie）作为月将依据
-  const prevJie = lunar.getPrevJieQi();
-  const prevJieName = prevJie ? prevJie.getName() : '夏至';
-  const yueJiangZhi = YUEJIANG_MAP[prevJieName] || '未';
-
-  // 天盘
-  const tianPan = {};
-  const yjIdx = ZHI.indexOf(yueJiangZhi);
-  const zzIdx = ZHI.indexOf(zhanZhi);
-  for (let i = 0; i < 12; i++) {
-    const tianZhi = ZHI[(yjIdx + i) % 12];
-    const diZhi = ZHI[(zzIdx + i) % 12];
-    tianPan[diZhi] = tianZhi;
-  }
-
-  // 四课
-  const riGanGong = GAN_JI_GONG[riGan] || '子';
-  const ke1_s = tianPan[riGanGong]; // 干阳
-  const ke2_s = tianPan[ke1_s]; // 干阴
-  const ke3_s = tianPan[riZhi]; // 支阳
-  const ke4_s = tianPan[ke3_s]; // 支阴
-
-  const siKe = [
-    { label:'干阳', shang:ke1_s, xia:riGanGong },
-    { label:'干阴', shang:ke2_s, xia:ke1_s },
-    { label:'支阳', shang:ke3_s, xia:riZhi },
-    { label:'支阴', shang:ke4_s, xia:ke3_s },
-  ];
-
-  // 三传 (取贼克法, 简化: 取第一课发用)
-  // 若四课中有下贼上或上克下, 取发用
-  let chuChuan = null, zhongChuan = null, moChuan = null;
-
-  // 简化三传: 若有克则发用, 否则用昴星
-  const hasKe = (shang, xia) => {
-    const sx = ZHI_WX[shang] || '';
-    const xx = ZHI_WX[xia] || '';
-    return KE[sx] === xx || KE[xx] === sx;
-  };
-
-  // 找贼克
-  let faYongKe = null;
-  for (const ke of siKe) {
-    const sx = ZHI_WX[ke.shang], xx = ZHI_WX[ke.xia];
-    if (KE[xx] === sx) { faYongKe = ke; break; } // 下贼上优先
-  }
-  if (!faYongKe) {
-    for (const ke of siKe) {
-      const sx = ZHI_WX[ke.shang], xx = ZHI_WX[ke.xia];
-      if (KE[sx] === xx) { faYongKe = ke; break; } // 上克下
-    }
-  }
-
-  if (faYongKe) {
-    chuChuan = faYongKe.shang;
-    zhongChuan = tianPan[chuChuan];
-    moChuan = tianPan[zhongChuan];
-  } else {
-    // 无克, 用昴星: 日取干上神, 辰取支上神
-    const ganYang = tianPan[riGanGong];
-    const zhiYang = tianPan[riZhi];
-    const isYang = GAN.indexOf(riGan) % 2 === 0; // 甲丙戊庚壬=阳
-    chuChuan = isYang ? tianPan[ganYang] : tianPan[riGanGong];
-    zhongChuan = tianPan[chuChuan];
-    moChuan = tianPan[zhongChuan];
-  }
-
-  const sanChuan = { chu: chuChuan, zhong: zhongChuan, mo: moChuan };
-
-  // 十二天将 (贵人)
-  const guiRenZhi = { '甲':'丑','戊':'丑','庚':'丑', '乙':'子','己':'子', '丙':'亥','丁':'酉','辛':'午','壬':'巳','癸':'卯' };
-  const grZhi = ZHI.indexOf(guiRenZhi[riGan] || '丑');
-  const isDay = (hour >= 6 && hour < 18);
-  const tianJiangMap = {};
-  for (let i = 0; i < 12; i++) {
-    const offset = isDay ? i : -i;
-    const tjIdx = ((grZhi + offset) % 12 + 12) % 12;
-    tianJiangMap[ZHI[tjIdx]] = TIAN_JIANG[i];
-  }
-
-  // 解读
-  const chuWx = ZHI_WX[chuChuan], zhongWx = ZHI_WX[zhongChuan], moWx = ZHI_WX[moChuan];
-  const riWx = ZHI_WX[riGanGong];
-
-  // 初传 vs 日干 => 上半场
-  let firstHalf = '';
-  if (SHENG[chuWx] === riWx) firstHalf = '初传生日干→上半场主队有利';
-  else if (SHENG[riWx] === chuWx) firstHalf = '初传泄日干→上半场客队有利';
-  else if (KE[chuWx] === riWx) firstHalf = '初传克日干→上半场客队压制';
-  else if (KE[riWx] === chuWx) firstHalf = '日干克初传→上半场主队压制';
-  else firstHalf = '初传与日干比和→上半场均势';
-
-  // 末传 vs 日干 => 下半场/终局
-  let secondHalf = '';
-  if (SHENG[moWx] === riWx) secondHalf = '末传生日干→下半场主队优势';
-  else if (SHENG[riWx] === moWx) secondHalf = '末传泄日干→下半场客队优势';
-  else if (KE[moWx] === riWx) secondHalf = '末传克日干→终局客队有利';
-  else if (KE[riWx] === moWx) secondHalf = '日干克末传→终局主队有利';
-  else secondHalf = '末传与日干比和→终局均势';
-
-  // 中传决定比赛走势
-  let trend = '';
-  if (SHENG[zhongWx] === riWx) trend = '中传生日干→比赛中段主队转优';
-  else if (KE[zhongWx] === riWx) trend = '中传克日干→比赛中段客队压制';
-
-  return {
-    method: '大六壬',
-    riGanZhi, shiGanZhi,
-    yueJiang: yueJiangZhi,
-    zhanShi: zhanZhi,
-    siKe: siKe.map(k => `${k.label}: ${k.shang}(${ZHI_WX[k.shang]})↓${k.xia}(${ZHI_WX[k.xia]})`),
-    sanChuan: { chu: chuChuan, zhong: zhongChuan, mo: moChuan },
-    tianJiang: Object.entries(tianJiangMap).slice(0,6).map(([z,j]) => `${z}:${j}`),
-    chuWx, zhongWx, moWx, riWx,
-    firstHalf, trend, secondHalf,
-    analysis: `四课干阳${ke1_s}↓${riGanGong}，支阳${ke3_s}↓${riZhi}。三传: ${chuChuan}(${chuWx})→${zhongChuan}(${zhongWx})→${moChuan}(${moWx})。${firstHalf}；${trend ? trend + '；':''}${secondHalf}。`,
-  };
+  return score;
 }
 
-// ======================= 综合占卜预测 =======================
-function divineMatch(match) {
-  // 解析比赛时间
+// ======================= 综合预测 =======================
+function liuYaoPredict(match) {
   const [year, month, day] = match.date.split('-').map(Number);
   const [hour, minute] = match.time.split(':').map(Number);
 
-  const qimen = qimenPan(year, month, day, hour, minute || 0);
-  const liuren = liurenPan(year, month, day, hour, minute || 0);
+  // 1. 确定性起卦（队伍编码+时间 → 每场独立）
+  const hc = match.home.charCodeAt(0) || 0;
+  const ac = match.away.charCodeAt(0) || 0;
+  const n1 = year + month + day + hc;
+  const n2 = year + month + day + hour + ac;
+  const n3 = year + month + day + hour + hc + ac;
+  const yaoStr = threeNumberQiGua(n1, n2, n3);
 
-  // 综合: 奇门主胜负, 六壬主进程
-  const qShengKe = qimen.shengKe;
-  const qLabel = qShengKe === '日克时' ? 'home' :
-                  qShengKe === '时克日' ? 'away' :
-                  qShengKe === '日生时' ? 'away' :
-                  qShengKe === '时生日' ? 'home' : 'draw';
-  const lFinal2 = liuren.secondHalf;
-  const lLabel = lFinal2.includes('主队') ? 'home' :
-                  lFinal2.includes('客队') ? 'away' : 'draw';
+  // 2. 专业排盘
+  const lunar = solarToLunar(year, month, day, hour);
+  const gua = decodeGua(yaoStr, lunar.dayGanZhi);
 
-  // === 各自独立预测 ===
-  // 奇门独立预测
-  let qScore, qWinner, qVerdict;
-  if (qLabel === 'home') { qVerdict = 'home'; qWinner = match.home; qScore = qimen.shengKe === '日克时' ? '2-1' : '2-0'; }
-  else if (qLabel === 'away') { qVerdict = 'away'; qWinner = match.away; qScore = qimen.shengKe === '时克日' ? '1-2' : '0-2'; }
-  else { qVerdict = 'draw'; qWinner = '平局'; qScore = '1-1'; }
+  // 3. 八卦符号
+  const symbols = yaoStrToGua(yaoStr);
 
-  // 六壬独立预测
-  let lScore, lWinner, lVerdict;
-  if (lLabel === 'home') { lVerdict = 'home'; lWinner = match.home; lScore = '2-1'; }
-  else if (lLabel === 'away') { lVerdict = 'away'; lWinner = match.away; lScore = '1-2'; }
-  else { lVerdict = 'draw'; lWinner = '平局'; lScore = '1-1'; }
+  // 4. 提取关键爻
+  const yaoList = gua.yaoList;
+  const shiYao = yaoList.find(y => y.shiYing === '世');
+  const yingYao = yaoList.find(y => y.shiYing === '应');
+  const dongYaos = yaoList.filter(y => y.isMoving);
 
-  // === 综合判定 ===
-  let verdict, winner, score;
-  if (qLabel === lLabel && qLabel !== 'draw') {
-    verdict = qLabel; winner = qLabel === 'home' ? match.home : match.away;
-    score = qLabel === 'home' ? '2-1' : '1-2';
-  } else if (qLabel === lLabel && qLabel === 'draw') {
-    verdict = 'draw'; winner = '平局'; score = '1-1';
-  } else if (qLabel === 'draw') {
-    verdict = lLabel; winner = lLabel === 'home' ? match.home : match.away;
-    score = lLabel === 'home' ? '1-0' : lLabel === 'away' ? '0-1' : '1-1';
-  } else if (lLabel === 'draw') {
-    verdict = qLabel; winner = qLabel === 'home' ? match.home : match.away;
-    score = qLabel === 'home' ? '1-0' : qLabel === 'away' ? '0-1' : '1-1';
-  } else {
-    // 不一致时，用生克强的一边
-    verdict = qLabel; winner = qLabel === 'home' ? match.home : match.away;
-    score = qLabel === 'home' ? '1-0' : '0-1';
+  // 月令日辰
+  const yueZhi = (lunar.monthGanZhi?.gz || '午')[1] || '午';
+  const riZhi = (lunar.dayGanZhi?.gz || '寅')[1] || '寅';
+
+  // 5. 旺衰计算
+  const shiWang = yaoWangShuai(shiYao?.wuXing || '', yueZhi, riZhi);
+  const yingWang = yaoWangShuai(yingYao?.wuXing || '', yueZhi, riZhi);
+  const yaoWithWang = yaoList.map(y => ({
+    ...y,
+    wangScore: +yaoWangShuai(y.wuXing || '', yueZhi, riZhi).toFixed(1),
+  }));
+
+  // 6. 六亲足球映射
+  const caiYaos = yaoWithWang.filter(y => y.liuQin === '妻财');
+  const guanYaos = yaoWithWang.filter(y => y.liuQin === '官鬼');
+  const sunYaos = yaoWithWang.filter(y => y.liuQin === '子孙');
+  const fuYaos = yaoWithWang.filter(y => y.liuQin === '父母');
+
+  // 7. 胜负分析
+  let homeAdv = 0, awayAdv = 0;
+  const reasons = [];
+
+  const shiYingDiff = shiWang - yingWang;
+  if (shiYingDiff >= 1.5) { homeAdv += 2; reasons.push('世爻旺于应爻→主队占优'); }
+  else if (shiYingDiff >= 0.5) { homeAdv += 1; reasons.push('世爻略旺→主队小优'); }
+  else if (shiYingDiff <= -1.5) { awayAdv += 2; reasons.push('应爻旺于世爻→客队占优'); }
+  else if (shiYingDiff <= -0.5) { awayAdv += 1; reasons.push('应爻略旺→客队小优'); }
+  else { reasons.push('世应均势→实力接近'); }
+
+  // 动爻分析
+  const dangerSignals = [];
+  for (const dy of dongYaos) {
+    const dyWx = dy.wuXing || '';
+    const shiWx = shiYao?.wuXing || '';
+    const yingWx = yingYao?.wuXing || '';
+
+    if (WX_SHENG[dyWx] === shiWx) { homeAdv += 1.5; reasons.push(`动爻${dy.liuQin}(${dy.naJia})生世→主队有利`); }
+    if (WX_SHENG[dyWx] === yingWx) { awayAdv += 1.5; reasons.push(`动爻${dy.liuQin}(${dy.naJia})生应→客队有利`); }
+    if (WX_KE[dyWx] === shiWx) { awayAdv += 2; reasons.push(`动爻${dy.liuQin}(${dy.naJia})克世→⚠️主队受压`); }
+    if (WX_KE[dyWx] === yingWx) { homeAdv += 2; reasons.push(`动爻${dy.liuQin}(${dy.naJia})克应→⚠️客队受压`); }
+
+    if (dy.liuQin === '妻财') reasons.push('财爻发动→进球机会多');
+    if (dy.liuQin === '官鬼') { reasons.push('官鬼发动→⚠️防守压力/裁判因素'); }
+    if (dy.liuQin === '子孙') reasons.push('子孙发动→创造力释放');
+
+    // 六兽警示
+    if (dy.liuShou === '白虎' && dy.liuQin === '官鬼') dangerSignals.push('官鬼临白虎→⚠️红牌/点球/冲突风险');
+    if (dy.liuShou === '玄武' && dy.liuQin === '官鬼') dangerSignals.push('官鬼临玄武→⚠️争议判罚/暗算');
+    if (dy.liuShou === '青龙' && dy.liuQin === '妻财') dangerSignals.push('财爻临青龙→🍀进球盛宴信号');
   }
 
-  // 进球数预测
-  let goals;
-  if (score === '2-1' || score === '1-2') goals = 3;
-  else if (score === '1-0' || score === '0-1') goals = 1;
-  else goals = 2;
+  // 月破/日破
+  const CHONG = {子:'午',午:'子',丑:'未',未:'丑',寅:'申',申:'寅',卯:'酉',酉:'卯',辰:'戌',戌:'辰',巳:'亥',亥:'巳'};
+  for (const y of yaoList) {
+    const zhi = (y.naJia || '')[1];
+    if (zhi === CHONG[yueZhi] && y.isMoving) dangerSignals.push(`${y.liuQin}${y.naJia}月破→力量减半`);
+    if (zhi === CHONG[riZhi]) dangerSignals.push(`${y.liuQin}${y.naJia}日破→当日无力`);
+  }
+
+  // 8. 火力 = 财爻旺度 + 子孙*0.5 - 官鬼*0.3
+  const caiScore = caiYaos.reduce((s, c) => s + c.wangScore, 0);
+  const sunScore = sunYaos.reduce((s, c) => s + c.wangScore, 0);
+  const guanScore = guanYaos.reduce((s, c) => s + c.wangScore, 0);
+  const diff = homeAdv - awayAdv;
+  const totalFirepower = caiScore + sunScore * 0.5 - guanScore * 0.3;
+
+  // 9. 比分推断
+  let verdict, winner, score, goalRange;
+  if (diff >= 3) {
+    verdict = 'home'; winner = match.home;
+    if (totalFirepower >= 3) { score = '3-1'; goalRange = '主队大胜·3~5球'; }
+    else if (totalFirepower >= 1) { score = '2-1'; goalRange = '主队胜·2~3球'; }
+    else { score = '1-0'; goalRange = '主队小胜·1~2球'; }
+  } else if (diff >= 1.5) {
+    verdict = 'home'; winner = match.home;
+    if (totalFirepower >= 2) { score = '2-1'; goalRange = '主队胜·2~3球'; }
+    else { score = '1-0'; goalRange = '主队小胜·1~2球'; }
+  } else if (diff <= -3) {
+    verdict = 'away'; winner = match.away;
+    if (totalFirepower >= 3) { score = '1-3'; goalRange = '客队大胜·3~5球'; }
+    else if (totalFirepower >= 1) { score = '1-2'; goalRange = '客队胜·2~3球'; }
+    else { score = '0-1'; goalRange = '客队小胜·1~2球'; }
+  } else if (diff <= -1.5) {
+    verdict = 'away'; winner = match.away;
+    if (totalFirepower >= 2) { score = '1-2'; goalRange = '客队胜·2~3球'; }
+    else { score = '0-1'; goalRange = '客队小胜·1~2球'; }
+  } else {
+    verdict = 'draw'; winner = '平局';
+    if (totalFirepower >= 2) { score = '2-2 / 1-1'; goalRange = '进球平局·2~4球'; }
+    else if (totalFirepower >= 0) { score = '1-1'; goalRange = '平局·1~2球'; }
+    else { score = '0-0 / 1-1'; goalRange = '沉闷平局·0~1球'; }
+  }
 
   return {
     match: { home: match.home, away: match.away, date: match.date, time: match.time, group: match.group },
-    // 各自独立预测
-    qimenPrediction: { verdict: qVerdict, winner: qWinner, score: qScore },
-    liurenPrediction: { verdict: lVerdict, winner: lWinner, score: lScore },
-    // 综合判定
-    verdict, winner, score, goals,
-    agree: qVerdict === lVerdict,
-    qimen: {
-      ju: `${qimen.isYangDun?'阳遁':'阴遁'}${qimen.juNum}局`,
-      jieQi: qimen.jieQi,
-      riGanGong: qimen.riGanGong,
-      shiGanGong: qimen.shiGanGong,
-      shengKe: qimen.shengKe,
-      advantage: qimen.advantage,
-      doorName: qimen.doorName,
-      doorJiXiong: qimen.doorJiXiong,
-      shenName: qimen.shenName,
-      zhiFuStar: qimen.zhiFuStar,
-      zhiShiDoor: qimen.zhiShiDoor,
-      juNum: qimen.juNum,
-      analysis: qimen.analysis,
+    liuYaoPrediction: { verdict, winner, score, goalRange },
+    verdict, winner, score, goalRange,
+    gua: {
+      name: gua.guaName,
+      shangGua: symbols.shangGua, xiaGua: symbols.xiaGua,
+      shangSymbol: symbols.shangSymbol, xiaSymbol: symbols.xiaSymbol,
+      dongYao: dongYaos.length > 0 ? dongYaos[0].position : 0,
+      gong: gua.palace, gongWx: gua.palaceWuXing,
+      guaCi: gua.guaCi || '',
     },
-    liuren: {
-      yueJiang: liuren.yueJiang,
-      sanChuan: liuren.sanChuan,
-      firstHalf: liuren.firstHalf,
-      secondHalf: liuren.secondHalf,
-      trend: liuren.trend,
-      siKe: liuren.siKe.slice(0, 3),
-      analysis: liuren.analysis,
+    pan: {
+      yao: yaoWithWang.map(y => ({
+        pos: y.position,
+        zhi: y.naJia || '',       // 纳甲干支
+        wx: y.wuXing || '',
+        liuQin: y.liuQin || '',
+        liuQinCls: ({妻财:'cai',官鬼:'guan',子孙:'sun',兄弟:'xiong',父母:'fu'})[y.liuQin] || '',
+        liuShou: y.liuShou || '',
+        isDong: !!y.isMoving,
+        isShi: y.shiYing === '世',
+        isYing: y.shiYing === '应',
+        wangScore: y.wangScore,
+        xingXiu: y.xingXiu || '',
+        naYin: y.naYin || '',
+      })),
+      yueZhi, riZhi,
     },
-    summary: `【奇门】${qimen.analysis}\n【六壬】${liuren.analysis}\n综合: ${verdict==='home'?match.home+'胜':verdict==='away'?match.away+'胜':'平局'} ${score}`,
+    analysis: {
+      shiYao: `${shiYao?.liuQin || ''}${shiYao?.naJia || ''}(${shiYao?.wuXing || ''})` + (shiYao?.isMoving ? '·发动' : ''),
+      yingYao: `${yingYao?.liuQin || ''}${yingYao?.naJia || ''}(${yingYao?.wuXing || ''})` + (yingYao?.isMoving ? '·发动' : ''),
+      shiWang: +shiWang.toFixed(1),
+      yingWang: +yingWang.toFixed(1),
+      homeAdv: +diff.toFixed(1),
+      totalFirepower: +totalFirepower.toFixed(1),
+      reasons: reasons.slice(0, 6),
+      dangerSignals,
+    },
   };
 }
 
-module.exports = { divineMatch, qimenPan, liurenPan };
+module.exports = { liuYaoPredict };
