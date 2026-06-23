@@ -175,23 +175,21 @@ body {
 }
 .injury-col {
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  align-items: center;
+  flex-direction: column;
+  gap: 2px;
 }
 .injury-col-label {
   font-size: 0.7rem;
   font-weight: 700;
   color: var(--text-secondary);
   opacity: 0.6;
-  margin-right: 4px;
+  margin-bottom: 2px;
   white-space: nowrap;
 }
 .injury-note {
   font-size: 0.78rem;
-  padding: 3px 8px;
+  padding: 2px 0;
   line-height: 1.5;
-  white-space: nowrap;
 }
 .match-info .group-tag {
   display: inline-block;
