@@ -153,19 +153,29 @@ const completedMatches = [
     home:"突尼斯", away:"日本", score:"0-4", hg:0, ag:4,
     events:"日本4-0突尼斯获世界杯史上最大胜！三笘薰2球1助，突尼斯提前出局",
     motm:"三笘薰", venue:"洛杉矶·SoFi" },
+
+  // === 6月22日 ===
+  { id:"M37", date:"2026-06-22", time:"00:00", group:"H", round:2,
+    home:"西班牙", away:"沙特阿拉伯", score:"4-0", hg:4, ag:0,
+    events:"亚马尔世界杯首球！奥亚萨瓦尔独中两元，西班牙取本届首胜",
+    motm:"奥亚萨瓦尔", venue:"亚特兰大·梅赛德斯-奔驰" },
+  { id:"M38", date:"2026-06-22", time:"03:00", group:"G", round:2,
+    home:"比利时", away:"伊朗", score:"0-0", hg:0, ag:0,
+    events:"伊朗任意球VAR判无效，比利时恩戈伊染红，十人苦守平局",
+    motm:"库尔图瓦(缺阵)", venue:"洛杉矶·SoFi" },
+  { id:"M39", date:"2026-06-22", time:"06:00", group:"H", round:2,
+    home:"乌拉圭", away:"佛得角", score:"2-2", hg:2, ag:2,
+    events:"佛得角两度落后两度追平！凯文·皮纳队史首球，瓦雷拉抢断破门",
+    motm:"凯文·皮纳", venue:"墨西哥城·阿兹特克" },
+  { id:"M40", date:"2026-06-22", time:"09:00", group:"G", round:2,
+    home:"新西兰", away:"埃及", score:"1-3", hg:1, ag:3,
+    events:"埃及92年世界杯首胜！萨拉赫传射，济科+特雷泽盖头球逆转",
+    motm:"萨拉赫", venue:"蒙特雷·BBVA" },
 ];
 
-// ======================== 6月22日对阵 ========================
-const june22Matches = [
-  { id:"M37", date:"2026-06-22", time:"00:00", group:"H", round:2,
-    home:"西班牙", away:"沙特阿拉伯", status:"upcoming" },
-  { id:"M38", date:"2026-06-22", time:"03:00", group:"G", round:2,
-    home:"比利时", away:"伊朗", status:"upcoming" },
-  { id:"M39", date:"2026-06-22", time:"06:00", group:"H", round:2,
-    home:"乌拉圭", away:"佛得角", status:"upcoming" },
-  { id:"M40", date:"2026-06-22", time:"09:00", group:"G", round:2,
-    home:"新西兰", away:"埃及", status:"upcoming" },
-];
+// ======================== 6月22日 ========================
+// (moved to completed)
+const june22Matches = [];
 
 // 后续赛程（第二轮剩余 + 第三轮）
 const futureMatches = [

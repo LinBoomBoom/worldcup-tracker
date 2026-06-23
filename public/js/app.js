@@ -70,9 +70,12 @@ function renderScores(container) {
 
   // 排序按钮 + 标题
   const sortIcon = scoreSortOrder === 'desc' ? '↓ 最新在前' : '↑ 最早在前';
+  // 取下一个比赛日
+  const nextDates = [...new Set(upcoming.map(m => m.date))].sort();
+  const nextDay = nextDates[0] || '待定';
   html.push(`
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-      <h2 class="section-title" style="margin-bottom:0;border-bottom:none;padding-bottom:0">📅 6月22日赛程预告</h2>
+      <h2 class="section-title" style="margin-bottom:0;border-bottom:none;padding-bottom:0">📅 ${nextDay} 赛程预告</h2>
       <button class="sort-toggle-btn" onclick="toggleScoreSort()" title="切换排序">${sortIcon}</button>
     </div>`);
 
