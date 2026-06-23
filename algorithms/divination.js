@@ -188,21 +188,22 @@ function liuYaoPredict(match) {
   const xH = Math.max(0.1, Math.min(5.5, baseH + yaoJitter));
   const xA = Math.max(0.1, Math.min(5.5, baseA - yaoJitter));
 
-  // 蒙特卡洛采样取最可能比分（1000次，离散化）
-  function poisson(lambda, k) {
-    return Math.exp(-lambda) * Math.pow(lambda, k) / (k <= 1 ? 1 : k * arguments.callee(lambda, k-1));
-  }
+  // 蒙特卡洛采样取最可能比分
+  function fact(n) { return n <= 1 ? 1 : n * fact(n-1); }
   const scoreProbs = [];
   for (let hg = 0; hg <= 7; hg++) {
     for (let ag = 0; ag <= 7; ag++) {
       const p = Math.exp(-xH) * Math.pow(xH, hg) / fact(hg) *
                 Math.exp(-xA) * Math.pow(xA, ag) / fact(ag);
-      scoreProbs.push({ hg, ag, p });
+      scoreProbs.push({ score: `${hg}-${ag}`, hg, ag, p });
     }
   }
-  function fact(n) { return n <= 1 ? 1 : n * fact(n-1); }
   scoreProbs.sort((a,b) => b.p - a.p);
   const topScore = scoreProbs[0];
+  const altScores = scoreProbs.slice(0, 3).map(s => ({
+    score: s.score,
+    prob: +(s.p * 100).toFixed(1)
+  }));
 
   // 胜负判定
   let verdict, winner, score, goalRange, totalGoals;
@@ -214,8 +215,28 @@ function liuYaoPredict(match) {
     verdict = 'draw'; winner = '平局';
   }
 
-  score = `${topScore.hg}-${topScore.ag}`;
+  score = topScore.score;
   totalGoals = topScore.hg + topScore.ag;
+
+  // ========== 把握度计算 ==========
+  // 因子：世应旺衰共识度(40%) + 动爻信号强度(30%) + 首分概率集中度(30%)
+  const shiYingGap = Math.abs(shiWang - yingWang); // 世应差距越大→信号越清晰
+  const gapScore = Math.min(1, shiYingGap / 3); // 差距3以上满分
+
+  const dongScore = Math.min(1, dongYaos.length * 0.3 + // 动爻越多越有信息
+    (dongYaos.some(d => d.liuQin === '妻财' || d.liuQin === '官鬼') ? 0.2 : 0));
+
+  const probConcentration = topScore.p * 64; // 64种比分的概率集中度(≈topScore.p÷1/64)
+  const probScore = Math.min(1, probConcentration * 1.5);
+
+  // 月破/日破惩罚
+  const poBreakPenalty = dangerSignals.filter(s => s.includes('月破') || s.includes('日破')).length * 0.15;
+
+  const rawConf = gapScore * 0.4 + dongScore * 0.3 + probScore * 0.3 - poBreakPenalty;
+  const confidence = Math.max(15, Math.min(95, Math.round(rawConf * 100)));
+
+  // 把握度评级
+  const confLevel = confidence >= 70 ? '🟢 高把握' : confidence >= 45 ? '🟡 中把握' : '🔴 低把握';
 
   if (totalGoals >= 7) goalRange = `超大比分·进球盛宴(${totalGoals}球)`;
   else if (totalGoals >= 5) goalRange = `大球局·${totalGoals}球总进球`;
@@ -225,8 +246,8 @@ function liuYaoPredict(match) {
 
   return {
     match: { home: match.home, away: match.away, date: match.date, time: match.time, group: match.group },
-    liuYaoPrediction: { verdict, winner, score, goalRange },
-    verdict, winner, score, goalRange,
+    liuYaoPrediction: { verdict, winner, score, goalRange, confidence, confLevel, altScores },
+    verdict, winner, score, goalRange, confidence, confLevel, altScores,
     gua: {
       name: gua.guaName,
       shangGua: symbols.shangGua, xiaGua: symbols.xiaGua,

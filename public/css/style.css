@@ -162,6 +162,13 @@ body {
   color: var(--text-secondary);
   text-align: center;
 }
+.match-injuries {
+  font-size: 0.65rem;
+  margin-top: 4px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  text-align: center;
+}
 .match-info .group-tag {
   display: inline-block;
   padding: 2px 8px;
@@ -683,6 +690,22 @@ body {
   background: rgba(200,169,110,0.15); color: var(--gold-light);
   font-weight: 700; margin-left: 6px; font-size: 0.9rem;
 }
+.div-confidence {
+  display: inline-block; padding: 1px 8px; border-radius: 5px;
+  font-size: 0.72rem; font-weight: 700; margin-left: 6px;
+}
+.div-confidence.conf-high { background: #2ecc7118; color: #2ecc71; }
+.div-confidence.conf-med  { background: #f39c1218; color: #f39c12; }
+.div-confidence.conf-low  { background: #e74c3c18; color: #e74c3c; }
+.div-alt-scores {
+  margin-top: 5px; font-size: 0.7rem; color: var(--text-secondary);
+  display: flex; flex-wrap: wrap; gap: 4px; align-items: center;
+}
+.alt-score-item {
+  display: inline-block; padding: 1px 6px; border-radius: 4px;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
+}
+.alt-score-item small { opacity: 0.6; }
 
 @media (max-width: 640px) {
   .prediction-full-card .stat-main {

@@ -75,12 +75,29 @@ function renderScores(container) {
   });
   const upDates = Object.keys(upByDate).sort();
 
+  // 辅助：取一队伤病摘要
+  function injuryHint(team) {
+    const list = (allData.injuries || []).filter(i => i.team === team);
+    if (!list.length) return '';
+    const tags = list.map(i => {
+      if (i.status.includes('缺阵')||i.status.includes('退役')||i.status.includes('伤缺')) return `🚫${i.player}缺阵`;
+      if (i.status.includes('成疑')) return `⚠️${i.player}存疑`;
+      if (i.status.includes('风险')||i.status.includes('累积')) return `🟡${i.player}黄牌风险`;
+      if (i.status.includes('出局')) return `❌已出局`;
+      return '';
+    }).filter(Boolean);
+    return tags.length ? tags.join(' ') : '';
+  }
+
   if (upDates.length > 0) {
     // 最近日期 - 全展开
     const nextDate = upDates[0];
     const nextMatches = upByDate[nextDate].sort((a,b) => a.time.localeCompare(b.time));
     html.push(`<h2 class="section-title">📅 ${nextDate} 赛程预告</h2>`);
     nextMatches.forEach(m => {
+      const hHint = injuryHint(m.home);
+      const aHint = injuryHint(m.away);
+      const injHTML = (hHint || aHint) ? `<div class="match-injuries">${hHint}${hHint&&aHint?' · ':''}${aHint}</div>` : '';
       html.push(`
         <div class="card match-card upcoming-match">
           <div class="match-date"><strong>${m.date.slice(5)}</strong><br><span class="time">${m.time}</span></div>
@@ -94,6 +111,7 @@ function renderScores(container) {
           <div class="match-info">
             <span class="group-tag ${m.group}">${m.group}组</span>
             <span>第${m.round}轮</span>
+            ${injHTML}
           </div>
         </div>`);
     });
@@ -393,6 +411,17 @@ function buildLiuYaoPanel(div) {
   h += '<div class="div-pred-result '+(vc==='home'?'pred-home':vc==='away'?'pred-away':'pred-draw')+'">';
   h += '🎯 六爻预测：<strong>'+lp.winner+'</strong> <span class="pred-score-tag">'+lp.score+'</span>';
   h += '<span class="pred-range">'+lp.goalRange+'</span>';
+  // 把握度
+  if (lp.confidence) {
+    const confCls = lp.confidence >= 70 ? 'conf-high' : lp.confidence >= 45 ? 'conf-med' : 'conf-low';
+    h += '<span class="div-confidence '+confCls+'">'+lp.confLevel+' '+lp.confidence+'%</span>';
+  }
+  // 备选比分
+  if (lp.altScores && lp.altScores.length > 1) {
+    h += '<div class="div-alt-scores">备选：';
+    h += lp.altScores.slice(1).map(s => '<span class="alt-score-item">'+s.score+' <small>'+s.prob+'%</small></span>').join('');
+    h += '</div>';
+  }
   h += '</div>';
 
   return h;
