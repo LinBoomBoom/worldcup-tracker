@@ -318,23 +318,31 @@ async function renderPredictions(container) {
         const p = item.prediction;
         const div = divs[i] || null;
         const matchId = 'match-' + day.date + '-' + i;
-
-        // === 统计预测卡片 ===
         const confCls = p.confidence >= 80 ? 'high' : p.confidence >= 60 ? 'med' : 'low';
         const verdictCls = p.winner === 'home' ? 'home-conf' : p.winner === 'away' ? 'away-conf' : 'draw-conf';
         const verdictText = p.winner === 'home' ? item.match.home + '胜' : p.winner === 'away' ? item.match.away + '胜' : '平局';
         const winnerIcon = p.winner === 'home' ? '🏠' : p.winner === 'away' ? '✈️' : '🤝';
 
         html.push('<div class="card prediction-full-card">');
-        // 统计预测头部
-        html.push('<div class="stat-head">');
-        html.push('<div class="stat-teams">'+item.match.home+' <span class="stat-vs">vs</span> '+item.match.away+'</div>');
-        html.push('<div class="stat-meta">'+item.match.time+' · '+item.match.group+'组 · 第'+item.match.round+'轮</div>');
+
+        // === 可折叠头部 ===
+        html.push('<div class="pred-collapse-header" onclick="togglePredCard(this)">');
+        html.push('<div class="pred-header-left">');
+        html.push('<span class="pred-header-teams">'+item.match.home+' <span class="stat-vs">vs</span> '+item.match.away+'</span>');
+        html.push('<span class="pred-header-meta">'+item.match.time+' · '+item.match.group+'组 · 第'+item.match.round+'轮</span>');
         html.push('</div>');
+        html.push('<div class="pred-header-right">');
+        html.push('<span class="pred-header-score">'+p.predictedScore+'</span>');
+        html.push('<span class="stat-verdict '+verdictCls+'">'+winnerIcon+' '+verdictText+'</span>');
+        html.push('<span class="pred-header-toggle">▼</span>');
+        html.push('</div>');
+        html.push('</div>');
+
+        // === 可折叠主体 ===
+        html.push('<div class="pred-collapse-body" style="display:block">');
 
         html.push('<div class="stat-main">');
         html.push('<div class="stat-score-col">');
-        html.push('<span class="stat-pred-score">'+p.predictedScore+'</span>');
         html.push('<span class="stat-verdict '+verdictCls+'">'+winnerIcon+' '+verdictText+'</span>');
         html.push('<span class="stat-confidence conf-'+confCls+'">置信度 '+p.confidence+'%</span>');
         html.push('</div>');
@@ -363,6 +371,8 @@ async function renderPredictions(container) {
         }
 
         html.push('</div>'); // .card
+
+        html.push('</div>'); // .pred-collapse-body
       });
 
       html.push('</div></div>'); // .day-body .day-section
@@ -530,6 +540,14 @@ function renderAlgorithms(container) {
 function toggleDaySection(header) {
   const body = header.nextElementSibling;
   const toggle = header.querySelector('.day-toggle');
+  const isVisible = body.style.display !== 'none';
+  body.style.display = isVisible ? 'none' : 'block';
+  toggle.textContent = isVisible ? '▶' : '▼';
+}
+
+function togglePredCard(header) {
+  const body = header.nextElementSibling;
+  const toggle = header.querySelector('.pred-header-toggle');
   const isVisible = body.style.display !== 'none';
   body.style.display = isVisible ? 'none' : 'block';
   toggle.textContent = isVisible ? '▶' : '▼';
