@@ -75,18 +75,31 @@ function renderScores(container) {
   });
   const upDates = Object.keys(upByDate).sort();
 
-  // 辅助：取一队伤病摘要
-  function injuryHint(team) {
-    const list = (allData.injuries || []).filter(i => i.team === team);
-    if (!list.length) return '';
-    const tags = list.map(i => {
-      if (i.status.includes('缺阵')||i.status.includes('退役')||i.status.includes('伤缺')) return `🚫${i.player}缺阵`;
-      if (i.status.includes('成疑')) return `⚠️${i.player}存疑`;
-      if (i.status.includes('风险')||i.status.includes('累积')) return `🟡${i.player}黄牌风险`;
-      if (i.status.includes('出局')) return `❌已出局`;
-      return '';
-    }).filter(Boolean);
-    return tags.length ? tags.join(' ') : '';
+  // 辅助：取一队伤病/状态摘要（返回结构化数组）
+  function teamNotes(team) {
+    const notes = [];
+    (allData.injuries || []).filter(i => i.team === team).forEach(i => {
+      const s = i.status; const d = i.detail;
+      if (s.includes('缺阵')||s.includes('伤缺')) notes.push({type:'out',icon:'🚫',text:`${i.player} ${s}`,detail:d});
+      else if (s.includes('退役')||s.includes('退出')) notes.push({type:'out',icon:'👋',text:`${i.player} ${s}`,detail:d});
+      else if (s.includes('成疑')||s.includes('轻伤')) notes.push({type:'doubt',icon:'⚠️',text:`${i.player} ${s}`,detail:d});
+      else if (s.includes('风险')||s.includes('累积')||s.includes('停赛')) notes.push({type:'risk',icon:'🟡',text:`${i.player} ${s}`,detail:d});
+      else if (s.includes('出局')) notes.push({type:'out',icon:'❌',text:`${i.player} ${s}`,detail:d});
+      else if (s.includes('最后一届')||s.includes('确认')) notes.push({type:'info',icon:'📌',text:`${i.player} ${s}`,detail:d});
+      else if (s.includes('轮换')||s.includes('轮休')) notes.push({type:'info',icon:'🔄',text:`${i.player} ${s}`,detail:d});
+      else notes.push({type:'info',icon:'ℹ️',text:`${i.player}: ${s}`,detail:d});
+    });
+    return notes;
+  }
+
+  // 将notes渲染为HTML
+  function notesHTML(notes, isExpanded) {
+    if (!notes.length) return '';
+    const colors = { out:'#e74c3c', doubt:'#f39c12', risk:'#f1c40f', info:'#7f8c8d' };
+    const labels = notes.map(n =>
+      `<span class="injury-note" style="border-left:2px solid ${colors[n.type]};color:${colors[n.type]}">${n.icon} ${n.text}</span>`
+    ).join('');
+    return `<div class="match-injuries-panel" style="display:${isExpanded?'block':'none'}">${labels}</div>`;
   }
 
   if (upDates.length > 0) {
@@ -95,9 +108,10 @@ function renderScores(container) {
     const nextMatches = upByDate[nextDate].sort((a,b) => a.time.localeCompare(b.time));
     html.push(`<h2 class="section-title">📅 ${nextDate} 赛程预告</h2>`);
     nextMatches.forEach(m => {
-      const hHint = injuryHint(m.home);
-      const aHint = injuryHint(m.away);
-      const injHTML = (hHint || aHint) ? `<div class="match-injuries">${hHint}${hHint&&aHint?' · ':''}${aHint}</div>` : '';
+      const hNotes = teamNotes(m.home);
+      const aNotes = teamNotes(m.away);
+      const allNotes = [...hNotes, ...aNotes];
+      const noteToggle = allNotes.length ? `<button class="injury-toggle-btn" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none';this.textContent=this.textContent.startsWith('📋')?'✕ 收起':'📋 ${allNotes.length}条提示'">📋 ${allNotes.length}条提示</button>` : '';
       html.push(`
         <div class="card match-card upcoming-match">
           <div class="match-date"><strong>${m.date.slice(5)}</strong><br><span class="time">${m.time}</span></div>
@@ -111,7 +125,8 @@ function renderScores(container) {
           <div class="match-info">
             <span class="group-tag ${m.group}">${m.group}组</span>
             <span>第${m.round}轮</span>
-            ${injHTML}
+            ${noteToggle}
+            ${notesHTML(allNotes, false)}
           </div>
         </div>`);
     });
