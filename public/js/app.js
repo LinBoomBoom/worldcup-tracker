@@ -92,14 +92,18 @@ function renderScores(container) {
     return notes;
   }
 
-  // 将notes渲染为独立一行HTML
-  function notesHTML(notes) {
-    if (!notes.length) return '';
+  // 将notes渲染为左右分栏HTML（主队/客队）
+  function notesHTML(hNotes, aNotes, home, away) {
+    if (!hNotes.length && !aNotes.length) return '';
     const colors = { out:'#e74c3c', doubt:'#f39c12', risk:'#f1c40f', info:'#7f8c8d' };
-    const labels = notes.map(n =>
-      `<span class="injury-note" style="border-left:2px solid ${colors[n.type]};color:${colors[n.type]}">${n.icon} ${n.text}</span>`
-    ).join('');
-    return `<div class="match-injuries-panel">${labels}</div>`;
+    const renderCol = (notes, label) => {
+      if (!notes.length) return '';
+      const items = notes.map(n =>
+        `<span class="injury-note" style="border-left:2px solid ${colors[n.type]};color:${colors[n.type]}">${n.icon} ${n.text}</span>`
+      ).join('');
+      return `<div class="injury-col"><span class="injury-col-label">${label}</span>${items}</div>`;
+    };
+    return `<div class="match-injuries-panel">${renderCol(hNotes, home)}${renderCol(aNotes, away)}</div>`;
   }
 
   if (upDates.length > 0) {
@@ -110,7 +114,6 @@ function renderScores(container) {
     nextMatches.forEach(m => {
       const hNotes = teamNotes(m.home);
       const aNotes = teamNotes(m.away);
-      const allNotes = [...hNotes, ...aNotes];
       html.push(`
         <div class="card match-card upcoming-match">
           <div class="match-date"><strong>${m.date.slice(5)}</strong><br><span class="time">${m.time}</span></div>
@@ -125,7 +128,7 @@ function renderScores(container) {
             <span class="group-tag ${m.group}">${m.group}组</span>
             <span>第${m.round}轮</span>
           </div>
-          ${notesHTML(allNotes, true)}
+          ${notesHTML(hNotes, aNotes, m.home, m.away)}
         </div>`);
     });
 
