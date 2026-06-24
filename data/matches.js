@@ -223,49 +223,76 @@ const june24Matches = [
     motm:"穆尼奥斯", venue:"温哥华·BC Place" },
 ];
 
-// ======================== 后续赛程 ========================
+// ======================== 后续赛程（数据来源：163体育官方赛程 2026-06-24）========================
 const futureMatches = [
 
-  // === 6月25日 第三轮开始（同组同时开赛）===
-  // A组
-  { id:"M49", date:"2026-06-25", time:"03:00", group:"A", round:3,
-    home:"墨西哥", away:"捷克", status:"upcoming" },
-  { id:"M50", date:"2026-06-25", time:"03:00", group:"A", round:3,
-    home:"韩国", away:"南非", status:"upcoming" },
-  // B组
-  { id:"M51", date:"2026-06-25", time:"06:00", group:"B", round:3,
+  // === 6月25日 第三轮（同组同时开赛）===
+  // B组 03:00
+  { id:"M49", date:"2026-06-25", time:"03:00", group:"B", round:3,
     home:"瑞士", away:"加拿大", status:"upcoming" },
-  { id:"M52", date:"2026-06-25", time:"06:00", group:"B", round:3,
+  { id:"M50", date:"2026-06-25", time:"03:00", group:"B", round:3,
     home:"波黑", away:"卡塔尔", status:"upcoming" },
-  // C组
-  { id:"M53", date:"2026-06-25", time:"09:00", group:"C", round:3,
-    home:"巴西", away:"苏格兰", status:"upcoming" },
-  { id:"M54", date:"2026-06-25", time:"09:00", group:"C", round:3,
+  // C组 06:00
+  { id:"M51", date:"2026-06-25", time:"06:00", group:"C", round:3,
+    home:"苏格兰", away:"巴西", status:"upcoming" },
+  { id:"M52", date:"2026-06-25", time:"06:00", group:"C", round:3,
     home:"摩洛哥", away:"海地", status:"upcoming" },
+  // A组 09:00
+  { id:"M53", date:"2026-06-25", time:"09:00", group:"A", round:3,
+    home:"捷克", away:"墨西哥", status:"upcoming" },
+  { id:"M54", date:"2026-06-25", time:"09:00", group:"A", round:3,
+    home:"南非", away:"韩国", status:"upcoming" },
 
   // === 6月26日 ===
-  // D组
-  { id:"M55", date:"2026-06-26", time:"03:00", group:"D", round:3,
-    home:"美国", away:"土耳其", status:"upcoming" },
-  { id:"M56", date:"2026-06-26", time:"03:00", group:"D", round:3,
-    home:"澳大利亚", away:"巴拉圭", status:"upcoming" },
-  // E组
-  { id:"M57", date:"2026-06-26", time:"06:00", group:"E", round:3,
-    home:"德国", away:"厄瓜多尔", status:"upcoming" },
-  { id:"M58", date:"2026-06-26", time:"06:00", group:"E", round:3,
-    home:"科特迪瓦", away:"库拉索", status:"upcoming" },
+  // E组 04:00
+  { id:"M55", date:"2026-06-26", time:"04:00", group:"E", round:3,
+    home:"厄瓜多尔", away:"德国", status:"upcoming" },
+  { id:"M56", date:"2026-06-26", time:"04:00", group:"E", round:3,
+    home:"库拉索", away:"科特迪瓦", status:"upcoming" },
+  // F组 07:00
+  { id:"M57", date:"2026-06-26", time:"07:00", group:"F", round:3,
+    home:"突尼斯", away:"荷兰", status:"upcoming" },
+  { id:"M58", date:"2026-06-26", time:"07:00", group:"F", round:3,
+    home:"日本", away:"瑞典", status:"upcoming" },
+  // D组 10:00
+  { id:"M59", date:"2026-06-26", time:"10:00", group:"D", round:3,
+    home:"土耳其", away:"美国", status:"upcoming" },
+  { id:"M60", date:"2026-06-26", time:"10:00", group:"D", round:3,
+    home:"巴拉圭", away:"澳大利亚", status:"upcoming" },
 
   // === 6月27日 ===
-  // F组
-  { id:"M59", date:"2026-06-27", time:"03:00", group:"F", round:3,
-    home:"荷兰", away:"突尼斯", status:"upcoming" },
-  { id:"M60", date:"2026-06-27", time:"03:00", group:"F", round:3,
-    home:"日本", away:"瑞典", status:"upcoming" },
-  // G组（时间待官方确认，暂按03:00/06:00布局）
-  { id:"M61", date:"2026-06-27", time:"06:00", group:"G", round:3,
-    home:"比利时", away:"新西兰", status:"upcoming" },
-  { id:"M62", date:"2026-06-27", time:"06:00", group:"G", round:3,
-    home:"伊朗", away:"埃及", status:"upcoming" },
+  // I组 03:00
+  { id:"M61", date:"2026-06-27", time:"03:00", group:"I", round:3,
+    home:"挪威", away:"法国", status:"upcoming" },
+  { id:"M62", date:"2026-06-27", time:"03:00", group:"I", round:3,
+    home:"塞内加尔", away:"伊拉克", status:"upcoming" },
+  // H组 08:00
+  { id:"M63", date:"2026-06-27", time:"08:00", group:"H", round:3,
+    home:"乌拉圭", away:"西班牙", status:"upcoming" },
+  { id:"M64", date:"2026-06-27", time:"08:00", group:"H", round:3,
+    home:"佛得角", away:"沙特阿拉伯", status:"upcoming" },
+  // G组 11:00
+  { id:"M65", date:"2026-06-27", time:"11:00", group:"G", round:3,
+    home:"新西兰", away:"比利时", status:"upcoming" },
+  { id:"M66", date:"2026-06-27", time:"11:00", group:"G", round:3,
+    home:"埃及", away:"伊朗", status:"upcoming" },
+
+  // === 6月28日 ===
+  // L组 05:00
+  { id:"M67", date:"2026-06-28", time:"05:00", group:"L", round:3,
+    home:"巴拿马", away:"英格兰", status:"upcoming" },
+  { id:"M68", date:"2026-06-28", time:"05:00", group:"L", round:3,
+    home:"克罗地亚", away:"加纳", status:"upcoming" },
+  // K组 07:30
+  { id:"M69", date:"2026-06-28", time:"07:30", group:"K", round:3,
+    home:"哥伦比亚", away:"葡萄牙", status:"upcoming" },
+  { id:"M70", date:"2026-06-28", time:"07:30", group:"K", round:3,
+    home:"民主刚果", away:"乌兹别克斯坦", status:"upcoming" },
+  // J组 10:00
+  { id:"M71", date:"2026-06-28", time:"10:00", group:"J", round:3,
+    home:"约旦", away:"阿根廷", status:"upcoming" },
+  { id:"M72", date:"2026-06-28", time:"10:00", group:"J", round:3,
+    home:"阿尔及利亚", away:"奥地利", status:"upcoming" },
 ];
 
 // ======================== 积分榜 ========================
@@ -275,7 +302,8 @@ function buildStandings() {
     if (!groups[g]) groups[g] = {};
   };
 
-  for (const m of completedMatches) {
+  const allCompleted = [...completedMatches, ...june24Matches];
+  for (const m of allCompleted) {
     initGroup(m.group);
     // home
     if (!groups[m.group][m.home]) {
@@ -306,7 +334,8 @@ function buildStandings() {
 // ======================== 小组历史对阵 ========================
 function buildGroupHistory() {
   const groups = {};
-  for (const m of completedMatches) {
+  const allCompleted = [...completedMatches, ...june24Matches];
+  for (const m of allCompleted) {
     if (!groups[m.group]) groups[m.group] = [];
     groups[m.group].push(m);
   }
