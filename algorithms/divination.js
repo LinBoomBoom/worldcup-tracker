@@ -269,9 +269,9 @@ function liuYaoPredict(match) {
   }
   const eloSign = eloDiff >= 0 ? 1 : -1;
 
-  // 基础进球
-  let baseH = 1.2 + eloDiff * 0.5 + eloSign * eloBoost + totalFirepower * 0.15 + diff * 0.1;
-  let baseA = 1.2 - eloDiff * 0.5 - eloSign * eloBoost - totalFirepower * 0.15 - diff * 0.1;
+  // 基础进球（v2.2调高基准: 1.2→1.5, ELO系数0.5→0.8, 让强队能出2/3/4球）
+  let baseH = 1.5 + eloDiff * 0.8 + eloSign * eloBoost + totalFirepower * 0.15 + diff * 0.1;
+  let baseA = 1.5 - eloDiff * 0.8 - eloSign * eloBoost - totalFirepower * 0.15 - diff * 0.1;
 
   // ====== 优化①续: 铁桶阵→降低强队预期进球 ======
   if (parkBus) {
