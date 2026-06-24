@@ -204,19 +204,27 @@ const completedMatches = [
 
 // ======================== 6月24日 ========================
 // 第二轮收尾：K组、L组
-const june22Matches = []; // 已全部移至 completed
+const june24Matches = [
+  { id:"M45", date:"2026-06-24", time:"01:00", group:"K", round:2,
+    home:"葡萄牙", away:"乌兹别克斯坦", score:"5-0", hg:5, ag:0,
+    events:"C罗梅开二度连续6届世界杯破门！B费2助攻，葡萄牙提前出线",
+    motm:"C罗", venue:"纽约/新泽西·大都会人寿" },
+  { id:"M46", date:"2026-06-24", time:"04:00", group:"L", round:2,
+    home:"英格兰", away:"加纳", score:"0-0", hg:0, ag:0,
+    events:"凯恩失空门！奥赖利头球中框，英格兰狂攻无果闷平加纳",
+    motm:"加纳门将阿蒂-齐吉", venue:"休斯顿·NRG" },
+  { id:"M47", date:"2026-06-24", time:"07:00", group:"L", round:2,
+    home:"巴拿马", away:"克罗地亚", score:"0-1", hg:0, ag:1,
+    events:"莫德里奇助攻格瓦迪奥尔头球破门，克罗地亚稳取3分",
+    motm:"莫德里奇", venue:"多伦多·BMO" },
+  { id:"M48", date:"2026-06-24", time:"10:00", group:"K", round:2,
+    home:"哥伦比亚", away:"民主刚果", score:"1-0", hg:1, ag:0,
+    events:"穆尼奥斯连场破门，哥伦比亚两连胜提前出线",
+    motm:"穆尼奥斯", venue:"温哥华·BC Place" },
+];
 
 // ======================== 后续赛程 ========================
 const futureMatches = [
-  // === 6月24日 第二轮收尾 ===
-  { id:"M45", date:"2026-06-24", time:"01:00", group:"K", round:2,
-    home:"葡萄牙", away:"乌兹别克斯坦", status:"upcoming" },
-  { id:"M46", date:"2026-06-24", time:"04:00", group:"L", round:2,
-    home:"英格兰", away:"加纳", status:"upcoming" },
-  { id:"M47", date:"2026-06-24", time:"07:00", group:"L", round:2,
-    home:"巴拿马", away:"克罗地亚", status:"upcoming" },
-  { id:"M48", date:"2026-06-24", time:"10:00", group:"K", round:2,
-    home:"哥伦比亚", away:"民主刚果", status:"upcoming" },
 
   // === 6月25日 第三轮开始（同组同时开赛）===
   // A组
@@ -334,7 +342,7 @@ const injuries = [
 
 // ======================== 导出 ========================
 function getAllMatches() {
-  return { completed: completedMatches, upcoming: [...june22Matches, ...futureMatches] };
+  return { completed: [...completedMatches, ...june24Matches], upcoming: futureMatches };
 }
 
 function getStandings() {
