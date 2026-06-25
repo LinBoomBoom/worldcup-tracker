@@ -1,5 +1,5 @@
 /**
- * 六爻预测 · 世界杯比分占卜 v2.1
+ * 六爻预测 · 世界杯比分占卜 v2.3
  * 基于 iching-shifa 专业排盘库
  * 
  * 优势：
@@ -13,6 +13,10 @@
  *   ② 卦名警告→置信度修正（无妄/否/困等13卦自动降信）
  *   ③ ELO大差距非线性放大（>150分差距启动平方项）
  *   ④ 比分尾部加厚·崩盘模式（大差距+强倾向时二阶段泊松）
+ *
+ * v2.3 优化（2026-06-25复盘后）：
+ *   ⑤ 轮次感知·平局概率修正 — 小组赛末轮平局概率砍至30%，前两轮70%
+ *   ⑥ altScores智能选优 — 非平局优先逻辑，top1平局时自动降级到非平局备选
  */
 
 const { threeNumberQiGua, decodeGua, solarToLunar, BAGUA_XIANG } = require('iching-shifa');
@@ -269,9 +273,19 @@ function liuYaoPredict(match) {
   }
   const eloSign = eloDiff >= 0 ? 1 : -1;
 
-  // 基础进球（v2.2调高基准: 1.2→1.5, ELO系数0.5→0.8, 让强队能出2/3/4球）
-  let baseH = 1.5 + eloDiff * 0.8 + eloSign * eloBoost + totalFirepower * 0.15 + diff * 0.1;
-  let baseA = 1.5 - eloDiff * 0.8 - eloSign * eloBoost - totalFirepower * 0.15 - diff * 0.1;
+  // 比赛轮次
+  const matchRound = match.round || 1;
+
+  // 基础进球（v2.3调高基准: 1.5→2.0, ELO系数0.8→1.2, 均场目标~2.85球）
+  let baseH = 2.0 + eloDiff * 1.2 + eloSign * eloBoost + totalFirepower * 0.2 + diff * 0.15;
+  let baseA = 2.0 - eloDiff * 1.2 - eloSign * eloBoost - totalFirepower * 0.2 - diff * 0.15;
+
+  // ====== 优化⑦: 小组赛末轮进球通胀 (v2.3) ======
+  // 第三轮双方全力以赴，进球数天然偏高（本届R3场均3.17球 vs 总体2.85球）
+  if (matchRound === 3) {
+    baseH *= 1.25;
+    baseA *= 1.25;
+  }
 
   // ====== 优化①续: 铁桶阵→降低强队预期进球 ======
   if (parkBus) {
@@ -340,7 +354,61 @@ function liuYaoPredict(match) {
 
   scoreProbs.sort((a, b) => b.p - a.p);
 
-  const topScore = scoreProbs[0];
+  // ====== 优化⑤: 轮次感知 · 平局概率修正 (v2.3) ======
+  // 小组赛第三轮(round=3)是出线生死战，平局对双方都没意义
+  // 淘汰赛(round>=4)有加时但常规时间平局仍常见
+  if (matchRound === 3) {
+    // 小组赛末轮：平局概率极低（历史数据<15%，本届0/6=0%）
+    for (const sp of scoreProbs) {
+      if (sp.hg === sp.ag) {
+        sp.p *= 0.30;            // 平局概率砍至30%
+      } else if (Math.abs(sp.hg - sp.ag) >= 2) {
+        sp.p *= 1.25;            // 大比分胜负加权
+      } else {
+        sp.p *= 1.10;            // 小分胜负轻微加权
+      }
+    }
+    scoreProbs.sort((a, b) => b.p - a.p);
+  } else if (matchRound >= 4) {
+    // 淘汰赛：平局可能→加时，常规时间平局概率略降
+    for (const sp of scoreProbs) {
+      if (sp.hg === sp.ag) sp.p *= 0.65;
+    }
+    scoreProbs.sort((a, b) => b.p - a.p);
+  } else {
+    // 小组赛前两轮：平局实际发生率~28%，但模型偏高
+    for (const sp of scoreProbs) {
+      if (sp.hg === sp.ag) sp.p *= 0.70;
+    }
+    scoreProbs.sort((a, b) => b.p - a.p);
+  }
+
+  // ====== 优化⑥: altScores智能选优 · 非平局优先逻辑 (v2.3) ======
+  // 核心洞察：6/25实测altScores方向命中5/6(83%)，但Picked全选平局(16%)
+  // 修复：若top1是平局且top2/3有非平局在合理概率范围内→选用非平局
+  let topScore = scoreProbs[0];
+  const top3 = scoreProbs.slice(0, 3);
+
+  if (topScore.hg === topScore.ag) {
+    // 找top3中最优非平局：综合概率+ELO合理性
+    const nonDraws = top3.filter(s => s.hg !== s.ag);
+
+    // 条件1: 存在非平局备选
+    // 条件2: 概率 ≥ topScore的55%（小组赛）/ 65%（前两轮）
+    const probThreshold = matchRound === 3 ? 0.55 : 0.65;
+    const viableNonDraw = nonDraws.find(s => s.p >= topScore.p * probThreshold);
+
+    if (viableNonDraw) {
+      topScore = viableNonDraw;
+    } else if (nonDraws.length > 0 && matchRound === 3 && nonDraws[0].p >= topScore.p * 0.40) {
+      // 末轮降门槛：40%即可
+      topScore = nonDraws[0];
+    } else if (parkBus && topScore.hg === 0 && topScore.ag === 0) {
+      // 铁桶阵→0-0保持原判（大巴确实可能闷平）
+      // 不变
+    }
+  }
+
   const altScores = scoreProbs.slice(0, 3).map(s => ({
     score: s.score,
     prob: +(s.p * 100).toFixed(1)

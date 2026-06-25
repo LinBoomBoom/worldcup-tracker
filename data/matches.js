@@ -223,25 +223,40 @@ const june24Matches = [
     motm:"穆尼奥斯", venue:"温哥华·BC Place" },
 ];
 
-// ======================== 后续赛程（数据来源：163体育官方赛程 2026-06-24）========================
-const futureMatches = [
-
-  // === 6月25日 第三轮（同组同时开赛）===
+// ======================== 6月25日 ========================
+// 第三轮：A/B/C组（同组同时开赛）
+const june25Matches = [
   // B组 03:00
   { id:"M49", date:"2026-06-25", time:"03:00", group:"B", round:3,
-    home:"瑞士", away:"加拿大", status:"upcoming" },
+    home:"瑞士", away:"加拿大", score:"2-1", hg:2, ag:1,
+    events:"曼赞比传射建功，瑞士头名出线",
+    motm:"曼赞比", venue:"温哥华·BC Place" },
   { id:"M50", date:"2026-06-25", time:"03:00", group:"B", round:3,
-    home:"波黑", away:"卡塔尔", status:"upcoming" },
+    home:"波黑", away:"卡塔尔", score:"3-1", hg:3, ag:1,
+    events:"卡塔尔一平两负小组出局",
+    motm:"马赫米奇", venue:"多伦多·BMO" },
   // C组 06:00
   { id:"M51", date:"2026-06-25", time:"06:00", group:"C", round:3,
-    home:"苏格兰", away:"巴西", status:"upcoming" },
+    home:"苏格兰", away:"巴西", score:"0-3", hg:0, ag:3,
+    events:"维尼修斯双响，内马尔迎本届首秀，桑巴军团头名出线",
+    motm:"维尼修斯", venue:"迈阿密·硬石" },
   { id:"M52", date:"2026-06-25", time:"06:00", group:"C", round:3,
-    home:"摩洛哥", away:"海地", status:"upcoming" },
+    home:"摩洛哥", away:"海地", score:"4-2", hg:4, ag:2,
+    events:"阿什拉夫传射建功，摩洛哥携手巴西晋级32强",
+    motm:"阿什拉夫", venue:"费城·林肯金融" },
   // A组 09:00
   { id:"M53", date:"2026-06-25", time:"09:00", group:"A", round:3,
-    home:"捷克", away:"墨西哥", status:"upcoming" },
+    home:"捷克", away:"墨西哥", score:"0-3", hg:0, ag:3,
+    events:"墨西哥全胜出线，捷克垫底出局",
+    motm:"基尼奥内斯", venue:"墨西哥城·阿兹特克" },
   { id:"M54", date:"2026-06-25", time:"09:00", group:"A", round:3,
-    home:"南非", away:"韩国", status:"upcoming" },
+    home:"南非", away:"韩国", score:"1-0", hg:1, ag:0,
+    events:"马塞科一击制胜，南非首次晋级淘汰赛！韩国第三恐出局",
+    motm:"马塞科", venue:"洛杉矶·SoFi" },
+];
+
+// ======================== 后续赛程（数据来源：小红书 2026-06-25）========================
+const futureMatches = [
 
   // === 6月26日 ===
   // E组 04:00
@@ -302,7 +317,7 @@ function buildStandings() {
     if (!groups[g]) groups[g] = {};
   };
 
-  const allCompleted = [...completedMatches, ...june24Matches];
+  const allCompleted = [...completedMatches, ...june24Matches, ...june25Matches];
   for (const m of allCompleted) {
     initGroup(m.group);
     // home
@@ -334,7 +349,7 @@ function buildStandings() {
 // ======================== 小组历史对阵 ========================
 function buildGroupHistory() {
   const groups = {};
-  const allCompleted = [...completedMatches, ...june24Matches];
+  const allCompleted = [...completedMatches, ...june24Matches, ...june25Matches];
   for (const m of allCompleted) {
     if (!groups[m.group]) groups[m.group] = [];
     groups[m.group].push(m);
