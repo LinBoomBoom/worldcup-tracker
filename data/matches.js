@@ -346,16 +346,16 @@ function buildStandings() {
 
   const { completed: allCompleted } = getAllMatches();
   for (const m of allCompleted) {
-    initGroup(m.group);
+    initGroup((m.group||"").replace("组",""));
     // home
-    if (!groups[m.group][m.home]) {
-      groups[m.group][m.home] = { team:m.home, p:0,w:0,d:0,l:0,gf:0,ga:0,gd:0,pts:0 };
+    if (!groups[(m.group||"").replace("组","")][m.home]) {
+      groups[(m.group||"").replace("组","")][m.home] = { team:m.home, p:0,w:0,d:0,l:0,gf:0,ga:0,gd:0,pts:0 };
     }
-    if (!groups[m.group][m.away]) {
-      groups[m.group][m.away] = { team:m.away, p:0,w:0,d:0,l:0,gf:0,ga:0,gd:0,pts:0 };
+    if (!groups[(m.group||"").replace("组","")][m.away]) {
+      groups[(m.group||"").replace("组","")][m.away] = { team:m.away, p:0,w:0,d:0,l:0,gf:0,ga:0,gd:0,pts:0 };
     }
-    const ht = groups[m.group][m.home];
-    const at = groups[m.group][m.away];
+    const ht = groups[(m.group||"").replace("组","")][m.home];
+    const at = groups[(m.group||"").replace("组","")][m.away];
     ht.p++; at.p++;
     ht.gf += m.hg; ht.ga += m.ag;
     at.gf += m.ag; at.ga += m.hg;
@@ -378,8 +378,8 @@ function buildGroupHistory() {
   const groups = {};
   const { completed: allCompleted } = getAllMatches();
   for (const m of allCompleted) {
-    if (!groups[m.group]) groups[m.group] = [];
-    groups[m.group].push(m);
+    if (!groups[(m.group||"").replace("组","")]) groups[(m.group||"").replace("组","")] = [];
+    groups[(m.group||"").replace("组","")].push(m);
   }
   return groups;
 }
