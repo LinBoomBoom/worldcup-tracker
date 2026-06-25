@@ -1,18 +1,23 @@
 /**
- * 赛程自动同步模块 v1.0
+ * 赛程自动同步模块 v2.0
  * 
  * 功能：
- *   1. 服务启动时自动检查赛程更新
- *   2. /api/sync POST — 接收浏览器抓取的赛程数据
+ *   1. 服务启动时静默抓取小红书 HTML → 提取 __INITIAL_STATE__ 中的赛程数据
+ *   2. /api/sync POST — 手动推送数据
  *   3. /api/sync/status GET — 查看同步状态
  * 
- * 流程：浏览器打开小红书 → 提取数据 → POST /api/sync → 自动更新 matches.js
+ * 原理：小红书世界杯页面是SSR，HTML中直接包含完整的 window.__INITIAL_STATE__ JSON
+ *       worldCupMatchSchedule.data._rawValue.matches[] = 全部104场比赛
+ *       不需要浏览器渲染，纯 HTTP fetch 即可获取
  */
 
 const fs = require('fs');
 const path = require('path');
+const https = require('https');
 const MATCHES_PATH = path.join(__dirname, '..', 'data', 'matches.js');
 const RESULTS_PATH = path.join(__dirname, '..', 'data', 'all-results.json');
+
+const XHS_URL = 'https://www.xiaohongshu.com/worldcup26?wcup_source=web_sidebar_entry';
 
 // 同步状态
 const syncState = {
@@ -22,6 +27,113 @@ const syncState = {
   lastError: null,
   startupChecked: false,
 };
+
+// ==================== 小红书数据抓取 ====================
+
+/**
+ * 从小红书 HTML 中提取 __INITIAL_STATE__ 并解析赛程数据
+ * 纯 HTTP fetch，不打开浏览器，不影响用户
+ */
+function fetchFromXiaohongshu() {
+  return new Promise((resolve, reject) => {
+    const req = https.get(XHS_URL, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Accept': 'text/html,application/xhtml+xml',
+        'Accept-Language': 'zh-CN,zh;q=0.9',
+      },
+      timeout: 15000,
+    }, (res) => {
+      if (res.statusCode !== 200) {
+        reject(new Error(`HTTP ${res.statusCode}`));
+        return;
+      }
+      let html = '';
+      res.on('data', chunk => html += chunk);
+      res.on('end', () => {
+        try {
+          // 提取 window.__INITIAL_STATE__ = {...}
+          const idx = html.indexOf('window.__INITIAL_STATE__=');
+          if (idx === -1) { reject(new Error('未找到 __INITIAL_STATE__')); return; }
+
+          const start = html.indexOf('{', idx);
+          let depth = 0, end = start;
+          let inString = false, escape = false;
+          for (let i = start; i < html.length; i++) {
+            const c = html[i];
+            if (escape) { escape = false; continue; }
+            if (c === '\\') { escape = true; continue; }
+            if (c === '"') { inString = !inString; continue; }
+            if (inString) continue;
+            if (c === '{') depth++;
+            else if (c === '}') { depth--; if (depth === 0) { end = i + 1; break; } }
+          }
+
+          const jsonStr = html.substring(start, end);
+          // 净化非标准JSON（undefined → null）
+          const sanitized = jsonStr.replace(/:undefined/g, ':null');
+          const state = JSON.parse(sanitized);
+          const schedule = state?.worldCupMatchSchedule?.data;
+          if (!schedule || !schedule.matches) {
+            reject(new Error('未找到 worldCupMatchSchedule.matches'));
+            return;
+          }
+          resolve(schedule);
+        } catch (e) {
+          reject(new Error('解析失败: ' + e.message));
+        }
+      });
+    });
+    req.on('error', reject);
+    req.on('timeout', () => { req.destroy(); reject(new Error('timeout')); });
+  });
+}
+
+/**
+ * 将小红书数据格式转换为项目标准格式
+ */
+function normalizeMatchData(schedule) {
+  const matches = [];
+  const items = schedule?.matches || [];
+
+  for (const item of items) {
+    const m = item.match;
+    if (!m) continue;
+
+    // matchTime 是秒级Unix时间戳
+    const ts = m.matchTime ? new Date(m.matchTime * 1000) : null;
+    const date = ts ? ts.toISOString().slice(0, 10) : '';
+    const time = m.matchTimeLabel || (ts ? ts.toTimeString().slice(0, 5) : '');
+
+    // 中文轮次映射
+    const roundMap = { '小组赛': m.roundNum || 1 };
+    const round = roundMap[m.roundStage] || m.roundNum || 0;
+
+    // 比分判断
+    const hasScore = m.homeScore != null && m.awayScore != null && m.statusDesc === '完场';
+
+    // venue可能在liveInfo里
+    let venue = '';
+    try { if (m.liveInfo) venue = JSON.parse(m.liveInfo)?.venue || ''; } catch (e) {}
+
+    matches.push({
+      date,
+      time,
+      group: m.groupLabel || '',
+      round,
+      home: m.homeTeamName || '',
+      away: m.awayTeamName || '',
+      score: hasScore ? `${m.homeScore}-${m.awayScore}` : 'upcoming',
+      hg: hasScore ? m.homeScore : undefined,
+      ag: hasScore ? m.awayScore : undefined,
+      status: m.statusDesc || '',
+      venue,
+      matchId: m.matchId || '',
+    });
+  }
+
+  return matches;
+}
 
 // ==================== 赛程更新处理 ====================
 
@@ -131,25 +243,42 @@ function updateMatchesJS(matches) {
   return matchCount;
 }
 
-// ==================== 服务启动自动检查 ====================
+// ==================== 服务启动自动同步 ====================
 
 function startupCheck() {
   if (syncState.startupChecked) return;
   syncState.startupChecked = true;
 
-  console.log('🔍 [AutoSync] 启动时检查赛程更新...');
+  console.log('🔍 [AutoSync] 启动时静默获取小红书赛程...');
 
-  // 检查 all-results.json 中是否有未记录的比赛
-  try {
-    const allResults = JSON.parse(fs.readFileSync(RESULTS_PATH, 'utf8'));
-    const upcoming = allResults.filter(r => !r.score || r.score === 'upcoming');
-    const completed = allResults.filter(r => r.score && r.score !== 'upcoming');
+  fetchFromXiaohongshu()
+    .then(schedule => {
+      const matches = normalizeMatchData(schedule);
+      const completed = matches.filter(m => m.score !== 'upcoming');
+      const upcoming = matches.filter(m => m.score === 'upcoming');
 
-    console.log(`   ✅ 完赛场次: ${completed.length} | 待比赛: ${upcoming.length}`);
-    console.log(`   📅 最新日期: ${completed.length > 0 ? completed[completed.length-1].date : '无数据'}`);
-  } catch (e) {
-    console.log('   ⚠️ all-results.json 不存在或无权限读取');
-  }
+      console.log(`   ✅ 获取成功: ${matches.length}场 (${completed.length}完赛 + ${upcoming.length}待赛)`);
+      console.log(`   📅 日期范围: ${matches[0]?.date || '?'} ~ ${matches[matches.length-1]?.date || '?'}`);
+
+      // 更新本地文件
+      const result = ingestMatchResults({ date: 'auto', matches: completed, source: 'xiaohongshu-ssr' });
+      if (result.added + result.updated > 0) {
+        console.log(`   📝 更新: +${result.added}新增 ${result.updated}更新`);
+      } else {
+        console.log(`   ✅ 数据已最新，无需更新`);
+      }
+    })
+    .catch(err => {
+      console.log(`   ⚠️ 小红书抓取失败: ${err.message}，使用本地缓存`);
+      // Fallback: 检查本地数据统计
+      try {
+        const allResults = JSON.parse(fs.readFileSync(RESULTS_PATH, 'utf8'));
+        const completed = allResults.filter(r => r.score && r.score !== 'upcoming');
+        console.log(`   📦 本地缓存: ${completed.length}场完赛`);
+      } catch (e) {
+        console.log('   ⚠️ 本地数据也读取失败');
+      }
+    });
 }
 
 // ==================== 路由注册 ====================
@@ -174,7 +303,31 @@ function registerRoutes(app) {
     }
   });
 
-  // POST /api/sync — 接收浏览器提取的赛程数据
+  // GET /api/sync — 触发一次静默同步（从接口拉取）
+  app.get('/api/sync', (req, res) => {
+    console.log('🔄 [AutoSync] GET /api/sync 触发手动同步...');
+    fetchFromXiaohongshu()
+      .then(schedule => {
+        const matches = normalizeMatchData(schedule);
+        const completed = matches.filter(m => m.score !== 'upcoming');
+        const result = ingestMatchResults({ date: 'manual', matches: completed, source: 'xiaohongshu-api' });
+        res.json({
+          success: true,
+          source: 'xiaohongshu-ssr',
+          totalMatches: matches.length,
+          completedCount: completed.length,
+          updated: result.updated,
+          added: result.added,
+          dateRange: matches[0]?.date + ' ~ ' + matches[matches.length-1]?.date,
+        });
+      })
+      .catch(err => {
+        syncState.lastError = err.message;
+        res.status(502).json({ success: false, error: err.message, hint: '小红书页面可能暂时不可达' });
+      });
+  });
+
+  // POST /api/sync — 接收浏览器提取的赛程数据（保留兼容）
   app.post('/api/sync', (req, res) => {
     try {
       const result = ingestMatchResults(req.body);
@@ -193,6 +346,8 @@ function registerRoutes(app) {
 module.exports = {
   registerRoutes,
   startupCheck,
+  fetchFromXiaohongshu,
+  normalizeMatchData,
   ingestMatchResults,
   syncState,
 };
