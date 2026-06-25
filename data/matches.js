@@ -344,7 +344,7 @@ function buildStandings() {
     if (!groups[g]) groups[g] = {};
   };
 
-  const allCompleted = [...completedMatches, ...june24Matches, ...june25Matches];
+  const { completed: allCompleted } = getAllMatches();
   for (const m of allCompleted) {
     initGroup(m.group);
     // home
@@ -376,7 +376,7 @@ function buildStandings() {
 // ======================== 小组历史对阵 ========================
 function buildGroupHistory() {
   const groups = {};
-  const allCompleted = [...completedMatches, ...june24Matches, ...june25Matches];
+  const { completed: allCompleted } = getAllMatches();
   for (const m of allCompleted) {
     if (!groups[m.group]) groups[m.group] = [];
     groups[m.group].push(m);
@@ -412,8 +412,55 @@ const injuries = [
 ];
 
 // ======================== 导出 ========================
+
+// 合并本地静态数据与 auto-sync 写入的 all-results.json
+function loadResultsOverlay() {
+  try {
+    const p = require('path');
+    const raw = require('fs').readFileSync(
+      p.join(__dirname, 'all-results.json'), 'utf8'
+    );
+    return JSON.parse(raw);
+  } catch (e) {
+    return [];
+  }
+}
+
 function getAllMatches() {
-  return { completed: [...completedMatches, ...june24Matches], upcoming: futureMatches };
+  const allStatic = [
+    ...completedMatches, ...june24Matches, ...june25Matches,
+    ...knockoutMatches, ...futureMatches,
+  ];
+
+  // 从 all-results.json 读取最新比分覆盖
+  const overlay = loadResultsOverlay();
+  const overlayMap = new Map();
+  for (const o of overlay) {
+    if (o.score && o.score !== 'upcoming') {
+      overlayMap.set(`${o.date}|${o.home}|${o.away}`, o);
+    }
+  }
+
+  const merged = allStatic.map(m => {
+    const key = `${m.date}|${m.home}|${m.away}`;
+    const fresh = overlayMap.get(key);
+    if (fresh) {
+      // 只覆盖实际有值的字段，防止用undefined覆盖好数据
+      const update = { status: 'completed' };
+      if (fresh.score && fresh.score !== 'upcoming') update.score = fresh.score;
+      if (fresh.hg != null) update.hg = fresh.hg;
+      if (fresh.ag != null) update.ag = fresh.ag;
+      if (fresh.events) update.events = fresh.events;
+      if (fresh.motm) update.motm = fresh.motm;
+      return { ...m, ...update };
+    }
+    return m;
+  });
+
+  const completed = merged.filter(m => m.score && m.score !== 'upcoming' && (m.hg != null));
+  const upcoming = merged.filter(m => !m.score || m.score === 'upcoming' || m.hg == null);
+
+  return { completed, upcoming };
 }
 
 function getStandings() {

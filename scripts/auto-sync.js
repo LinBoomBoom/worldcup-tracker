@@ -237,7 +237,9 @@ function updateMatchesJS(matches) {
 
   if (matchCount > 0) {
     fs.writeFileSync(MATCHES_PATH, content, 'utf8');
-    console.log(`  📝 [AutoSync] matches.js: ${matchCount} 场已更新`);
+    // 清除Node.js模块缓存，确保下次require返回新数据
+    delete require.cache[require.resolve(MATCHES_PATH)];
+    console.log(`  📝 [AutoSync] matches.js: ${matchCount} 场已更新（缓存已清除）`);
   }
 
   return matchCount;
