@@ -427,13 +427,22 @@ function loadResultsOverlay() {
 }
 
 function getAllMatches() {
+  // 以 all-results.json 为主要数据源（auto-sync自动维护）
+  const overlay = loadResultsOverlay();
+
+  // 如果 JSON 数据完整，直接用它
+  if (overlay.length >= 50) {
+    const completed = overlay.filter(m => m.score && m.score !== 'upcoming' && m.hg != null);
+    const upcoming = overlay.filter(m => !m.score || m.score === 'upcoming' || m.hg == null);
+    return { completed, upcoming };
+  }
+
+  // 回退：用静态数据 + JSON覆盖
   const allStatic = [
     ...completedMatches, ...june24Matches, ...june25Matches,
     ...knockoutMatches, ...futureMatches,
   ];
 
-  // 从 all-results.json 读取最新比分覆盖
-  const overlay = loadResultsOverlay();
   const overlayMap = new Map();
   for (const o of overlay) {
     if (o.score && o.score !== 'upcoming') {
@@ -445,7 +454,6 @@ function getAllMatches() {
     const key = `${m.date}|${m.home}|${m.away}`;
     const fresh = overlayMap.get(key);
     if (fresh) {
-      // 只覆盖实际有值的字段，防止用undefined覆盖好数据
       const update = { status: 'completed' };
       if (fresh.score && fresh.score !== 'upcoming') update.score = fresh.score;
       if (fresh.hg != null) update.hg = fresh.hg;
