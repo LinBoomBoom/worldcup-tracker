@@ -71,7 +71,40 @@ divination.js (v2.3)
 
 ---
 
-## 四、每次预测/复盘必须检查
+## 四、代码部署 · 推送 Railway
+
+### 问题背景
+项目通过 GitHub → Railway 自动部署。远程仓库使用 SSH 协议（`git@github.com:LinBoomBoom/worldcup-tracker.git`），当网络环境限制 SSH 端口 22 时，`git push` 会超时失败。
+
+### 🚨 铁律：SSH 不通→立即切 HTTPS
+
+```powershell
+# 1. 检测SSH是否通
+ssh -T -o ConnectTimeout=5 git@github.com
+
+# 2. 若超时→临时切HTTPS推送
+git remote set-url origin https://github.com/LinBoomBoom/worldcup-tracker.git
+git push origin main
+
+# 3. 推送成功后切回SSH（保持日常开发习惯）
+git remote set-url origin git@github.com:LinBoomBoom/worldcup-tracker.git
+```
+
+### ⚠️ 常见错误
+| 症状 | 原因 | 解决 |
+|:--|:--|:--|
+| `ssh: connect to host github.com port 22: Connection timed out` | 网络封了SSH端口 | 切HTTPS |
+| `Permission denied (publickey)` | SSH key未配置 | 切HTTPS或配key |
+| Railway login 超时/被杀 | 网络不稳定 | 不需要 Railway CLI，GitHub push 即自动部署 |
+
+### 🔑 关键认知
+- **Railway 不需要 CLI 手动部署** — push GitHub = 自动触发 Railway 构建
+- **不需要 `railway login`** — 除非要改环境变量/查看日志
+- **HTTPS 推送不需要额外配置** — GitHub 允许 HTTPS 读写
+
+---
+
+## 五、每次预测/复盘必须检查
 
 - [ ] round 值是否正确
 - [ ] home/away 与赛程一致
@@ -79,6 +112,7 @@ divination.js (v2.3)
 - [ ] 预测结果存入 predictions-store.json
 - [ ] 赛果更新到 matches.js + all-results.json
 - [ ] 复盘写入 docs/divination-postmortem-{MMDD}.md
+- [ ] SSH不通先切HTTPS → push → 切回SSH
 
 ---
 

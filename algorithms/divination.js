@@ -45,6 +45,27 @@ const TEAM_ELO = { "阿根廷":1920, "法国":1900, "西班牙":1880, "巴西":1
   "新西兰":1590, "库拉索":1580, "海地":1575, "佛得角":1570,
   "伊拉克":1565 };
 
+// ======================= 攻防系数（近10场国家队数据） =======================
+const TEAM_ATT_DEF = {
+  "阿根廷":{att:2.4,def:0.6}, "法国":{att:2.3,def:0.7}, "西班牙":{att:2.2,def:0.5},
+  "巴西":{att:2.2,def:0.7}, "英格兰":{att:2.1,def:0.7}, "德国":{att:2.5,def:1.0},
+  "荷兰":{att:2.3,def:0.8}, "葡萄牙":{att:2.0,def:0.8}, "比利时":{att:1.8,def:0.9},
+  "乌拉圭":{att:1.8,def:0.8}, "哥伦比亚":{att:1.7,def:0.7}, "墨西哥":{att:1.5,def:0.5},
+  "美国":{att:2.0,def:0.6}, "摩洛哥":{att:1.4,def:0.5}, "日本":{att:2.0,def:0.8},
+  "瑞士":{att:1.6,def:0.8}, "奥地利":{att:1.7,def:0.9}, "韩国":{att:1.5,def:0.9},
+  "瑞典":{att:1.8,def:1.0}, "克罗地亚":{att:1.6,def:0.9}, "科特迪瓦":{att:1.3,def:1.0},
+  "埃及":{att:1.3,def:0.9}, "加拿大":{att:2.0,def:0.9}, "澳大利亚":{att:1.3,def:0.8},
+  "伊朗":{att:1.5,def:1.0}, "苏格兰":{att:1.1,def:0.8}, "捷克":{att:1.2,def:1.2},
+  "加纳":{att:1.1,def:1.0}, "民主刚果":{att:1.0,def:1.2}, "巴拉圭":{att:1.0,def:1.0},
+  "沙特阿拉伯":{att:1.1,def:1.3}, "卡塔尔":{att:1.0,def:1.5}, "土耳其":{att:1.0,def:1.1},
+  "突尼斯":{att:0.8,def:1.5}, "南非":{att:0.8,def:1.2}, "波黑":{att:1.0,def:1.5},
+  "乌兹别克斯坦":{att:1.0,def:1.3}, "厄瓜多尔":{att:0.9,def:1.0},
+  "约旦":{att:0.8,def:1.4}, "巴拿马":{att:0.7,def:1.5}, "阿尔及利亚":{att:0.8,def:1.5},
+  "新西兰":{att:1.2,def:1.4}, "库拉索":{att:0.7,def:1.6}, "海地":{att:0.5,def:1.5},
+  "佛得角":{att:0.6,def:0.9}, "伊拉克":{att:0.8,def:1.6},
+  "塞内加尔":{att:1.4,def:1.0}, "挪威":{att:2.0,def:0.8},
+};
+
 // ======================= 警告卦名（卦辞含"难/险/阻/困/变/意外"） =======================
 const WARNING_GUA = new Set([
   '无妄', // unexpected / 意外之卦
@@ -518,4 +539,71 @@ function liuYaoPredict(match) {
   };
 }
 
-module.exports = { liuYaoPredict };
+module.exports = { liuYaoPredict, statsSupplement };
+
+// ======================= 统计模型补充 (v1.0) =======================
+// 纯ELO+泊松，不含任何术数成分，作为六爻预测的独立对照参考
+function statsSupplement(match) {
+  const eloH = TEAM_ELO[match.home] || 1600;
+  const eloA = TEAM_ELO[match.away] || 1600;
+  const eloDiff = (eloH - eloA) / 200;
+  const homeAdv = 0.25; // 主场ELO加成转进球
+  const adjDiff = eloDiff + homeAdv;
+
+  // ELO胜率
+  const expectedHome = 1 / (1 + Math.pow(10, -adjDiff * 2));
+  const eloGap = Math.abs(adjDiff);
+  const drawProb = Math.max(0.10, 0.30 - eloGap * 0.20);
+  const hProb = expectedHome * (1 - drawProb);
+  const aProb = (1 - expectedHome) * (1 - drawProb);
+
+  // 攻防系数
+  const hAtt = (TEAM_ATT_DEF[match.home] || {att:1.0,def:1.2}).att;
+  const hDef = (TEAM_ATT_DEF[match.home] || {att:1.0,def:1.2}).def;
+  const aAtt = (TEAM_ATT_DEF[match.away] || {att:1.0,def:1.2}).att;
+  const aDef = (TEAM_ATT_DEF[match.away] || {att:1.0,def:1.2}).def;
+
+  // 预期进球
+  let xH = hAtt * (aDef / 1.2) * 1.15;
+  let xA = aAtt * (hDef / 1.2);
+
+  // 泊松最高概率比分
+  function poissonP(lambda, k) {
+    let p = Math.exp(-lambda);
+    for (let i = 1; i <= k; i++) p *= lambda / i;
+    return p;
+  }
+  let bestScore = '?', bestP = 0;
+  const top3 = [];
+  for (let hg = 0; hg <= 6; hg++) {
+    for (let ag = 0; ag <= 6; ag++) {
+      const p = poissonP(xH, hg) * poissonP(xA, ag);
+      if (p > bestP) { bestP = p; bestScore = hg+'-'+ag; }
+      top3.push({ score: hg+'-'+ag, prob: +(p*100).toFixed(1) });
+    }
+  }
+  top3.sort((a,b) => b.prob - a.prob);
+
+  // 方向判定
+  const dirLabel = hProb > aProb + 0.1 ? '主胜倾向' :
+    aProb > hProb + 0.1 ? '客胜倾向' : '均衡';
+
+  // 进球范围（取概率最高的相邻区间覆盖≥50%）
+  const totalGoals = xH + xA;
+  const low = Math.max(0, Math.floor(totalGoals - 1.2));
+  const high = Math.ceil(totalGoals + 1.2);
+
+  return {
+    eloDiff: +(eloDiff * 200).toFixed(0),
+    xGoals: { home: +xH.toFixed(1), away: +xA.toFixed(1), total: +(xH+xA).toFixed(1) },
+    direction: {
+      home: +(hProb * 100).toFixed(1),
+      draw: +(drawProb * 100).toFixed(1),
+      away: +(aProb * 100).toFixed(1),
+      label: dirLabel,
+    },
+    goalRange: `${low}-${high}球`,
+    mostLikely: bestScore,
+    altScores: top3.slice(0, 3),
+  };
+}
