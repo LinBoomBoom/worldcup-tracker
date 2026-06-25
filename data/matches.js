@@ -255,6 +255,33 @@ const june25Matches = [
     motm:"马塞科", venue:"洛杉矶·SoFi" },
 ];
 
+// ======================== 1/16决赛（32强淘汰赛）========================
+// 数据来源：小红书世界杯频道 2026-06-25
+const knockoutMatches = [
+  // 6月29日
+  { id:"R1", date:"2026-06-29", time:"03:00", round:5, home:"南非", away:"加拿大", status:"upcoming", venue:"待定" },
+  // 6月30日
+  { id:"R2", date:"2026-06-30", time:"01:00", round:5, home:"巴西", away:"待定", status:"upcoming", venue:"待定" },
+  { id:"R3", date:"2026-06-30", time:"04:30", round:5, home:"德国", away:"待定", status:"upcoming", venue:"待定" },
+  { id:"R4", date:"2026-06-30", time:"09:00", round:5, home:"待定", away:"摩洛哥", status:"upcoming", venue:"待定" },
+  // 7月1日
+  { id:"R5", date:"2026-07-01", time:"01:00", round:5, home:"待定", away:"待定", status:"upcoming", venue:"待定" },
+  { id:"R6", date:"2026-07-01", time:"05:00", round:5, home:"待定", away:"待定", status:"upcoming", venue:"待定" },
+  { id:"R7", date:"2026-07-01", time:"09:00", round:5, home:"墨西哥", away:"待定", status:"upcoming", venue:"待定" },
+  // 7月2日
+  { id:"R8", date:"2026-07-02", time:"00:00", round:5, home:"待定", away:"待定", status:"upcoming", venue:"待定" },
+  { id:"R9", date:"2026-07-02", time:"04:00", round:5, home:"待定", away:"待定", status:"upcoming", venue:"待定" },
+  { id:"R10", date:"2026-07-02", time:"08:00", round:5, home:"美国", away:"待定", status:"upcoming", venue:"待定" },
+  // 7月3日
+  { id:"R11", date:"2026-07-03", time:"03:00", round:5, home:"待定", away:"待定", status:"upcoming", venue:"待定" },
+  { id:"R12", date:"2026-07-03", time:"07:00", round:5, home:"待定", away:"待定", status:"upcoming", venue:"待定" },
+  { id:"R13", date:"2026-07-03", time:"11:00", round:5, home:"瑞士", away:"待定", status:"upcoming", venue:"待定" },
+  // 7月4日
+  { id:"R14", date:"2026-07-04", time:"02:00", round:5, home:"待定", away:"待定", status:"upcoming", venue:"待定" },
+  { id:"R15", date:"2026-07-04", time:"06:00", round:5, home:"阿根廷", away:"待定", status:"upcoming", venue:"待定" },
+  { id:"R16", date:"2026-07-04", time:"09:30", round:5, home:"待定", away:"待定", status:"upcoming", venue:"待定" },
+];
+
 // ======================== 后续赛程（数据来源：小红书 2026-06-25）========================
 const futureMatches = [
 

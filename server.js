@@ -2,8 +2,9 @@ const express = require('express');
 const path = require('path');
 const { getAllMatches, getStandings, getGroupHistory, getInjuries } = require('./data/matches');
 const { predictMatch, predictDay, getAlgorithmInfo } = require('./algorithms/predictor');
-const { liuYaoPredict } = require('./algorithms/divination');
+const { liuYaoPredict, statsSupplement } = require('./algorithms/divination');
 const { getTodayPredictions } = require('./algorithms/store');
+const { registerRoutes: registerSyncRoutes, startupCheck } = require('./scripts/auto-sync');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -74,4 +75,8 @@ app.get('/api/predictions-history', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`🏆 World Cup Tracker running on http://localhost:${PORT}`);
+
+  // ====== 自动同步赛程 ======
+  registerSyncRoutes(app);
+  startupCheck();
 });
